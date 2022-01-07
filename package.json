@@ -22,6 +22,7 @@
   "svelte": "index.js",
   "type": "module",
   "dependencies": {
+    "lodash.clonedeep": "^4.5.0",
     "svelte2tsx": "^0.4.12"
   }
 }

@@ -1,5 +1,5 @@
 import Form from './Form.svelte';
-//import AddressInput from './AddressField.svelte';
+import AddressInput from './AddressField.svelte';
 import BaseInput from './BaseInput.svelte';
 import CheckBox from './CheckBox.svelte';
 import DatePicker from './DatePicker.svelte';
