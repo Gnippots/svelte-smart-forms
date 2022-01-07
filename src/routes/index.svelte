@@ -1,5 +1,5 @@
 <script>
-    import {Form, TextInput, NumberInput, Dropdown, EmailInput} from '$lib';
+    import {Form, TextInput, NumberInput, Dropdown, EmailInput, AddressField, Checkbox, DatePicker, PasswordInput, PhoneInput, TextArea} from '$lib';
     import { createFormValidator } from '$lib/FormValidator';
 
 
@@ -50,6 +50,58 @@
             form_validator={form_validator}>
         </EmailInput>
 
+        <AddressField
+            name={'address'}
+            label={'Address'}
+            bind:address={form.address}
+            required={true}
+            form_validator={form_validator}>
+        </AddressField>
+
+        <Checkbox
+            name={'checkbox'}
+            required={true}
+            bind:value={form.checkbox}
+            form_validator={form_validator}
+        >
+            <span slot="label">
+                Checkbox Label is a slot
+            </span>
+        </Checkbox>
+
+        <DatePicker 
+            name='datepicker' 
+            bind:value={form.datepicker} 
+            form_validator={form_validator} 
+            required={true}>
+        </DatePicker>
+
+        <PasswordInput 
+            name={'password'} 
+            label={'Password'} 
+            bind:value={form.password} 
+            required={true} 
+            form_validator={form_validator}>
+        </PasswordInput>
+
+        <PhoneInput 
+            name={'phone'} 
+            label={'Phone'}
+            bind:value={form.phone}
+            bind:area_code={form.area_code}
+            required={true} 
+            form_validator={form_validator}>
+        </PhoneInput>
+
+        <TextArea 
+            name={'textarea'} 
+            label={'Text Area'} 
+            bind:value="{form.textarea}" 
+            required={true}
+            rows={3}
+            form_validator={form_validator}>
+        </TextArea>
+
         <button>Submit</button>
 
         <table>
@@ -74,9 +126,17 @@
             </tr>
 
             <tr>
+                <td>Checkbox: </td>
+                <td>{form.checkbox} </td>
+            </tr>
+
+            <tr>
                 <td>Form Valid: </td>
                 <td>{$form_validator.valid} </td>
             </tr>
+            
+
+
         </table>
     </Form>
 </div>

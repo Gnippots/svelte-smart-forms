@@ -1,7 +1,6 @@
 <script>
     import { onMount } from 'svelte';
     import TextInput from '$lib/TextInput.svelte';
-    import {format_address} from '$lib/utils/filters';
     import clonedeep from 'lodash.clonedeep';
     
     export let address = {
@@ -15,7 +14,7 @@
     export let name = 'null';
     export let mailing = false;
 
-    let element = null;    
+    let element = null;
 
     let search = '';
 
@@ -28,6 +27,29 @@
         types: [],
         componentRestrictions: { country: 'au' },
     };
+
+    function format_address(address) {
+        if (!address || !address.street_number || !address.street_name || !address.city || !address.state || !address.postcode || !address.country) {
+            return '';
+        }
+
+        let s = '';
+
+        if (address.unit_number) {
+            s += `${address.unit_number}/`;
+        }
+
+        let country = address.country;
+
+        if (country === 'AU') {
+            country = 'Australia';
+        }
+
+        s += `${address.street_number} ${address.street_name}, ${address.city} ${address.state} ${address.postcode}`;
+
+        return s;
+        
+    }
     
     const empty_address = {
         unit_number: '',
@@ -57,31 +79,34 @@
             //field_validator.dirty = value == field_validator.initial_value;
         }
 
-        let gPlace = new google.maps.places.Autocomplete(element, options);
+        if (typeof google !== 'undefined') {
 
-        google.maps.event.addListener(
-            gPlace,
-            'place_changed',
-            function () {
-                let place = gPlace.getPlace();
-                let new_address = clonedeep(empty_address);
-                search = '';
+            let gPlace = new google.maps.places.Autocomplete(element, options);
 
-                for (let component of place.address_components) {
-                    const addressType = component.types[0];
-                    if (component_map[addressType]) {
-                        new_address[component_map[addressType]] = component.short_name;
+            google.maps.event.addListener(
+                gPlace,
+                'place_changed',
+                function () {
+                    let place = gPlace.getPlace();
+                    let new_address = clonedeep(empty_address);
+                    search = '';
+
+                    for (let component of place.address_components) {
+                        const addressType = component.types[0];
+                        if (component_map[addressType]) {
+                            new_address[component_map[addressType]] = component.short_name;
+                        }
                     }
-                }
 
-                address = new_address;
-            }
-        );    
+                    address = new_address;
+                }
+            );
+        }
     })
 
 </script>
 
-<div style="margin-bottom: 4px;">
+<div >
     <div class="standard-input-label" style="display: flex; justify-content: space-between">
         {#if label}
         <label for={name}>{label}
