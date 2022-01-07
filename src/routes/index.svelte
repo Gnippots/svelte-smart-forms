@@ -1,10 +1,5 @@
 <script>
-    import Form from '$lib/Form.svelte';
-    import TextInput from '$lib//TextInput.svelte';
-    import NumberInput from '$lib//NumberInput.svelte';
-    import Dropdown from '$lib/Dropdown.svelte';
-    import DatePicker from '$lib/DatePicker.svelte';
-    import EmailInput from '$lib/EmailInput.svelte';
+    import {Form, TextInput, NumberInput, Dropdown, EmailInput} from '$lib';
     import { createFormValidator } from '$lib/FormValidator';
 
 
@@ -47,6 +42,14 @@
             form_validator={form_validator}>
         </Dropdown>
 
+        <EmailInput
+            name={'email'}
+            label={'Email'}
+            bind:value={form.email}
+            required={true}
+            form_validator={form_validator}>
+        </EmailInput>
+
         <button>Submit</button>
 
         <table>
@@ -63,6 +66,11 @@
             <tr>
                 <td>Dropdown: </td>
                 <td>{form.dropdown} </td>
+            </tr>
+
+            <tr>
+                <td>Email: </td>
+                <td>{form.email} </td>
             </tr>
 
             <tr>
