@@ -1,0 +1,32 @@
+.smart-form-input {
+    margin-bottom: 4px;
+}
+
+.input-group .smart-form-input {
+  flex: 1;
+  margin-bottom:0;
+}
+
+  .input-group .smart-form-input input{
+      height: calc(1.47em + 1rem + 2px);
+      padding: 0.5rem 0.875rem;
+  }
+
+.smart-form-input input, select, textarea {
+  width: 100%;
+  background: transparent;
+  border-radius: 2px;
+  padding-left: 5px;
+  border: 1px solid #dcdcdc;
+  height: calc(1em + 1rem + 2px);
+  font-weight: 400;
+  color: #495057;
+  font-size: 13px;
+  line-height: 1.47;
+}
+
+.smart-form-input .error-message {
+    color: red;
+    font-size:10px;
+    margin:0;
+}
