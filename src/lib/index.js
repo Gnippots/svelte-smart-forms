@@ -12,4 +12,21 @@ import PhoneInput from './PhoneInput.svelte';
 import TextArea from './TextArea.svelte';
 import TextInput from './TextInput.svelte';
 
-export {Form, AddressField, BaseInput, Checkbox, DatePicker, Dropdown, EmailInput, FieldErrors, NumberInput, PasswordInput, PhoneInput, TextArea, TextInput};
+import {createFormValidator} from './FormValidator.js';
+
+export {
+    Form, 
+    AddressField, 
+    BaseInput, 
+    Checkbox, 
+    DatePicker, 
+    Dropdown, 
+    EmailInput, 
+    FieldErrors, 
+    NumberInput, 
+    PasswordInput, 
+    PhoneInput, 
+    TextArea, 
+    TextInput,
+    createFormValidator
+};

@@ -1,7 +1,18 @@
 <script>
-    import {Form, TextInput, NumberInput, Dropdown, EmailInput, AddressField, Checkbox, DatePicker, PasswordInput, PhoneInput, TextArea} from '$lib';
-    import { createFormValidator } from '$lib/FormValidator';
-
+    import {
+        Form, 
+        TextInput, 
+        NumberInput, 
+        Dropdown, 
+        EmailInput, 
+        AddressField, 
+        Checkbox, 
+        DatePicker, 
+        PasswordInput, 
+        PhoneInput, 
+        TextArea, 
+        createFormValidator
+    } from '$lib';
 
     const form_validator = createFormValidator();
 
