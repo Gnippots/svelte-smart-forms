@@ -1,4 +1,5 @@
 .smart-form-input {
+    margin-top:20px;
     margin-bottom: 4px;
 }
 
@@ -7,12 +8,12 @@
   margin-bottom:0;
 }
 
-  .input-group .smart-form-input input{
-      height: calc(1.47em + 1rem + 2px);
-      padding: 0.5rem 0.875rem;
-  }
+.input-group .smart-form-input input{
+    height: calc(1.47em + 1rem + 2px);
+    padding: 0.5rem 0.875rem;
+}
 
-.smart-form-input input, select, textarea {
+.smart-form-input input[type=text], input[type=password], input[type=email], input[type=number], select, textarea {
   width: 100%;
   background: transparent;
   border-radius: 2px;
