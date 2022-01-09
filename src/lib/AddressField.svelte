@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte';
-    import {BaseInput, TextInput, Dropdown} from './';
+    import {BaseInput, TextInput, Dropdown, FieldErrors} from './';
     import clonedeep from 'lodash.clonedeep';
     
     export let address = {
@@ -127,11 +127,13 @@
 
 </script>
 
-<div>
-
-    <pre>{JSON.stringify(address)}</pre>
-    
-    <div class="standard-input-label" style="display: flex; justify-content: space-between">
+<BaseInput
+    name={name}
+    bind:value={search}
+    form_validator={form_validator}
+    on_change={on_change}
+>
+    <div class="standard-input-label" style="display: flex; justify-content: space-between" slot="label">
         {#if label}
         <label for={name}>{label}
             {#if required}
@@ -141,122 +143,114 @@
         {/if}
         <button type="button" class="cursor-pointer" on:click={() => {show_full_address = !show_full_address }}> Show full address</button>
     </div>
-
-    <BaseInput
-        name={name}
-        bind:value={search}
-        form_validator={form_validator}
-        on_change={on_change}
-    >
-        <input
-            bind:this={element}
-            class={classes}
-            placeholder="Search..."
-            name="{name}"
-            bind:value="{search}"
-            on:keyup={all_changes}
-        />
-    </BaseInput>
-
-    {#if !show_full_address}
-    <div>
-        {#if incomplete}
-        <p class="smart-form-formatted-address">Address is incomplete</p>
-        {:else}
-        <p class="">{formatted_address}</p>
-        {/if}
-    </div>
-    {/if}
-
-    {#if show_full_address}
-    <div>
-        {#if mailing}        
-
-        <TextInput 
-            name={name+'_name'} 
-            label={'Name'} 
-            bind:value={address.first_name} 
-            form_validator={form_validator}
-            required={mailing && (required.name || required.all)}
-        ></TextInput>
-
-        <TextInput 
-            name={name+'_role'} 
-            label={'Role'} 
-            bind:value={address.role} 
-            form_validator={form_validator}
-            required={mailing && (required.role || required.all)}
-        ></TextInput>
-
-        <TextInput 
-            name={name+'_company_name'} 
-            label={'Company Name'} 
-            bind:value={address.company_name} 
-            form_validator={form_validator}
-            required={mailing && (required.company_name || required.all)}
-        ></TextInput>
-        
-        {/if}
     
-        <TextInput 
-            name={name+'_unit_number'} 
-            label={'Unit #'} 
-            bind:value={address.unit_number} 
-            form_validator={form_validator}
-        ></TextInput>
-    
-        <TextInput 
-            name={name+'_street_number'} 
-            label={'Street #'} 
-            bind:value={address.street_number}
-            form_validator={form_validator}
-            required={required.street_number || required.all}
-        ></TextInput>
-    
-        <TextInput 
-            name={name+'_street_name'} 
-            label={'Street Name'} 
-            bind:value={address.street_name} 
-            form_validator={form_validator}
-            required={required.street_name || required.all}
-        ></TextInput>
-            
-        <TextInput 
-            name={name+'_city'} 
-            label={'City'} 
-            bind:value={address.city} 
-            form_validator={form_validator}
-            required={required.city || required.all}
-        ></TextInput>
-            
-        <Dropdown 
-            name={name+'_state'}
-            label={'State'}
-            options={['NSW', 'VIC', 'QLD', 'NT', 'WA', 'SA', 'ACT', 'TAS']}
-            bind:value={address.state}
-            form_validator={form_validator}
-            required={required.state || required.all}
-        ></Dropdown>
-            
-        <TextInput 
-            name={name+'_postcode'} 
-            label={'Postcode'} 
-            bind:value={address.postcode}
-            form_validator={form_validator}
-            required={required.postcode || required.all}
-        ></TextInput>
+    <input
+        bind:this={element}
+        class={classes}
+        placeholder="Search..."
+        name="{name}"
+        bind:value="{search}"
+        on:keyup={all_changes}
+    />
+</BaseInput>
 
-        <Dropdown 
-            name={name+'_country'}
-            label={'Country'}
-            options={['AU']}                     
-            bind:value={address.country}
-            form_validator={form_validator}
-            required={required.city || required.all}
-        ></Dropdown>
-    </div>
+{#if !show_full_address}
+<div>
+    {#if incomplete}
+    <p class="smart-form-formatted-address">Address is incomplete</p>
+    {:else}
+    <p class="">{formatted_address}</p>
     {/if}
 </div>
+{/if}
 
+{#if show_full_address}
+<div>
+    {#if mailing}        
+
+    <TextInput 
+        name={name+'_name'} 
+        label={'Name'} 
+        bind:value={address.first_name} 
+        form_validator={form_validator}
+        required={mailing && (required.name || required.all)}
+    ></TextInput>
+
+    <TextInput 
+        name={name+'_role'} 
+        label={'Role'} 
+        bind:value={address.role} 
+        form_validator={form_validator}
+        required={mailing && (required.role || required.all)}
+    ></TextInput>
+
+    <TextInput 
+        name={name+'_company_name'} 
+        label={'Company Name'} 
+        bind:value={address.company_name} 
+        form_validator={form_validator}
+        required={mailing && (required.company_name || required.all)}
+    ></TextInput>
+    
+    {/if}
+
+    <TextInput 
+        name={name+'_unit_number'} 
+        label={'Unit #'} 
+        bind:value={address.unit_number} 
+        form_validator={form_validator}
+    ></TextInput>
+
+    <TextInput 
+        name={name+'_street_number'} 
+        label={'Street #'} 
+        bind:value={address.street_number}
+        form_validator={form_validator}
+        required={required.street_number || required.all}
+    ></TextInput>
+
+    <TextInput 
+        name={name+'_street_name'} 
+        label={'Street Name'} 
+        bind:value={address.street_name} 
+        form_validator={form_validator}
+        required={required.street_name || required.all}
+    ></TextInput>
+        
+    <TextInput 
+        name={name+'_city'} 
+        label={'City'} 
+        bind:value={address.city} 
+        form_validator={form_validator}
+        required={required.city || required.all}
+    ></TextInput>
+        
+    <Dropdown 
+        name={name+'_state'}
+        label={'State'}
+        options={['NSW', 'VIC', 'QLD', 'NT', 'WA', 'SA', 'ACT', 'TAS']}
+        bind:value={address.state}
+        form_validator={form_validator}
+        required={required.state || required.all}
+    ></Dropdown>
+        
+    <TextInput 
+        name={name+'_postcode'} 
+        label={'Postcode'} 
+        bind:value={address.postcode}
+        form_validator={form_validator}
+        required={required.postcode || required.all}
+    ></TextInput>
+
+    <Dropdown 
+        name={name+'_country'}
+        label={'Country'}
+        options={['AU']}                     
+        bind:value={address.country}
+        form_validator={form_validator}
+        required={required.city || required.all}
+    ></Dropdown>
+</div>
+{/if}
 
 <style></style>

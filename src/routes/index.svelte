@@ -77,7 +77,7 @@
             form_validator={form_validator}
         >
             <span slot="label">
-                Checkbox Label is a slot
+                Checkbox
             </span>
         </Checkbox>
 
