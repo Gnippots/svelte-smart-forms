@@ -16,6 +16,7 @@
     name={name}
     required={required}
     form_validator={form_validator}
+    bind:field_validator={field_validator}
     on_change={on_change}
 >
 <div slot="input">
