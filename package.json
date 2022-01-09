@@ -1,6 +1,8 @@
 {
-  "name": "svelte-smart-forms",
+  "name": "@gnippots/svelte-smart-forms",
   "version": "0.0.1",
+  "author": "Gnippots",
+  "description": "",
   "scripts": {
     "dev": "svelte-kit dev",
     "build": "svelte-kit build",
