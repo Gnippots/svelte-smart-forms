@@ -6,6 +6,7 @@
         Dropdown, 
         EmailInput, 
         AddressField, 
+        FieldErrors,
         Checkbox, 
         DatePicker, 
         PasswordInput, 
@@ -65,7 +66,7 @@
             name={'address'}
             label={'Address'}
             bind:address={form.address}
-            required={true}
+            required={{'all': true}}
             form_validator={form_validator}>
         </AddressField>
 
@@ -84,7 +85,7 @@
             name='datepicker' 
             bind:value={form.datepicker} 
             form_validator={form_validator} 
-            required={true}>
+        >
         </DatePicker>
 
         <PasswordInput 
@@ -107,47 +108,25 @@
         <TextArea 
             name={'textarea'} 
             label={'Text Area'} 
-            bind:value="{form.textarea}" 
+            bind:value={form.textarea}
             required={true}
             rows={3}
             form_validator={form_validator}>
         </TextArea>
 
-        <button>Submit</button>
-
-        <table>
-            <tr>
-                <td>Text: </td>
-                <td>{form.text} </td>
-            </tr>
-
-            <tr>
-                <td>Number: </td>
-                <td>{form.number} </td>
-            </tr>
-
-            <tr>
-                <td>Dropdown: </td>
-                <td>{form.dropdown} </td>
-            </tr>
-
-            <tr>
-                <td>Email: </td>
-                <td>{form.email} </td>
-            </tr>
-
-            <tr>
-                <td>Checkbox: </td>
-                <td>{form.checkbox} </td>
-            </tr>
-
-            <tr>
-                <td>Form Valid: </td>
-                <td>{$form_validator.valid} </td>
-            </tr>
+        <hr/>
+        <p>Error Message component</p>
+        <FieldErrors
             
+        >
 
+        </FieldErrors>
 
-        </table>
+        <hr/>
+
+        <button>Submit</button>
     </Form>
 </div>
+
+<pre>{JSON.stringify($form_validator, null, 4)}</pre>
+<pre>{JSON.stringify(form, null, 4)}</pre>

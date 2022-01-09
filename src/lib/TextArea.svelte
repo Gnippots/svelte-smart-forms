@@ -10,7 +10,6 @@
     export let classes = 'standard-input'
     export let on_change = () => {};
     export let placeholder = '';
-    let blurred = false;
     let field_validator;
                 
 </script>
@@ -23,15 +22,15 @@
     bind:field_validator={field_validator}
     form_validator={form_validator}
     on_change={on_change}
-    blurred={blurred}
 
 >
     <textarea
         slot="input"
         style="height: auto;"
-        on:blur={() => {blurred = true;}}
+        on:blur={() => {field_validator.blur()}}
         rows={rows}
         required={required}
+        bind:value={value}
         disabled={disabled}
         placeholder={placeholder}
         name={name}

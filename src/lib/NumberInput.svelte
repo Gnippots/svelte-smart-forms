@@ -12,7 +12,6 @@
     export let mask = null;
     export let min = null;
     export let max = null;
-    let blurred = false;
     let field_validator;
                 
 </script>
@@ -24,8 +23,6 @@
     bind:field_validator={field_validator}
     bind:value={value}
     form_validator={form_validator}
-    blurred={blurred}
-
 >
 <div slot="input">
     <input

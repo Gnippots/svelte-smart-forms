@@ -11,7 +11,6 @@
     export let on_change = () => {};
     export let on_keyup = () => {};
     export let placeholder = '';
-    let blurred = false;
     let field_validator;
 
     let validate_email = () => {
@@ -33,7 +32,6 @@
     form_validator={form_validator}
     show_validation={show_validation}
     on_change={on_change}
-    blurred={blurred}
     validation_functions={[validate_email]}
 >
     <input slot="input"
