@@ -95,6 +95,15 @@
             required={true} 
             form_validator={form_validator}>
         </PasswordInput>
+        
+        <PasswordInput 
+            name={'password2'} 
+            label={'Confirm Password'} 
+            confirm_against={form.password}
+            bind:value={form.password2} 
+            required={true} 
+            form_validator={form_validator}>
+        </PasswordInput>
 
         <PhoneInput 
             name={'phone'} 

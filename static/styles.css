@@ -3,6 +3,11 @@
     margin-bottom: 4px;
 }
 
+.input-group {
+    display: flex;
+    flex-wrap:nowrap;
+}
+
 .input-group .smart-form-input {
   flex: 1;
   margin-bottom:0;
@@ -35,4 +40,13 @@
 .smart-form-formatted-address {
     margin: 0;
     font-size: 0.78rem;
+}
+
+.password-toggle {
+  font-size: .7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dcdcdc;
+  cursor:pointer;
 }
