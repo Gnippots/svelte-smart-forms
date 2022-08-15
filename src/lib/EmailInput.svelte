@@ -7,7 +7,7 @@
     export let disabled = false;
     export let show_validation = true;
     export let form_validator = null;
-    export let classes = 'standard-input'
+    export let classes = 'smart-form-input';
     export let on_change = () => {};
     export let on_keyup = () => {};
     export let placeholder = '';
@@ -25,6 +25,7 @@
 
 <BaseInput
     label={label}
+    classes={classes}
     required={required}
     name={name}
     bind:value={value}
@@ -34,7 +35,8 @@
     on_change={on_change}
     validation_functions={[validate_email]}
 >
-    <input slot="input"
+    <input 
+        slot="input"
         on:blur={() => {field_validator.blur()}}
         required={required}
         on:keyup={on_keyup}

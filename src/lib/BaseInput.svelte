@@ -86,7 +86,7 @@
 
     <slot name="label">
         {#if label != ''}
-            <label for="{name}" class="standard-input-label">{label}{#if required}<span ng-if="$ctrl.required" style="color: #ce0262">*</span>{/if}</label>
+            <label for="{name}" class="smart-form-input-label">{label}{#if required}<span ng-if="$ctrl.required" style="color: #ce0262">*</span>{/if}</label>
         {/if}
     </slot>    
 

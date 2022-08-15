@@ -105,15 +105,6 @@
             form_validator={form_validator}>
         </PasswordInput>
 
-        <PhoneInput 
-            name={'phone'} 
-            label={'Phone'}
-            bind:value={form.phone}
-            bind:area_code={form.area_code}
-            required={true} 
-            form_validator={form_validator}>
-        </PhoneInput>
-
         <TextArea 
             name={'textarea'} 
             label={'Text Area'} 
@@ -122,6 +113,14 @@
             rows={3}
             form_validator={form_validator}>
         </TextArea>
+
+        <PhoneInput 
+            name={'phone'} 
+            label={'Phone'}
+            bind:value={form.phone}
+            required={true} 
+            form_validator={form_validator}>
+        </PhoneInput>
 
         <hr/>
         <p>Error Message component</p>

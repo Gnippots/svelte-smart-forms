@@ -7,7 +7,7 @@
     export let name = '';
     export let disabled = false;
     export let form_validator = null;
-    export let classes = 'standard-input'
+    export let classes = 'smart-form-input';
     export let options = [];
     export let option_groups = [];
     export let on_change = () => {};
@@ -33,8 +33,8 @@
     if (option_groups.length > 0) {
         option_groups.forEach(o => {
             formatted_option_groups.push({
-                'label': group.label,
-                'options': format_options(group.options)
+                'label': o.label,
+                'options': format_options(o.options)
             })
         })
     } else {
@@ -49,6 +49,7 @@
     name={name}
     bind:value={value}
     form_validator={form_validator}
+    classes={classes}
     on_change={on_change}
 >
 <div style="margin-bottom: 4px;" slot="input">
@@ -67,7 +68,7 @@
 
         {#each formatted_option_groups as group}
         <optgroup label={group.label}>
-            {#each group_outros.options as option}
+            {#each group.options as option}
             <option value={option.value}>{option.name}</option>
             {/each}
         </optgroup>

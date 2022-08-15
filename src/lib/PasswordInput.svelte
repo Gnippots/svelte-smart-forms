@@ -6,7 +6,7 @@
     export let name = '';
     export let disabled = false;
     export let form_validator = null;
-    export let classes = 'standard-input'
+    export let classes = 'smart-form-input'
     export let on_change = () => {};
     export let placeholder = '';
     export let confirm_against = '';

@@ -10,7 +10,7 @@
     export let form_validator = null;
     export let required = {};
     export let on_change = () => {};
-    export let classes = 'standard-input';
+    export let classes = 'smart-form-input';
     export let name = 'null';
     export let show_search = true;
     export let mailing = false;
@@ -133,7 +133,7 @@
     form_validator={form_validator}
     on_change={on_change}
 >
-    <div class="standard-input-label" style="display: flex; justify-content: space-between" slot="label">
+    <div class="smart-form-input-label" style="display: flex; justify-content: space-between" slot="label">
         {#if label}
         <label for={name}>{label}
             {#if required}
