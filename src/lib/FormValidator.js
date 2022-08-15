@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 
-export function createFormValidator(id) {
+export function createFormValidator() {
 
     const store = writable({
         fields: {},
