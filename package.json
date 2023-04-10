@@ -1,6 +1,7 @@
 {
-	"name": "new-smart-forms",
-	"version": "0.0.1",
+	"name": "@gnippots/svelte-smart-forms",
+	"version": "0.0.3",
+	"author": "Gnippots",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build && npm run package",
