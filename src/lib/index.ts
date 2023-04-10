@@ -1,7 +1,7 @@
 import Form from './Form.svelte';
 import AddressField from './AddressField.svelte';
 import BaseInput from './BaseInput.svelte';
-import Checkbox from './Checkbox.svelte';
+import CheckBox from './CheckBox.svelte';
 import DatePicker from './DatePicker.svelte';
 import Dropdown from './Dropdown.svelte';
 import EmailInput from './EmailInput.svelte';
@@ -18,7 +18,7 @@ export {
     Form, 
     AddressField, 
     BaseInput, 
-    Checkbox, 
+    CheckBox, 
     DatePicker, 
     Dropdown, 
     EmailInput, 
