@@ -9,13 +9,13 @@
     export let form_validator: FormValidator | null = null;
     export let on_change = () => {};
     let field_validator: FieldValidator;
-
 </script>
 
 <BaseInput
     label={label}
     name={name}
     required={required}
+    bind:value={value}
     form_validator={form_validator}
     bind:field_validator={field_validator}
     on_change={on_change}
@@ -34,6 +34,7 @@
         />
         
         <label for={name} class="custom-control-label">
+            {value}
             <slot name="label"></slot>
         </label>
     </div>

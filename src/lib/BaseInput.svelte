@@ -50,7 +50,7 @@
       field_validator.valid = true;
 
       // Check if the field is required
-      if (required && (value === null || value === '')) {
+      if (required && (value === null || value === '' || value === false)) {
         field_validator.add_error('required', 'This is required');
       }
 
@@ -80,7 +80,7 @@
     }
   
     onMount(async () => {
-      if (form_validator) {
+      if ($form_validator) {
         field_validator.initial_value = value;
         $form_validator.fields[name] = field_validator;
       }
@@ -94,7 +94,7 @@
   <div class={classes}>
   <slot name="label">
     {#if label != ''}
-      <label for="{name}" class="smart-form-input-label">{label}{#if required}<span ng-if="$ctrl.required" style="color: #ce0262">*</span>{/if}</label>
+      <label for="{name}" class="smart-form-input-label">{label}{#if required}<span style="color: #ce0262">*</span>{/if}</label>
     {/if}
   </slot>
 
