@@ -1,4 +1,5 @@
-<script>
+<script lang="ts">
+    import type { FieldValidator, FormValidator } from './Interfaces';
     import BaseInput from '$lib/BaseInput.svelte';
     export let label = '';
     export let value = '';
@@ -6,12 +7,12 @@
     export let name = '';
     export let disabled = false;
     export let show_validation = true;
-    export let form_validator = null;
+    export let form_validator: FormValidator | null = null;
     export let classes = 'smart-form-input';
     export let on_change = () => {};
     export let on_keyup = () => {};
     export let placeholder = '';
-    let field_validator;
+    let field_validator: FieldValidator;
                 
 </script>
 

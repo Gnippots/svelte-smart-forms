@@ -12,7 +12,7 @@ import PhoneInput from './PhoneInput.svelte';
 import TextArea from './TextArea.svelte';
 import TextInput from './TextInput.svelte';
 
-import {createFormValidator} from './FormValidator.js';
+import {createFormValidator} from './FormValidator';
 
 export {
     Form, 

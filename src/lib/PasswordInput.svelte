@@ -1,17 +1,18 @@
-<script>
+<script lang="ts">
     import BaseInput from '$lib/BaseInput.svelte';
+    import type { FieldValidator, FormValidator } from './Interfaces';
     export let label = '';
     export let value = '';
     export let required = false;
     export let name = '';
     export let disabled = false;
-    export let form_validator = null;
+    export let form_validator: FormValidator | null = null;
     export let classes = 'smart-form-input'
     export let on_change = () => {};
     export let placeholder = '';
     export let confirm_against = '';
-    let field_validator;
-    let show_password;
+    let field_validator: FieldValidator;
+    let show_password: boolean;
 
     function toggle_show() {
         show_password = !show_password;
@@ -28,6 +29,7 @@
 <BaseInput
     label={label}
     name={name}
+    classes={classes}
     required={required}
     bind:value={value}
     bind:field_validator={field_validator}

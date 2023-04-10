@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import {
         Form, 
         TextInput, 
@@ -17,7 +17,19 @@
 
     const form_validator = createFormValidator();
 
-    let form = {};
+    const form: {
+        text?: string;
+        number?: number;
+        dropdown?: string;
+        email?: string;
+        address?: any;
+        checkbox?: boolean;
+        datepicker?: Date;
+        password?: string;
+        password2?: string;
+        textarea?: string;
+        phone?: string;
+    } = {};
 
     let submit = () => {
         console.log('submitted');
@@ -61,14 +73,6 @@
             required={true}
             form_validator={form_validator}>
         </EmailInput>
-
-        <AddressField
-            name={'address'}
-            label={'Address'}
-            bind:address={form.address}
-            required={{'all': true}}
-            form_validator={form_validator}>
-        </AddressField>
 
         <Checkbox
             name={'checkbox'}

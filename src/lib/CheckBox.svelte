@@ -1,13 +1,14 @@
-<script>
+<script lang="ts">
     import BaseInput from '$lib/BaseInput.svelte';
+    import type { FieldValidator, FormValidator } from './Interfaces';
     export let label = '';
     export let value = false;
     export let required = false;
     export let name = '';
     export let disabled = false;
-    export let form_validator = null;
+    export let form_validator: FormValidator | null = null;
     export let on_change = () => {};
-    let field_validator;
+    let field_validator: FieldValidator;
 
 </script>
 
