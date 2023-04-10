@@ -5,9 +5,8 @@
         NumberInput, 
         Dropdown, 
         EmailInput, 
-        AddressField, 
         FieldErrors,
-        Checkbox, 
+        CheckBox, 
         DatePicker, 
         PasswordInput, 
         PhoneInput, 
@@ -74,7 +73,7 @@
             form_validator={form_validator}>
         </EmailInput>
 
-        <Checkbox
+        <CheckBox
             name={'checkbox'}
             required={true}
             bind:value={form.checkbox}
@@ -83,7 +82,7 @@
             <span slot="label">
                 Checkbox
             </span>
-        </Checkbox>
+        </CheckBox>
 
         <DatePicker 
             name='datepicker' 
