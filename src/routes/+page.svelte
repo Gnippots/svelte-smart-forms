@@ -13,6 +13,7 @@
         TextArea, 
         createFormValidator
     } from '$lib';
+    import { SvelteToast } from '@zerodevx/svelte-toast'
 
     const form_validator = createFormValidator();
 
@@ -139,5 +140,7 @@
     </Form>
 </div>
 
+
 <pre>{JSON.stringify($form_validator, null, 4)}</pre>
 <pre>{JSON.stringify(form, null, 4)}</pre>
+<SvelteToast />

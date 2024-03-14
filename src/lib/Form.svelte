@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { FormValidator } from './Interfaces';
-    import { toast_error } from '$lib/toast_themes';
+    import { toast_error } from '../lib/toast_themes';
   
     export let validator: FormValidator | null = null;
     export let onSubmit: (() => void) | null = null;
@@ -30,7 +30,10 @@
       if (!onSubmit) {
         return;
       }
+      console.log('z')
       if (!$validator.valid) {
+      console.log('x')
+        console.log(typeof(toast_error))
         toast_error('Some fields were missing or incorrect');
         return;
       }
