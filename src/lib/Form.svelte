@@ -1,22 +1,22 @@
 <script lang="ts">
-    import type { FormValidator } from './Interfaces';
+    import type { FormState } from './Interfaces';
     import { toast_error } from '../lib/toast_themes';
   
-    export let validator: FormValidator | null = null;
+    export let formState: FormState | null = null;
     export let onSubmit: (() => void) | null = null;
   
     const validate = () => {
-      if (!$validator) return;
+      if (!$formState) return;
   
-      $validator.valid = true;
+      $formState.valid = true;
   
-      for (const [, field] of Object.entries($validator.fields)) {
+      for (const [, field] of Object.entries($formState.fields)) {
         if (!field.valid) {
-          $validator.valid = false;
+          $formState.valid = false;
         }
       }
   
-      $validator.customRules.forEach((rule) => {
+      $formState.customRules.forEach((rule) => {
         rule();
       });
     };
@@ -24,14 +24,14 @@
     const submitHandler = (event: Event) => {
       event.preventDefault();
   
-      if (!$validator) return;
+      if (!$formState) return;
   
-      $validator.submitted = true;
+      $formState.submitted = true;
       if (!onSubmit) {
         return;
       }
       console.log('z')
-      if (!$validator.valid) {
+      if (!$formState.valid) {
       console.log('x')
         console.log(typeof(toast_error))
         toast_error('Some fields were missing or incorrect');
@@ -42,9 +42,9 @@
     };
   
     $: {
-      if (validator) {
+      if (formState) {
         validate();
-        $validator?.fields;
+        $formState?.fields;
       }
     }
   </script>

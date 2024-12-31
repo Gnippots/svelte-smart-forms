@@ -7,7 +7,7 @@
         'formatted': ''
     };
     export let label = 'Address';
-    export let form_validator = null;
+    export let formState = null;
     export let required = {};
     export let on_change = () => {};
     export let classes = 'smart-form-input';
@@ -93,7 +93,7 @@
         
         all_changes = () => {
             on_change();
-            //field_validator.dirty = value == field_validator.initial_value;
+            //fieldState.dirty = value == fieldState.initial_value;
         }
 
         if (typeof google !== 'undefined') {
@@ -130,7 +130,7 @@
 <BaseInput
     name={name}
     bind:value={search}
-    form_validator={form_validator}
+    formState={formState}
     on_change={on_change}
 >
     <div class="smart-form-input-label" style="display: flex; justify-content: space-between" slot="label">
@@ -172,7 +172,7 @@
         name={name+'_name'} 
         label={'Name'} 
         bind:value={address.first_name} 
-        form_validator={form_validator}
+        formState={formState}
         required={mailing && (required.name || required.all)}
     ></TextInput>
 
@@ -180,7 +180,7 @@
         name={name+'_role'} 
         label={'Role'} 
         bind:value={address.role} 
-        form_validator={form_validator}
+        formState={formState}
         required={mailing && (required.role || required.all)}
     ></TextInput>
 
@@ -188,7 +188,7 @@
         name={name+'_company_name'} 
         label={'Company Name'} 
         bind:value={address.company_name} 
-        form_validator={form_validator}
+        formState={formState}
         required={mailing && (required.company_name || required.all)}
     ></TextInput>
     
@@ -198,14 +198,14 @@
         name={name+'_unit_number'} 
         label={'Unit #'} 
         bind:value={address.unit_number} 
-        form_validator={form_validator}
+        formState={formState}
     ></TextInput>
 
     <TextInput 
         name={name+'_street_number'} 
         label={'Street #'} 
         bind:value={address.street_number}
-        form_validator={form_validator}
+        formState={formState}
         required={required.street_number || required.all}
     ></TextInput>
 
@@ -213,7 +213,7 @@
         name={name+'_street_name'} 
         label={'Street Name'} 
         bind:value={address.street_name} 
-        form_validator={form_validator}
+        formState={formState}
         required={required.street_name || required.all}
     ></TextInput>
         
@@ -221,7 +221,7 @@
         name={name+'_city'} 
         label={'City'} 
         bind:value={address.city} 
-        form_validator={form_validator}
+        formState={formState}
         required={required.city || required.all}
     ></TextInput>
         
@@ -230,7 +230,7 @@
         label={'State'}
         options={['NSW', 'VIC', 'QLD', 'NT', 'WA', 'SA', 'ACT', 'TAS']}
         bind:value={address.state}
-        form_validator={form_validator}
+        formState={formState}
         required={required.state || required.all}
     ></Dropdown>
         
@@ -238,7 +238,7 @@
         name={name+'_postcode'} 
         label={'Postcode'} 
         bind:value={address.postcode}
-        form_validator={form_validator}
+        formState={formState}
         required={required.postcode || required.all}
     ></TextInput>
 
@@ -247,7 +247,7 @@
         label={'Country'}
         options={['AU']}                     
         bind:value={address.country}
-        form_validator={form_validator}
+        formState={formState}
         required={required.city || required.all}
     ></Dropdown>
 </div>

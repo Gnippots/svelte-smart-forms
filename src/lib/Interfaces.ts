@@ -9,7 +9,7 @@ export interface Field {
 
 export type Error = Record<string, string>;
 
-export interface FormValidatorStore {
+export interface FormStateStore {
     fields: Record<string, Field>;
     errors: Record<string, Error>;
     customRules: Array<() => void>;
@@ -18,13 +18,13 @@ export interface FormValidatorStore {
     submitted: boolean;
 }
 
-export interface FormValidator {
-    subscribe: Writable<FormValidatorStore>['subscribe'];
-    set: Writable<FormValidatorStore>['set'];
-    update: Writable<FormValidatorStore>['update'];
+export interface FormState {
+    subscribe: Writable<FormStateStore>['subscribe'];
+    set: Writable<FormStateStore>['set'];
+    update: Writable<FormStateStore>['update'];
 }
 
-export interface FieldValidator {
+export interface FieldState {
   dirty: boolean;
   valid: boolean;
   blurred: boolean;

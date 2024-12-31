@@ -1,20 +1,20 @@
 <!-- ErrorMessage.svelte -->
 <script lang="ts">
-    import type { FormValidator, Field } from './Interfaces';
+    import type { FormState, Field } from './Interfaces';
   
-    export let form_validator: FormValidator | null = null;
+    export let formState: FormState | null = null;
     export let field: keyof Field | null = null;
   </script>
   
-  {#if $form_validator && field}
+  {#if $formState && field}
     <p class="error-message">
     {#if 
-        $form_validator.fields[field] &&
-        Object.keys($form_validator.fields[field].errors).length !== 0 && 
-        ($form_validator.fields[field].blurred || $form_validator.submitted) 
+        $formState.fields[field] &&
+        Object.keys($formState.fields[field].errors).length !== 0 && 
+        ($formState.fields[field].blurred || $formState.submitted) 
     }
         
-        {$form_validator.fields[field].errors[Object.keys($form_validator.fields[field].errors)[0]]}
+        {$formState.fields[field].errors[Object.keys($formState.fields[field].errors)[0]]}
     {/if}
   </p>
   

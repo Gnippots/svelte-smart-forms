@@ -1,8 +1,8 @@
 import { writable } from 'svelte/store';
-import type { FormValidator, FormValidatorStore } from './Interfaces';
+import type { FormState, FormStateStore } from './Interfaces';
 
-export function createFormValidator(): FormValidator {
-  const store = writable<FormValidatorStore>({
+export function createFormState(): FormState {
+  const store = writable<FormStateStore>({
     fields: {},
     errors: {},
     customRules: [],

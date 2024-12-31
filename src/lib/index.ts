@@ -13,7 +13,7 @@ import TextArea from './TextArea.svelte';
 import TextInput from './TextInput.svelte';
 import {toast_success, toast_error, toast_warning} from './toast_themes';
 
-import {createFormValidator} from './FormValidator';
+import {createFormState} from './FormState';
 
 export {
     Form, 
@@ -29,7 +29,7 @@ export {
     PhoneInput, 
     TextArea, 
     TextInput,
-    createFormValidator,
+    createFormState,
     toast_success,
     toast_error,
     toast_warning

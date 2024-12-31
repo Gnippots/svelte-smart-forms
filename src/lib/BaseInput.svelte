@@ -2,7 +2,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import FieldErrors from '$lib/FieldErrors.svelte';
-    import type { FormValidator, FieldValidator } from './Interfaces';
+    import type { FormState, FieldState } from './Interfaces';
   
     export let label = '';
     export let value: any = null;
@@ -12,46 +12,46 @@
     export let name = '';
     export let show_validation = true;
     export let placeholder = '';
-    export let form_validator: FormValidator | null = null;
+    export let formState: FormState | null = null;
     export let on_change: () => void = () => {};
     export let validation_functions: Array<() => void> = [];
   
     let all_changes = () => {};
   
-    export let field_validator: FieldValidator = {
+    export let fieldState: FieldState = {
       dirty: false,
       valid: false,
       blurred: false,
       initial_value: null,
       errors: {},
       add_error: (error: string, message: string) => {
-        field_validator.valid = false;
-        field_validator.errors[error] = message;
+        fieldState.valid = false;
+        fieldState.errors[error] = message;
       },
       remove_error: (error: string) => {
-        delete field_validator.errors[error];
+        delete fieldState.errors[error];
   
-        if (Object.keys(field_validator.errors).length === 0) {
-          field_validator.valid = true;
+        if (Object.keys(fieldState.errors).length === 0) {
+          fieldState.valid = true;
         }
       },
       blur: () => {
-        field_validator.blurred = true;
+        fieldState.blurred = true;
       },
     };
   
     function validate(value: any) {
-      if (!$form_validator) {
+      if (!$formState) {
         return;
       }
 
-      // Reset the field validator
-      field_validator.errors = {};
-      field_validator.valid = true;
+      // Reset the field formState
+      fieldState.errors = {};
+      fieldState.valid = true;
 
       // Check if the field is required
       if (required && (value === null || value === '' || value === false)) {
-        field_validator.add_error('required', 'This is required');
+        fieldState.add_error('required', 'This is required');
       }
 
       // Run any validation passed from the level above
@@ -59,15 +59,15 @@
         fn();
       });
 
-      // update the form validator
-      if (field_validator.valid)  {
-        delete $form_validator.errors[name];
+      // update the form error state
+      if (fieldState.valid)  {
+        delete $formState.errors[name];
       } else {
-        $form_validator.errors[name] = field_validator.errors;
+        $formState.errors[name] = fieldState.errors;
       }
 
 
-      $form_validator.fields[name] = field_validator;
+      $formState.fields[name] = fieldState;
     }
 
   
@@ -76,13 +76,13 @@
     }
   
     $: {
-      field_validator.dirty = value == field_validator.initial_value;
+      fieldState.dirty = value === fieldState.initial_value;
     }
   
     onMount(async () => {
-      if ($form_validator) {
-        field_validator.initial_value = value;
-        $form_validator.fields[name] = field_validator;
+      if ($formState) {
+        fieldState.initial_value = value;
+        $formState.fields[name] = fieldState;
       }
   
       all_changes = () => {
@@ -101,7 +101,7 @@
   <slot name="input">
     <input
       on:keyup={all_changes}
-      on:blur={() => {field_validator.blur();}}
+      on:blur={() => {fieldState.blur();}}
       required={required}
       disabled="{disabled}"
       placeholder="{placeholder}"
@@ -114,7 +114,7 @@
   <slot name="errors">
     {#if show_validation }
       <FieldErrors
-        form_validator={form_validator}
+        formState={formState}
         field={name}
       ></FieldErrors>
     {/if}

@@ -1,13 +1,13 @@
 <script lang="ts">
     import BaseInput from '$lib/BaseInput.svelte';
-    import type { FormValidator } from './Interfaces';
+    import type { FormState } from './Interfaces';
   
     export let label = '';
     export let value: string | null = '';
     export let required = false;
     export let name = '';
     export let disabled = false;
-    export let form_validator: FormValidator | null = null;
+    export let formState: FormState | null = null;
     export let classes = 'smart-form-input';
     export let options: Array<string | { value: string; name: string; disabled?: boolean }> = [];
     export let option_groups: Array<{ label: string; options: Array<string | { value: string; name: string; disabled?: boolean }> }> = [];
@@ -46,7 +46,7 @@
     required={required}
     name={name}
     bind:value={value}
-    form_validator={form_validator}
+    formState={formState}
     classes={classes}
     on_change={on_change}
   >

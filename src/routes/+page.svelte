@@ -11,11 +11,11 @@
         PasswordInput, 
         PhoneInput, 
         TextArea, 
-        createFormValidator
+        createFormState
     } from '$lib';
     import { SvelteToast } from '@zerodevx/svelte-toast'
 
-    const form_validator = createFormValidator();
+    const formState = createFormState();
 
     const form: {
         text?: string;
@@ -38,13 +38,13 @@
 </script>
 
 <div style="width: 500px">
-    <Form validator={form_validator} onSubmit={submit}>
+    <Form formState={formState} onSubmit={submit}>
         <TextInput
             name={'text'}
             label={'Text'}
             bind:value={form.text}
             required={true}
-            form_validator={form_validator}>
+            formState={formState}>
         </TextInput>
 
         <NumberInput
@@ -54,7 +54,7 @@
             label={'Number'}
             bind:value={form.number}
             required={true}
-            form_validator={form_validator}>
+            formState={formState}>
         </NumberInput>
 
         <Dropdown
@@ -63,7 +63,7 @@
             label={'Dropdown'}
             bind:value={form.dropdown}
             required={true}
-            form_validator={form_validator}>
+            formState={formState}>
         </Dropdown>
 
         <EmailInput
@@ -71,14 +71,14 @@
             label={'Email'}
             bind:value={form.email}
             required={true}
-            form_validator={form_validator}>
+            formState={formState}>
         </EmailInput>
 
         <CheckBox
             name={'checkbox'}
             required={true}
             bind:value={form.checkbox}
-            form_validator={form_validator}
+            formState={formState}
         >
             <span slot="label">
                 Checkbox
@@ -88,7 +88,7 @@
         <DatePicker 
             name='datepicker' 
             bind:value={form.datepicker} 
-            form_validator={form_validator} 
+            formState={formState} 
         >
         </DatePicker>
 
@@ -97,7 +97,7 @@
             label={'Password'} 
             bind:value={form.password} 
             required={true} 
-            form_validator={form_validator}>
+            formState={formState}>
         </PasswordInput>
         
         <PasswordInput 
@@ -106,7 +106,7 @@
             confirm_against={form.password}
             bind:value={form.password2} 
             required={true} 
-            form_validator={form_validator}>
+            formState={formState}>
         </PasswordInput>
 
         <TextArea 
@@ -115,7 +115,7 @@
             bind:value={form.textarea}
             required={true}
             rows={3}
-            form_validator={form_validator}>
+            formState={formState}>
         </TextArea>
 
         <PhoneInput 
@@ -123,13 +123,12 @@
             label={'Phone'}
             bind:value={form.phone}
             required={true} 
-            form_validator={form_validator}>
+            formState={formState}>
         </PhoneInput>
 
         <hr/>
         <p>Error Message component</p>
         <FieldErrors
-            
         >
 
         </FieldErrors>
@@ -141,6 +140,6 @@
 </div>
 
 
-<pre>{JSON.stringify($form_validator, null, 4)}</pre>
+<pre>{JSON.stringify($formState, null, 4)}</pre>
 <pre>{JSON.stringify(form, null, 4)}</pre>
 <SvelteToast />

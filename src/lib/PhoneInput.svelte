@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { FieldValidator, FormValidator } from './Interfaces';
+    import type { FieldState, FormState } from './Interfaces';
     import BaseInput from '$lib/BaseInput.svelte';
     export let label = '';
     export let value = '';
@@ -7,12 +7,12 @@
     export let name = '';
     export let disabled = false;
     export let show_validation = true;
-    export let form_validator: FormValidator | null = null;
+    export let formState: FormState | null = null;
     export let classes = 'smart-form-input';
     export let on_change = () => {};
     export let on_keyup = () => {};
     export let placeholder = '';
-    let field_validator: FieldValidator;
+    let fieldState: FieldState;
                 
 </script>
 
@@ -22,15 +22,15 @@
     required={required}
     name={name}
     bind:value={value}
-    bind:field_validator={field_validator}
-    form_validator={form_validator}
+    bind:fieldState={fieldState}
+    formState={formState}
     show_validation={show_validation}
     on_change={on_change}
     validation_functions={[]}
 >
     <input
         slot="input"
-        on:blur={() => {field_validator.blur()}}
+        on:blur={() => {fieldState.blur()}}
         required={required}
         on:keyup={on_keyup}
         disabled="{disabled}"

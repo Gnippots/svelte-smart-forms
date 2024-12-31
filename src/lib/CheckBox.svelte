@@ -1,14 +1,14 @@
 <script lang="ts">
     import BaseInput from '$lib/BaseInput.svelte';
-    import type { FieldValidator, FormValidator } from './Interfaces';
+    import type { FieldState, FormState } from './Interfaces';
     export let label = '';
     export let value = false;
     export let required = false;
     export let name = '';
     export let disabled = false;
-    export let form_validator: FormValidator | null = null;
+    export let formState: FormState | null = null;
     export let on_change = () => {};
-    let field_validator: FieldValidator;
+    let fieldState: FieldState;
 </script>
 
 <BaseInput
@@ -16,8 +16,8 @@
     name={name}
     required={required}
     bind:value={value}
-    form_validator={form_validator}
-    bind:field_validator={field_validator}
+    formState={formState}
+    bind:fieldState={fieldState}
     on_change={on_change}
 >
 <div slot="input">
@@ -25,7 +25,7 @@
         <input
             type=checkbox
             class="custom-control-input"
-            on:blur={() => {field_validator.blur()}}
+            on:blur={() => {fieldState.blur()}}
             name={name}
             id={name}
             required={required}
