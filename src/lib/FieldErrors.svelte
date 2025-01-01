@@ -2,8 +2,12 @@
 <script lang="ts">
     import type { FormState, Field } from './Interfaces';
   
-    export let formState: FormState | null = null;
-    export let field: keyof Field | null = null;
+  interface Props {
+    formState?: FormState | null;
+    field?: keyof Field | null;
+  }
+
+  let { formState = null, field = null }: Props = $props();
   </script>
   
   {#if $formState && field}
@@ -11,8 +15,7 @@
     {#if 
         $formState.fields[field] &&
         Object.keys($formState.fields[field].errors).length !== 0 && 
-        ($formState.fields[field].blurred || $formState.submitted) 
-    }
+        ($formState.fields[field].blurred || $formState.submitted)}
         
         {$formState.fields[field].errors[Object.keys($formState.fields[field].errors)[0]]}
     {/if}

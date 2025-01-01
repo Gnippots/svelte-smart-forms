@@ -3,16 +3,30 @@
     import type { FieldState, FormState } from './Interfaces';
 
 
-    export let label = '';
-    export let value: Date | null = null;
-    export let required = false;
-    export let name = '';
-    export let disabled = false;
-    export let formState: FormState | null = null;
-    export let classes = 'smart-form-input';
-    export let on_change = () => {};
-    export let placeholder = '';
-    let fieldState: FieldState;
+    interface Props {
+        label?: string;
+        value?: Date | null;
+        required?: boolean;
+        name?: string;
+        disabled?: boolean;
+        formState?: FormState | null;
+        classes?: string;
+        on_change?: any;
+        placeholder?: string;
+    }
+
+    let {
+        label = '',
+        value = $bindable(null),
+        required = false,
+        name = '',
+        disabled = false,
+        formState = null,
+        classes = 'smart-form-input',
+        on_change = () => {},
+        placeholder = ''
+    }: Props = $props();
+    let fieldState: FieldState = $state();
                 
 </script>
 
@@ -29,8 +43,10 @@
     on_change={on_change}
 
 >
-<div slot="input">
-    DatePicker Coming Soon
-    <!--<Datepicker/>-->
-</div>
+{#snippet input()}
+        <div >
+        DatePicker Coming Soon
+        <!--<Datepicker/>-->
+    </div>
+    {/snippet}
 </BaseInput>

@@ -2,20 +2,37 @@
     import BaseInput from '$lib/BaseInput.svelte';
     import type { FormState } from './Interfaces';
   
-    export let label = '';
-    export let value: string | null = '';
-    export let required = false;
-    export let name = '';
-    export let disabled = false;
-    export let formState: FormState | null = null;
-    export let classes = 'smart-form-input';
-    export let options: Array<string | { value: string; name: string; disabled?: boolean }> = [];
-    export let option_groups: Array<{ label: string; options: Array<string | { value: string; name: string; disabled?: boolean }> }> = [];
-    export let on_change = () => {};
-    export let placeholder = '';
-    export let on_blur = () => {};
+  interface Props {
+    label?: string;
+    value?: string | null;
+    required?: boolean;
+    name?: string;
+    disabled?: boolean;
+    formState?: FormState | null;
+    classes?: string;
+    options?: Array<string | { value: string; name: string; disabled?: boolean }>;
+    option_groups?: Array<{ label: string; options: Array<string | { value: string; name: string; disabled?: boolean }> }>;
+    on_change?: any;
+    placeholder?: string;
+    on_blur?: any;
+  }
+
+  let {
+    label = '',
+    value = $bindable(''),
+    required = false,
+    name = '',
+    disabled = false,
+    formState = null,
+    classes = 'smart-form-input',
+    options = [],
+    option_groups = [],
+    on_change = () => {},
+    placeholder = '',
+    on_blur = () => {}
+  }: Props = $props();
   
-    let formatted_options: Array<{ value: string; name: string; disabled: boolean }> = [];
+    let formatted_options: Array<{ value: string; name: string; disabled: boolean }> = $state([]);
     let formatted_option_groups: Array<{ label: string; options: Array<{ value: string; name: string; disabled: boolean }> }> = [];
   
     function format_options(unformatted_options: Array<string | { value: string; name: string; disabled?: boolean }>) {
@@ -50,32 +67,34 @@
     classes={classes}
     on_change={on_change}
   >
-    <div style="margin-bottom: 4px;" slot="input">
-      <select
-        style="padding: .1rem"
-        required={required}
-        disabled={disabled}
-        name={name}
-        bind:value={value}
-        on:blur={on_blur}
-        on:change={on_change}
-      >
-        {#if placeholder}
-        <option value={value}>{placeholder}</option>
-        {/if}
-  
-        {#each formatted_option_groups as group}
-        <optgroup label={group.label}>
-          {#each group.options as option}
-          <option value={option.value}>{option.name}</option>
+    {#snippet input()}
+    <div style="margin-bottom: 4px;" >
+        <select
+          style="padding: .1rem"
+          required={required}
+          disabled={disabled}
+          name={name}
+          bind:value={value}
+          onblur={on_blur}
+          onchange={on_change}
+        >
+          {#if placeholder}
+          <option value={value}>{placeholder}</option>
+          {/if}
+    
+          {#each formatted_option_groups as group}
+          <optgroup label={group.label}>
+            {#each group.options as option}
+            <option value={option.value}>{option.name}</option>
+            {/each}
+          </optgroup>
           {/each}
-        </optgroup>
-        {/each}
-  
-        {#each formatted_options as option}
-        <option value={option.value} disabled={option.disabled}>{option.name}</option>
-        {/each}
-      </select>
-    </div>
+    
+          {#each formatted_options as option}
+          <option value={option.value} disabled={option.disabled}>{option.name}</option>
+          {/each}
+        </select>
+      </div>
+  {/snippet}
   </BaseInput>
   

@@ -1,18 +1,33 @@
 <script lang="ts">
     import BaseInput from '$lib/BaseInput.svelte';
     import type { FieldState, FormState } from './Interfaces';
-    export let label = '';
-    export let value = '';
-    export let required = false;
-    export let name = '';
-    export let disabled = false;
-    export let formState: FormState | null = null;
-    export let classes = 'smart-form-input'
-    export let on_change = () => {};
-    export let placeholder = '';
-    export let confirm_against = '';
-    let fieldState: FieldState;
-    let show_password: boolean;
+    interface Props {
+        label?: string;
+        value?: string;
+        required?: boolean;
+        name?: string;
+        disabled?: boolean;
+        formState?: FormState | null;
+        classes?: string;
+        on_change?: any;
+        placeholder?: string;
+        confirm_against?: string;
+    }
+
+    let {
+        label = '',
+        value = $bindable(''),
+        required = false,
+        name = '',
+        disabled = false,
+        formState = null,
+        classes = 'smart-form-input',
+        on_change = () => {},
+        placeholder = '',
+        confirm_against = ''
+    }: Props = $props();
+    let fieldState: FieldState = $state();
+    let show_password: boolean = $state();
 
     function toggle_show() {
         show_password = !show_password;
@@ -39,30 +54,32 @@
 
 >
 
-    <div class="input-group" slot="input">
-        {#if show_password}
-        <input
-            on:blur={() => {fieldState.blur()}}
-            required={required}
-            disabled="{disabled}"
-            placeholder="{placeholder}"
-            type="text"
-            name="{name}"
-            bind:value="{value}"
-        />
-        {:else}
-        <input
-            on:blur={() => {fieldState.blur()}}
-            required={required}
-            disabled="{disabled}"
-            placeholder="{placeholder}"
-            type="password"
-            name="{name}"
-            bind:value="{value}"
-        />
-        {/if}
-        <div class="password-toggle" on:click={toggle_show}>
-            Show
+    {#snippet input()}
+        <div class="input-group" >
+            {#if show_password}
+            <input
+                onblur={() => {fieldState.blur()}}
+                required={required}
+                disabled="{disabled}"
+                placeholder="{placeholder}"
+                type="text"
+                name="{name}"
+                bind:value="{value}"
+            />
+            {:else}
+            <input
+                onblur={() => {fieldState.blur()}}
+                required={required}
+                disabled="{disabled}"
+                placeholder="{placeholder}"
+                type="password"
+                name="{name}"
+                bind:value="{value}"
+            />
+            {/if}
+            <div class="password-toggle" onclick={toggle_show}>
+                Show
+            </div>
         </div>
-    </div>
+    {/snippet}
 </BaseInput>

@@ -1,28 +1,44 @@
-<script>
+<script lang="ts">
+    import { run } from 'svelte/legacy';
+
     import { onMount } from 'svelte';
     import {BaseInput, TextInput, Dropdown, FieldErrors} from './';
     import clonedeep from 'lodash.clonedeep';
     
-    export let address = {
+    interface Props {
+        address?: any;
+        label?: string;
+        formState?: any;
+        required?: any;
+        on_change?: any;
+        classes?: string;
+        name?: string;
+        show_search?: boolean;
+        mailing?: boolean;
+    }
+
+    let {
+        address = $bindable({
         'formatted': ''
-    };
-    export let label = 'Address';
-    export let formState = null;
-    export let required = {};
-    export let on_change = () => {};
-    export let classes = 'smart-form-input';
-    export let name = 'null';
-    export let show_search = true;
-    export let mailing = false;
+    }),
+        label = 'Address',
+        formState = null,
+        required = {},
+        on_change = () => {},
+        classes = 'smart-form-input',
+        name = 'null',
+        show_search = true,
+        mailing = false
+    }: Props = $props();
 
-    let element = null;
-    let incomplete = false;
-    let formatted_address = '';
-    let search = '';
+    let element = $state(null);
+    let incomplete = $state(false);
+    let formatted_address = $state('');
+    let search = $state('');
 
-    let all_changes = () => {};
+    let all_changes = $state(() => {});
     
-    let show_full_address = false;
+    let show_full_address = $state(false);
 
     const options = {
         types: [],
@@ -33,7 +49,7 @@
         if (required.all || required[field]) {return true}
     }
 
-    $: {
+    run(() => {
         let fields = ['street_number', 'street_name', 'city', 'state', 'postcode', 'country'];
         if (mailing) {
             fields = fields.concat(['first_name', 'role', 'company_name'])
@@ -66,7 +82,7 @@
         s += `${address.street_number} ${address.street_name}, ${address.city} ${address.state} ${address.postcode}`;
 
         formatted_address =  s;
-    }    
+    });    
     
     const empty_address = {
         unit_number: '',
@@ -121,9 +137,11 @@
         }
     })
 
-    $: if (!show_search) {
-        show_full_address = true;
-    }
+    run(() => {
+        if (!show_search) {
+            show_full_address = true;
+        }
+    });
 
 </script>
 
@@ -133,16 +151,18 @@
     formState={formState}
     on_change={on_change}
 >
-    <div class="smart-form-input-label" style="display: flex; justify-content: space-between" slot="label">
-        {#if label}
-        <label for={name}>{label}
-            {#if required}
-            <span style="color: #ce0262">*</span>
+    {#snippet label()}
+        <div class="smart-form-input-label" style="display: flex; justify-content: space-between" >
+            {#if label}
+            <label for={name}>{label}
+                {#if required}
+                <span style="color: #ce0262">*</span>
+                {/if}
+            </label>
             {/if}
-        </label>
-        {/if}
-        <button type="button" class="cursor-pointer" on:click={() => {show_full_address = !show_full_address }}> Show full address</button>
-    </div>
+            <button type="button" class="cursor-pointer" onclick={() => {show_full_address = !show_full_address }}> Show full address</button>
+        </div>
+    {/snippet}
     
     <input
         bind:this={element}
@@ -150,7 +170,7 @@
         placeholder="Search..."
         name="{name}"
         bind:value="{search}"
-        on:keyup={all_changes}
+        onkeyup={all_changes}
     />
 </BaseInput>
 

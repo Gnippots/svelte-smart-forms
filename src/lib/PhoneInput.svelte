@@ -1,18 +1,34 @@
 <script lang="ts">
     import type { FieldState, FormState } from './Interfaces';
     import BaseInput from '$lib/BaseInput.svelte';
-    export let label = '';
-    export let value = '';
-    export let required = false;
-    export let name = '';
-    export let disabled = false;
-    export let show_validation = true;
-    export let formState: FormState | null = null;
-    export let classes = 'smart-form-input';
-    export let on_change = () => {};
-    export let on_keyup = () => {};
-    export let placeholder = '';
-    let fieldState: FieldState;
+    interface Props {
+        label?: string;
+        value?: string;
+        required?: boolean;
+        name?: string;
+        disabled?: boolean;
+        show_validation?: boolean;
+        formState?: FormState | null;
+        classes?: string;
+        on_change?: any;
+        on_keyup?: any;
+        placeholder?: string;
+    }
+
+    let {
+        label = '',
+        value = $bindable(''),
+        required = false,
+        name = '',
+        disabled = false,
+        show_validation = true,
+        formState = null,
+        classes = 'smart-form-input',
+        on_change = () => {},
+        on_keyup = () => {},
+        placeholder = ''
+    }: Props = $props();
+    let fieldState: FieldState = $state();
                 
 </script>
 
@@ -28,15 +44,17 @@
     on_change={on_change}
     validation_functions={[]}
 >
-    <input
-        slot="input"
-        on:blur={() => {fieldState.blur()}}
-        required={required}
-        on:keyup={on_keyup}
-        disabled="{disabled}"
-        placeholder="{placeholder}"
-        type="text"
-        name="{name}"
-        bind:value="{value}"
-    />
+    {#snippet input()}
+        <input
+            
+            onblur={() => {fieldState.blur()}}
+            required={required}
+            onkeyup={on_keyup}
+            disabled="{disabled}"
+            placeholder="{placeholder}"
+            type="text"
+            name="{name}"
+            bind:value="{value}"
+        />
+    {/snippet}
 </BaseInput>

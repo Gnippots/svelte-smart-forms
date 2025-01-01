@@ -29,7 +29,7 @@
         password2?: string;
         textarea?: string;
         phone?: string;
-    } = {};
+    } = $state({});
 
     let submit = () => {
         console.log('submitted');
@@ -80,9 +80,11 @@
             bind:value={form.checkbox}
             formState={formState}
         >
-            <span slot="label">
-                Checkbox
-            </span>
+            {#snippet label()}
+                        <span >
+                    Checkbox
+                </span>
+                    {/snippet}
         </CheckBox>
 
         <DatePicker 

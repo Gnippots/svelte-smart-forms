@@ -1,9 +1,17 @@
 <script lang="ts">
+  import { run, preventDefault } from 'svelte/legacy';
+
     import type { FormState } from './Interfaces';
-    //import { toast_error } from '../lib/toast_themes';
+    
   
-    export let formState: FormState | null = null;
-    export let onSubmit: (() => void) | null = null;
+  interface Props {
+    //import { toast_error } from '../lib/toast_themes';
+    formState?: FormState | null;
+    onSubmit?: (() => void) | null;
+    children?: import('svelte').Snippet;
+  }
+
+  let { formState = null, onSubmit = null, children }: Props = $props();
   
     const validate = () => {
       if (!$formState) return;
@@ -38,16 +46,16 @@
       onSubmit();
     };
   
-    $: {
+    run(() => {
       if (formState) {
         validate();
         $formState?.fields;
       }
-    }
+    });
   </script>
   
-  <form on:submit|preventDefault={submitHandler} novalidate>
-    <slot></slot>
+  <form onsubmit={preventDefault(submitHandler)} novalidate>
+    {@render children?.()}
   </form>
   
   <style></style>
