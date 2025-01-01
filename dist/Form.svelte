@@ -1,5 +1,4 @@
-<script>import { toast_error } from "../lib/toast_themes";
-export let formState = null;
+<script>export let formState = null;
 export let onSubmit = null;
 const validate = () => {
   if (!$formState)
@@ -22,11 +21,7 @@ const submitHandler = (event) => {
   if (!onSubmit) {
     return;
   }
-  console.log("z");
   if (!$formState.valid) {
-    console.log("x");
-    console.log(typeof toast_error);
-    toast_error("Some fields were missing or incorrect");
     return;
   }
   onSubmit();
