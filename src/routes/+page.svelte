@@ -29,7 +29,19 @@
         password2?: string;
         textarea?: string;
         phone?: string;
-    } = $state({});
+    } = $state({
+        text: '',
+        number: 0,
+        dropdown: '',
+        email: '',
+        address: {},
+        checkbox: false,
+        datepicker: new Date(),
+        password: '',
+        password2: '',
+        textarea: '',
+        phone: ''
+    });
 
     let submit = () => {
         console.log('submitted');
@@ -75,16 +87,12 @@
         </EmailInput>
 
         <CheckBox
+            label="Checkbox"
             name={'checkbox'}
             required={true}
             bind:value={form.checkbox}
             formState={formState}
         >
-            {#snippet label()}
-                        <span >
-                    Checkbox
-                </span>
-                    {/snippet}
         </CheckBox>
 
         <DatePicker 
