@@ -1,16 +1,33 @@
-<script>import BaseInput from "./BaseInput.svelte";
-export let label = "";
-export let value = "";
-export let required = false;
-export let rows = 4;
-export let name = "";
-export let disabled = false;
-export let formState = null;
-export let classes = "smart-form-input";
-export let on_change = () => {
-};
-export let placeholder = "";
-let fieldState;
+<script lang="ts">
+    import BaseInput from './BaseInput.svelte';
+    import type { FieldState, FormState } from './Interfaces';
+    interface Props {
+        label?: string;
+        value?: string;
+        required?: boolean;
+        rows?: number;
+        name?: string;
+        disabled?: boolean;
+        formState?: FormState | null;
+        classes?: string;
+        on_change?: any;
+        placeholder?: string;
+    }
+
+    let {
+        label = '',
+        value = $bindable(''),
+        required = false,
+        rows = 4,
+        name = '',
+        disabled = false,
+        formState = null,
+        classes = 'smart-form-input',
+        on_change = () => {},
+        placeholder = ''
+    }: Props = $props();
+    let fieldState: FieldState = $state();
+                
 </script>
 
 <BaseInput
@@ -24,16 +41,18 @@ let fieldState;
     on_change={on_change}
 
 >
-    <textarea
-        slot="input"
-        style="height: auto;"
-        on:blur={() => {fieldState.blur()}}
-        rows={rows}
-        required={required}
-        bind:value={value}
-        disabled={disabled}
-        placeholder={placeholder}
-        name={name}
-        
-    ></textarea>
+    {#snippet input()}
+        <textarea
+            
+            style="height: auto;"
+            onblur={() => {fieldState.blur()}}
+            rows={rows}
+            required={required}
+            bind:value={value}
+            disabled={disabled}
+            placeholder={placeholder}
+            name={name}
+            
+        ></textarea>
+    {/snippet}
 </BaseInput>

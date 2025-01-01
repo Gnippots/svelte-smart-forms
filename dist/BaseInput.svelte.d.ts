@@ -1,4 +1,4 @@
-import { SvelteComponent } from "svelte";
+import { SvelteComponentTyped } from "svelte";
 import type { FormState, FieldState } from './Interfaces';
 declare const __propDef: {
     props: {
@@ -23,12 +23,10 @@ declare const __propDef: {
         input: {};
         errors: {};
     };
-    exports?: {} | undefined;
-    bindings?: string | undefined;
 };
 export type BaseInputProps = typeof __propDef.props;
 export type BaseInputEvents = typeof __propDef.events;
 export type BaseInputSlots = typeof __propDef.slots;
-export default class BaseInput extends SvelteComponent<BaseInputProps, BaseInputEvents, BaseInputSlots> {
+export default class BaseInput extends SvelteComponentTyped<BaseInputProps, BaseInputEvents, BaseInputSlots> {
 }
 export {};

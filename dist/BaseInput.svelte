@@ -1,75 +1,96 @@
+<!-- @migration-task Error while migrating Svelte code: This migration would change the name of a slot making the component unusable -->
 <!-- BaseInput.svelte -->
-<script>import { onMount } from "svelte";
-import FieldErrors from "./FieldErrors.svelte";
-export let label = "";
-export let value = null;
-export let required = false;
-export let disabled = false;
-export let classes = "smart-form-input";
-export let name = "";
-export let show_validation = true;
-export let placeholder = "";
-export let formState = null;
-export let on_change = () => {
-};
-export let validation_functions = [];
-let all_changes = () => {
-};
-export let fieldState = {
-  dirty: false,
-  valid: false,
-  blurred: false,
-  initial_value: null,
-  errors: {},
-  add_error: (error, message) => {
-    fieldState.valid = false;
-    fieldState.errors[error] = message;
-  },
-  remove_error: (error) => {
-    delete fieldState.errors[error];
-    if (Object.keys(fieldState.errors).length === 0) {
+<script lang="ts">
+    import { onMount } from 'svelte';
+    import FieldErrors from './FieldErrors.svelte';
+    import type { FormState, FieldState } from './Interfaces';
+  
+    export let label = '';
+    export let value: any = null;
+    export let required = false;
+    export let disabled = false;
+    export let classes = 'smart-form-input';
+    export let name = '';
+    export let show_validation = true;
+    export let placeholder = '';
+    export let formState: FormState | null = null;
+    export let on_change: () => void = () => {};
+    export let validation_functions: Array<() => void> = [];
+  
+    let all_changes = () => {};
+  
+    export let fieldState: FieldState = {
+      dirty: false,
+      valid: false,
+      blurred: false,
+      initial_value: null,
+      errors: {},
+      add_error: (error: string, message: string) => {
+        fieldState.valid = false;
+        fieldState.errors[error] = message;
+      },
+      remove_error: (error: string) => {
+        delete fieldState.errors[error];
+  
+        if (Object.keys(fieldState.errors).length === 0) {
+          fieldState.valid = true;
+        }
+      },
+      blur: () => {
+        fieldState.blurred = true;
+      },
+    };
+  
+    function validate(value: any) {
+      if (!$formState) {
+        return;
+      }
+
+      // Reset the field formState
+      fieldState.errors = {};
       fieldState.valid = true;
+
+      // Check if the field is required
+      if (required && (value === null || value === '' || value === false)) {
+        fieldState.add_error('required', 'This is required');
+      }
+
+      // Run any validation passed from the level above
+      validation_functions.forEach((fn) => {
+        fn();
+      });
+
+      // update the form error state
+      if (fieldState.valid)  {
+        delete $formState.errors[name];
+      } else {
+        $formState.errors[name] = fieldState.errors;
+      }
+
+
+      $formState.fields[name] = fieldState;
     }
-  },
-  blur: () => {
-    fieldState.blurred = true;
-  }
-};
-function validate(value2) {
-  if (!$formState) {
-    return;
-  }
-  fieldState.errors = {};
-  fieldState.valid = true;
-  if (required && (value2 === null || value2 === "" || value2 === false)) {
-    fieldState.add_error("required", "This is required");
-  }
-  validation_functions.forEach((fn) => {
-    fn();
-  });
-  if (fieldState.valid) {
-    delete $formState.errors[name];
-  } else {
-    $formState.errors[name] = fieldState.errors;
-  }
-  $formState.fields[name] = fieldState;
-}
-$: {
-  validate(value);
-}
-$: {
-  fieldState.dirty = value === fieldState.initial_value;
-}
-onMount(async () => {
-  if ($formState) {
-    fieldState.initial_value = value;
-    $formState.fields[name] = fieldState;
-  }
-  all_changes = () => {
-    on_change();
-  };
-});
-</script>
+
+  
+    $: {
+      validate(value);
+    }
+  
+    $: {
+      fieldState.dirty = value === fieldState.initial_value;
+    }
+  
+    onMount(async () => {
+      if ($formState) {
+        fieldState.initial_value = value;
+        $formState.fields[name] = fieldState;
+      }
+  
+      all_changes = () => {
+        on_change();
+      };
+    });
+  </script>
   
   <div class={classes}>
   <slot name="label">

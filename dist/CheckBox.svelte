@@ -1,13 +1,15 @@
-<script>import BaseInput from "./BaseInput.svelte";
-export let label = "";
-export let value = false;
-export let required = false;
-export let name = "";
-export let disabled = false;
-export let formState = null;
-export let on_change = () => {
-};
-let fieldState;
+<!-- @migration-task Error while migrating Svelte code: This migration would change the name of a slot making the component unusable -->
+<script lang="ts">
+    import BaseInput from './BaseInput.svelte';
+    import type { FieldState, FormState } from './Interfaces';
+    export let label = '';
+    export let value = false;
+    export let required = false;
+    export let name = '';
+    export let disabled = false;
+    export let formState: FormState | null = null;
+    export let on_change = () => {};
+    let fieldState: FieldState;
 </script>
 
 <BaseInput

@@ -1,30 +1,14 @@
-/** @typedef {typeof __propDef.props}  AddressFieldProps */
-/** @typedef {typeof __propDef.events}  AddressFieldEvents */
-/** @typedef {typeof __propDef.slots}  AddressFieldSlots */
-export default class AddressField {
-}
-export type AddressFieldProps = typeof __propDef.props;
-export type AddressFieldEvents = typeof __propDef.events;
-export type AddressFieldSlots = typeof __propDef.slots;
+import { SvelteComponentTyped } from "svelte";
 declare const __propDef: {
-    props: {
-        required?: {} | undefined;
-        label?: string | undefined;
-        address?: {
-            formatted: string;
-        } | undefined;
-        formState?: null | undefined;
-        on_change?: (() => void) | undefined;
-        classes?: string | undefined;
-        name?: string | undefined;
-        show_search?: boolean | undefined;
-        mailing?: boolean | undefined;
-    };
+    props: Record<string, never>;
     events: {
         [evt: string]: CustomEvent<any>;
     };
     slots: {};
-    exports?: undefined;
-    bindings?: undefined;
 };
+export type AddressFieldProps = typeof __propDef.props;
+export type AddressFieldEvents = typeof __propDef.events;
+export type AddressFieldSlots = typeof __propDef.slots;
+export default class AddressField extends SvelteComponentTyped<AddressFieldProps, AddressFieldEvents, AddressFieldSlots> {
+}
 export {};

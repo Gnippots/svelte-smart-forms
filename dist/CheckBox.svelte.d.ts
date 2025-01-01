@@ -1,4 +1,4 @@
-import { SvelteComponent } from "svelte";
+import { SvelteComponentTyped } from "svelte";
 import type { FormState } from './Interfaces';
 declare const __propDef: {
     props: {
@@ -16,12 +16,10 @@ declare const __propDef: {
     slots: {
         label: {};
     };
-    exports?: {} | undefined;
-    bindings?: string | undefined;
 };
 export type CheckBoxProps = typeof __propDef.props;
 export type CheckBoxEvents = typeof __propDef.events;
 export type CheckBoxSlots = typeof __propDef.slots;
-export default class CheckBox extends SvelteComponent<CheckBoxProps, CheckBoxEvents, CheckBoxSlots> {
+export default class CheckBox extends SvelteComponentTyped<CheckBoxProps, CheckBoxEvents, CheckBoxSlots> {
 }
 export {};

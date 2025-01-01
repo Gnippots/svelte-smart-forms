@@ -1,18 +1,36 @@
-<script>import BaseInput from "./BaseInput.svelte";
-export let label = "";
-export let value = null;
-export let required = false;
-export let name = "";
-export let disabled = false;
-export let formState = null;
-export let classes = "smart-form-input";
-export let on_change = () => {
-};
-export let placeholder = "";
-export let min = null;
-export let max = null;
-let fieldState;
-</script>
+<script lang="ts">
+    import BaseInput from './BaseInput.svelte';
+    import type { FormState, FieldState } from './Interfaces';
+  
+  interface Props {
+    label?: string;
+    value?: number | null;
+    required?: boolean;
+    name?: string;
+    disabled?: boolean;
+    formState?: FormState | null;
+    classes?: string;
+    on_change?: any;
+    placeholder?: string;
+    min?: number | null;
+    max?: number | null;
+  }
+
+  let {
+    label = '',
+    value = $bindable(null),
+    required = false,
+    name = '',
+    disabled = false,
+    formState = null,
+    classes = 'smart-form-input',
+    on_change = () => {},
+    placeholder = '',
+    min = null,
+    max = null
+  }: Props = $props();
+    let fieldState: FieldState = $state();
+  </script>
   
   <BaseInput
     label={label}
@@ -24,8 +42,8 @@ let fieldState;
     formState={formState}
   >
     <input
-    on:blur={() => {fieldState.blur()}}
-    on:keyup={on_change}
+    onblur={() => {fieldState.blur()}}
+    onkeyup={on_change}
     required={required}
     disabled="{disabled}"
     placeholder="{placeholder}"
