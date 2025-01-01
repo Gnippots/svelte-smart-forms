@@ -1,14 +1,28 @@
-import { SvelteComponentTyped } from "svelte";
-declare const __propDef: {
-    props: Record<string, never>;
-    events: {
-        [evt: string]: CustomEvent<any>;
-    };
-    slots: {};
-};
-export type DropdownProps = typeof __propDef.props;
-export type DropdownEvents = typeof __propDef.events;
-export type DropdownSlots = typeof __propDef.slots;
-export default class Dropdown extends SvelteComponentTyped<DropdownProps, DropdownEvents, DropdownSlots> {
-}
-export {};
+import type { FormState } from './Interfaces';
+declare const Dropdown: import("svelte").Component<{
+    label?: string;
+    value?: string | null;
+    required?: boolean;
+    name?: string;
+    disabled?: boolean;
+    formState?: FormState | null;
+    classes?: string;
+    options?: Array<string | {
+        value: string;
+        name: string;
+        disabled?: boolean;
+    }>;
+    option_groups?: Array<{
+        label: string;
+        options: Array<string | {
+            value: string;
+            name: string;
+            disabled?: boolean;
+        }>;
+    }>;
+    on_change?: any;
+    placeholder?: string;
+    on_blur?: any;
+}, {}, "value">;
+type Dropdown = ReturnType<typeof Dropdown>;
+export default Dropdown;

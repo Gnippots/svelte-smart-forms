@@ -1,14 +1,16 @@
-import { SvelteComponentTyped } from "svelte";
-declare const __propDef: {
-    props: Record<string, never>;
-    events: {
-        [evt: string]: CustomEvent<any>;
-    };
-    slots: {};
-};
-export type PasswordInputProps = typeof __propDef.props;
-export type PasswordInputEvents = typeof __propDef.events;
-export type PasswordInputSlots = typeof __propDef.slots;
-export default class PasswordInput extends SvelteComponentTyped<PasswordInputProps, PasswordInputEvents, PasswordInputSlots> {
+import type { FormState } from './Interfaces';
+interface Props {
+    label?: string;
+    value?: string;
+    required?: boolean;
+    name?: string;
+    disabled?: boolean;
+    formState?: FormState | null;
+    classes?: string;
+    on_change?: any;
+    placeholder?: string;
+    confirm_against?: string;
 }
-export {};
+declare const PasswordInput: import("svelte").Component<Props, {}, "value">;
+type PasswordInput = ReturnType<typeof PasswordInput>;
+export default PasswordInput;

@@ -1,14 +1,14 @@
-import { SvelteComponentTyped } from "svelte";
-declare const __propDef: {
-    props: Record<string, never>;
-    events: {
-        [evt: string]: CustomEvent<any>;
-    };
-    slots: {};
-};
-export type DatePickerProps = typeof __propDef.props;
-export type DatePickerEvents = typeof __propDef.events;
-export type DatePickerSlots = typeof __propDef.slots;
-export default class DatePicker extends SvelteComponentTyped<DatePickerProps, DatePickerEvents, DatePickerSlots> {
-}
-export {};
+import type { FormState } from './Interfaces';
+declare const DatePicker: import("svelte").Component<{
+    label?: string;
+    value?: Date | null;
+    required?: boolean;
+    name?: string;
+    disabled?: boolean;
+    formState?: FormState | null;
+    classes?: string;
+    on_change?: any;
+    placeholder?: string;
+}, {}, "value">;
+type DatePicker = ReturnType<typeof DatePicker>;
+export default DatePicker;

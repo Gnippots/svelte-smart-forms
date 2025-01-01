@@ -1,32 +1,36 @@
-import { SvelteComponentTyped } from "svelte";
 import type { FormState, FieldState } from './Interfaces';
-declare const __propDef: {
-    props: {
-        label?: string;
-        value?: any;
-        required?: boolean;
-        disabled?: boolean;
-        classes?: string;
-        name?: string;
-        show_validation?: boolean;
-        placeholder?: string;
-        formState?: FormState | null;
-        on_change?: () => void;
-        validation_functions?: Array<() => void>;
-        fieldState?: FieldState;
+interface $$__sveltets_2_IsomorphicComponent<Props extends Record<string, any> = any, Events extends Record<string, any> = any, Slots extends Record<string, any> = any, Exports = {}, Bindings = string> {
+    new (options: import('svelte').ComponentConstructorOptions<Props>): import('svelte').SvelteComponent<Props, Events, Slots> & {
+        $$bindings?: Bindings;
+    } & Exports;
+    (internal: unknown, props: Props & {
+        $$events?: Events;
+        $$slots?: Slots;
+    }): Exports & {
+        $set?: any;
+        $on?: any;
     };
-    events: {
-        [evt: string]: CustomEvent<any>;
-    };
-    slots: {
-        label: {};
-        input: {};
-        errors: {};
-    };
-};
-export type BaseInputProps = typeof __propDef.props;
-export type BaseInputEvents = typeof __propDef.events;
-export type BaseInputSlots = typeof __propDef.slots;
-export default class BaseInput extends SvelteComponentTyped<BaseInputProps, BaseInputEvents, BaseInputSlots> {
+    z_$$bindings?: Bindings;
 }
-export {};
+declare const BaseInput: $$__sveltets_2_IsomorphicComponent<{
+    label?: string;
+    value?: any;
+    required?: boolean;
+    disabled?: boolean;
+    classes?: string;
+    name?: string;
+    show_validation?: boolean;
+    placeholder?: string;
+    formState?: FormState | null;
+    on_change?: () => void;
+    validation_functions?: Array<() => void>;
+    fieldState?: FieldState;
+}, {
+    [evt: string]: CustomEvent<any>;
+}, {
+    label: {};
+    input: {};
+    errors: {};
+}, {}, string>;
+type BaseInput = InstanceType<typeof BaseInput>;
+export default BaseInput;

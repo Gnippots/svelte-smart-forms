@@ -1,14 +1,14 @@
-import { SvelteComponentTyped } from "svelte";
-declare const __propDef: {
-    props: Record<string, never>;
-    events: {
-        [evt: string]: CustomEvent<any>;
-    };
-    slots: {};
-};
-export type AddressFieldProps = typeof __propDef.props;
-export type AddressFieldEvents = typeof __propDef.events;
-export type AddressFieldSlots = typeof __propDef.slots;
-export default class AddressField extends SvelteComponentTyped<AddressFieldProps, AddressFieldEvents, AddressFieldSlots> {
+interface Props {
+    address?: any;
+    label?: string;
+    formState?: any;
+    required?: any;
+    on_change?: any;
+    classes?: string;
+    name?: string;
+    show_search?: boolean;
+    mailing?: boolean;
 }
-export {};
+declare const AddressField: import("svelte").Component<Props, {}, "address">;
+type AddressField = ReturnType<typeof AddressField>;
+export default AddressField;

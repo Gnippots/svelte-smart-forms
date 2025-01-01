@@ -1,14 +1,17 @@
-import { SvelteComponentTyped } from "svelte";
-declare const __propDef: {
-    props: Record<string, never>;
-    events: {
-        [evt: string]: CustomEvent<any>;
-    };
-    slots: {};
-};
-export type PhoneInputProps = typeof __propDef.props;
-export type PhoneInputEvents = typeof __propDef.events;
-export type PhoneInputSlots = typeof __propDef.slots;
-export default class PhoneInput extends SvelteComponentTyped<PhoneInputProps, PhoneInputEvents, PhoneInputSlots> {
+import type { FormState } from './Interfaces';
+interface Props {
+    label?: string;
+    value?: string;
+    required?: boolean;
+    name?: string;
+    disabled?: boolean;
+    show_validation?: boolean;
+    formState?: FormState | null;
+    classes?: string;
+    on_change?: any;
+    on_keyup?: any;
+    placeholder?: string;
 }
-export {};
+declare const PhoneInput: import("svelte").Component<Props, {}, "value">;
+type PhoneInput = ReturnType<typeof PhoneInput>;
+export default PhoneInput;

@@ -1,14 +1,16 @@
-import { SvelteComponentTyped } from "svelte";
-declare const __propDef: {
-    props: Record<string, never>;
-    events: {
-        [evt: string]: CustomEvent<any>;
-    };
-    slots: {};
-};
-export type TextAreaProps = typeof __propDef.props;
-export type TextAreaEvents = typeof __propDef.events;
-export type TextAreaSlots = typeof __propDef.slots;
-export default class TextArea extends SvelteComponentTyped<TextAreaProps, TextAreaEvents, TextAreaSlots> {
+import type { FormState } from './Interfaces';
+interface Props {
+    label?: string;
+    value?: string;
+    required?: boolean;
+    rows?: number;
+    name?: string;
+    disabled?: boolean;
+    formState?: FormState | null;
+    classes?: string;
+    on_change?: any;
+    placeholder?: string;
 }
-export {};
+declare const TextArea: import("svelte").Component<Props, {}, "value">;
+type TextArea = ReturnType<typeof TextArea>;
+export default TextArea;

@@ -1,14 +1,17 @@
-import { SvelteComponentTyped } from "svelte";
-declare const __propDef: {
-    props: Record<string, never>;
-    events: {
-        [evt: string]: CustomEvent<any>;
-    };
-    slots: {};
-};
-export type EmailInputProps = typeof __propDef.props;
-export type EmailInputEvents = typeof __propDef.events;
-export type EmailInputSlots = typeof __propDef.slots;
-export default class EmailInput extends SvelteComponentTyped<EmailInputProps, EmailInputEvents, EmailInputSlots> {
+import type { FormState } from './Interfaces';
+interface Props {
+    label?: string;
+    value?: string;
+    required?: boolean;
+    name?: string;
+    disabled?: boolean;
+    show_validation?: boolean;
+    formState?: FormState | null;
+    classes?: string;
+    on_change?: any;
+    on_keyup?: any;
+    placeholder?: string;
 }
-export {};
+declare const EmailInput: import("svelte").Component<Props, {}, "value">;
+type EmailInput = ReturnType<typeof EmailInput>;
+export default EmailInput;
