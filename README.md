@@ -6,7 +6,7 @@ A form form library for svelte that abstracts the boilerplate needed by other li
 ## How it works
 The function `createFormState` will generate a store which holds all required form state (validity, errors, dirtyness etc) and is passed to all other SmartForm elements. These elements will add automatically update the form
 
-## Basic Usage
+### Basic Usage
 
 ```
   import { createFormState, FieldErrors, Form, PasswordInput, TextInput } from '@gnippots/svelte-smart-forms';
@@ -52,6 +52,15 @@ The function `createFormState` will generate a store which holds all required fo
   </Form>
 ```
 
+### Styling
+The form elements are not styled by default, but have classses that can be globally styled. See /static/styles.css for an example
+
+You can also use the `classes` property to pass a custom class which will be applied to a wrapper around the form element.
+
+A future update will allow better provision of styles and allow you to pass custom components to each form element.
+
+### Custom Validation
+To be documented
 
 ## Developing
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
