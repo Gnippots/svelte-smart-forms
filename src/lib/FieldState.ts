@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 
-export function createFieldValidator () {
+export function createFieldState () {
 
     const store = writable({
         'dirty': false, 

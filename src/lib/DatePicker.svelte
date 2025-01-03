@@ -1,18 +1,32 @@
 <script lang="ts">
     import BaseInput from '$lib/BaseInput.svelte';
-    import type { FieldValidator, FormValidator } from './Interfaces';
+    import type { FieldState, FormState } from './Interfaces';
 
 
-    export let label = '';
-    export let value: Date | null = null;
-    export let required = false;
-    export let name = '';
-    export let disabled = false;
-    export let form_validator: FormValidator | null = null;
-    export let classes = 'smart-form-input';
-    export let on_change = () => {};
-    export let placeholder = '';
-    let field_validator: FieldValidator;
+    interface Props {
+        label?: string;
+        value?: Date | null;
+        required?: boolean;
+        name?: string;
+        disabled?: boolean;
+        formState?: FormState | null;
+        classes?: string;
+        on_change?: any;
+        placeholder?: string;
+    }
+
+    let {
+        label = '',
+        value = $bindable(null),
+        required = false,
+        name = '',
+        disabled = false,
+        formState = null,
+        classes = 'smart-form-input',
+        on_change = () => {},
+        placeholder = ''
+    }: Props = $props();
+    let fieldState: FieldState = $state();
                 
 </script>
 
@@ -24,13 +38,15 @@
     name={name}
     disabled={disabled}
     bind:value={value}
-    bind:field_validator={field_validator}
-    form_validator={form_validator}
+    bind:fieldState={fieldState}
+    formState={formState}
     on_change={on_change}
 
 >
-<div slot="input">
-    DatePicker Coming Soon
-    <!--<Datepicker/>-->
-</div>
+{#snippet input()}
+        <div >
+        DatePicker Coming Soon
+        <!--<Datepicker/>-->
+    </div>
+    {/snippet}
 </BaseInput>

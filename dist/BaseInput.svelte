@@ -2,7 +2,7 @@
 <!-- BaseInput.svelte -->
 <script lang="ts">
     import { onMount } from 'svelte';
-    import FieldErrors from '$lib/FieldErrors.svelte';
+    import FieldErrors from './FieldErrors.svelte';
     import type { FormState, FieldState } from './Interfaces';
   
     export let label = '';

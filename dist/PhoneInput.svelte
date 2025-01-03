@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { FieldState, FormState } from './Interfaces';
-    import BaseInput from '$lib/BaseInput.svelte';
+    import BaseInput from './BaseInput.svelte';
     interface Props {
         label?: string;
         value?: string;

@@ -1,17 +1,32 @@
 <script lang="ts">
     import BaseInput from '$lib/BaseInput.svelte';
-    import type { FieldValidator, FormValidator } from './Interfaces';
-    export let label = '';
-    export let value = '';
-    export let required = false;
-    export let rows = 4;
-    export let name = '';
-    export let disabled = false;
-    export let form_validator: FormValidator | null = null;
-    export let classes = 'smart-form-input'
-    export let on_change = () => {};
-    export let placeholder = '';
-    let field_validator: FieldValidator;
+    import type { FieldState, FormState } from './Interfaces';
+    interface Props {
+        label?: string;
+        value?: string;
+        required?: boolean;
+        rows?: number;
+        name?: string;
+        disabled?: boolean;
+        formState?: FormState | null;
+        classes?: string;
+        on_change?: any;
+        placeholder?: string;
+    }
+
+    let {
+        label = '',
+        value = $bindable(''),
+        required = false,
+        rows = 4,
+        name = '',
+        disabled = false,
+        formState = null,
+        classes = 'smart-form-input',
+        on_change = () => {},
+        placeholder = ''
+    }: Props = $props();
+    let fieldState: FieldState = $state();
                 
 </script>
 
@@ -21,21 +36,23 @@
     name={name}
     classes={classes}
     bind:value={value}
-    bind:field_validator={field_validator}
-    form_validator={form_validator}
+    bind:fieldState={fieldState}
+    formState={formState}
     on_change={on_change}
 
 >
-    <textarea
-        slot="input"
-        style="height: auto;"
-        on:blur={() => {field_validator.blur()}}
-        rows={rows}
-        required={required}
-        bind:value={value}
-        disabled={disabled}
-        placeholder={placeholder}
-        name={name}
-        
-    ></textarea>
+    {#snippet input()}
+        <textarea
+            
+            style="height: auto;"
+            onblur={() => {fieldState.blur()}}
+            rows={rows}
+            required={required}
+            bind:value={value}
+            disabled={disabled}
+            placeholder={placeholder}
+            name={name}
+            
+        ></textarea>
+    {/snippet}
 </BaseInput>

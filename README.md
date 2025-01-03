@@ -1,23 +1,68 @@
-# create-svelte
+# svelte-smart-forms
+A form form library for svelte that abstracts the boilerplate needed by other libraries. Specifically, it lets you perform robust client-side validation without having to write a separate validation schema.
 
-Everything you need to build a Svelte library, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+**Disclaimer** This library is very much still under construction. Use at your own peril
 
-Read more about creating a library [in the docs](https://kit.svelte.dev/docs/packaging).
+## How it works
+The function `createFormState` will generate a store which holds all required form state (validity, errors, dirtyness etc) and is passed to all other SmartForm elements. These elements will add automatically update the form
 
-## Creating a project
+### Basic Usage
 
-If you're seeing this, you've probably already done this step. Congrats!
+```
+  import { createFormState, FieldErrors, Form, PasswordInput, TextInput } from '@gnippots/svelte-smart-forms';
+  const formState = createFormState();
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+  const form: {
+    email?: string;
+    password?: string;
+    password2?: string;
+  } = {};
 
-# create a new project in my-app
-npm create svelte@latest my-app
+  let submit = () => {
+    console.log('submitted');
+  }
+
+  <Form formState={formState} onSubmit={submit}>
+    <TextInput
+      name='email'
+      label='Email'
+      bind:value={form.email}
+      required={true}
+      formState={formState}>
+    </TextInput>
+
+    <PasswordInput 
+      name='password'
+      label='Password'
+      bind:value={form.password} 
+      required={true} 
+      formState={formState}>
+    </PasswordInput>
+    
+    <PasswordInput 
+      name='password2'
+      label='Confirm Password'
+      confirm_against={form.password}
+      bind:value={form.password2} 
+      required={true} 
+      formState={formState}>
+    </PasswordInput>
+
+    <button>Submit</button>
+  </Form>
 ```
 
-## Developing
+### Styling
+The form elements are not styled by default, but have classses that can be globally styled. See /static/styles.css for an example
 
+You can also use the `classes` property to pass a custom class which will be applied to a wrapper around the form element.
+
+A future update will allow better provision of styles and allow you to pass custom components to each form element.
+
+### Custom Validation
+To be documented
+
+## Developing
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 
 ```bash

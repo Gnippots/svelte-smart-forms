@@ -1,6 +1,6 @@
 <!-- @migration-task Error while migrating Svelte code: This migration would change the name of a slot making the component unusable -->
 <script lang="ts">
-    import BaseInput from '$lib/BaseInput.svelte';
+    import BaseInput from './BaseInput.svelte';
     import type { FieldState, FormState } from './Interfaces';
     export let label = '';
     export let value = false;

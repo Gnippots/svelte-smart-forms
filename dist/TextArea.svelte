@@ -1,17 +1,16 @@
 <script lang="ts">
+    import BaseInput from './BaseInput.svelte';
     import type { FieldState, FormState } from './Interfaces';
-    import BaseInput from '$lib/BaseInput.svelte';
     interface Props {
         label?: string;
         value?: string;
         required?: boolean;
+        rows?: number;
         name?: string;
         disabled?: boolean;
-        show_validation?: boolean;
         formState?: FormState | null;
         classes?: string;
         on_change?: any;
-        on_keyup?: any;
         placeholder?: string;
     }
 
@@ -19,13 +18,12 @@
         label = '',
         value = $bindable(''),
         required = false,
+        rows = 4,
         name = '',
         disabled = false,
-        show_validation = true,
         formState = null,
         classes = 'smart-form-input',
         on_change = () => {},
-        on_keyup = () => {},
         placeholder = ''
     }: Props = $props();
     let fieldState: FieldState = $state();
@@ -34,27 +32,27 @@
 
 <BaseInput
     label={label}
-    classes={classes}
     required={required}
     name={name}
+    classes={classes}
     bind:value={value}
     bind:fieldState={fieldState}
     formState={formState}
-    show_validation={show_validation}
     on_change={on_change}
-    validation_functions={[]}
+
 >
     {#snippet input()}
-        <input
+        <textarea
             
+            style="height: auto;"
             onblur={() => {fieldState.blur()}}
+            rows={rows}
             required={required}
-            onkeyup={on_keyup}
-            disabled="{disabled}"
-            placeholder="{placeholder}"
-            type="text"
-            name="{name}"
-            bind:value="{value}"
-        />
+            bind:value={value}
+            disabled={disabled}
+            placeholder={placeholder}
+            name={name}
+            
+        ></textarea>
     {/snippet}
 </BaseInput>

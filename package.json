@@ -16,8 +16,9 @@
 	},
 	"exports": {
 		".": {
+			"svelte": "./dist/index.js",
 			"types": "./dist/index.d.ts",
-			"svelte": "./dist/index.js"
+			"default": "./dist/index.js"
 		}
 	},
 	"files": [
@@ -26,32 +27,35 @@
 		"!dist/**/*.spec.*"
 	],
 	"peerDependencies": {
-		"svelte": "^3.54.0"
+		"svelte": "^5.0.0"
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "^2.0.0",
-		"@sveltejs/kit": "^1.5.0",
-		"@sveltejs/package": "^2.0.0",
+		"@eslint/compat": "^1.2.3",
+		"@sveltejs/adapter-auto": "^3.0.0",
+		"@sveltejs/kit": "^2.5.27",
+		"@sveltejs/package": "^2.3.7",
+		"@sveltejs/vite-plugin-svelte": "^4.0.0",
 		"@types/lodash.clonedeep": "^4.5.7",
-		"@typescript-eslint/eslint-plugin": "^5.45.0",
-		"@typescript-eslint/parser": "^5.45.0",
-		"eslint": "^8.28.0",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-svelte3": "^4.0.0",
-		"prettier": "^2.8.0",
-		"prettier-plugin-svelte": "^2.8.1",
+		"typescript-eslint": "^8.0.0",
+		"globals": "^15.0.0",
+		"eslint": "^9.7.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-svelte": "^2.36.0",
+		"prettier": "^3.3.2",
+		"prettier-plugin-svelte": "^3.2.6",
 		"publint": "^0.1.9",
-		"svelte": "^3.54.0",
-		"svelte-check": "^3.0.1",
+		"svelte": "^5.0.0",
+		"svelte-check": "^4.0.0",
 		"tslib": "^2.4.1",
 		"typescript": "^5.0.0",
-		"vite": "^4.2.0"
+		"vite": "^5.4.4"
 	},
 	"svelte": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"type": "module",
 	"dependencies": {
 		"@zerodevx/svelte-toast": "^0.9.3",
+		"dist": "^0.1.2",
 		"lodash.clonedeep": "^4.5.0"
 	}
 }

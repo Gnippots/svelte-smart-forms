@@ -1,5 +1,5 @@
 <script lang="ts">
-    import BaseInput from '$lib/BaseInput.svelte';
+    import BaseInput from './BaseInput.svelte';
     import type { FormState, FieldState } from './Interfaces';
   
   interface Props {

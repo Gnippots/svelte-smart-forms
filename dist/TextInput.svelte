@@ -1,6 +1,7 @@
 <script lang="ts">
-    import BaseInput from '$lib/BaseInput.svelte';
-    import type { FormState, FieldState } from './Interfaces';
+    import BaseInput from './BaseInput.svelte';
+    import type { FieldState, FormState } from './Interfaces';
+  
   interface Props {
     label?: string;
     value?: string;
@@ -10,8 +11,8 @@
     show_validation?: boolean;
     formState?: FormState | null;
     classes?: string;
-    on_change?: any;
-    on_keyup?: any;
+    on_change?: () => void;
+    on_keyup?: () => void;
     placeholder?: string;
   }
 
@@ -28,15 +29,8 @@
     on_keyup = () => {},
     placeholder = ''
   }: Props = $props();
-    let fieldState: FieldState = $state();
   
-    let validate_email = () => {
-      if (value) {
-        if (!value.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
-          fieldState.add_error('email', 'Invalid Email Address');
-        }
-      }
-    }
+    let fieldState: FieldState = $state();
   </script>
   
   <BaseInput
@@ -49,19 +43,19 @@
     formState={formState}
     show_validation={show_validation}
     on_change={on_change}
-    validation_functions={[validate_email]}
+    validation_functions={[]}
   >
     {#snippet input()}
-    <input 
+    <input
         
         onblur={() => {fieldState.blur()}}
         required={required}
         onkeyup={on_keyup}
-        disabled={disabled}
-        placeholder={placeholder}
-        type="email"
-        name={name}
-        bind:value={value}
+        disabled="{disabled}"
+        placeholder="{placeholder}"
+        type="text"
+        name="{name}"
+        bind:value="{value}"
       />
   {/snippet}
   </BaseInput>
