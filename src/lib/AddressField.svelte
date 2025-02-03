@@ -45,7 +45,7 @@
         componentRestrictions: { country: 'au' },
     };
 
-    function is_required(field) {
+    function is_required(field: any) {
         if (required.all || required[field]) {return true}
     }
 
@@ -106,16 +106,13 @@
     };
 
     onMount( async () => {
-        
         all_changes = () => {
             on_change();
             //fieldState.dirty = value == fieldState.initial_value;
         }
 
         if (typeof google !== 'undefined') {
-
             let gPlace = new google.maps.places.Autocomplete(element, options);
-
             google.maps.event.addListener(
                 gPlace,
                 'place_changed',
