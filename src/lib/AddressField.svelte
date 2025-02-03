@@ -4,6 +4,13 @@
     import { onMount } from 'svelte';
     import {BaseInput, TextInput, Dropdown, FieldErrors} from './';
     import clonedeep from 'lodash.clonedeep';
+
+    import * as Gmaps from '@googlemaps/js-api-loader';
+    const { Loader } = Gmaps;
+
+    import type { Address, ComponentMap } from './Interfaces';
+
+    const PUBLIC_GOOGLE_MAPS_API_KEY = "";
     
     interface Props {
         address?: any;
@@ -31,7 +38,7 @@
         mailing = false
     }: Props = $props();
 
-    let element = $state(null);
+    let element: HTMLInputElement | null = $state(null);
     let incomplete = $state(false);
     let formatted_address = $state('');
     let search = $state('');
@@ -40,21 +47,17 @@
     
     let show_full_address = $state(false);
 
-    const options = {
-        types: [],
-        componentRestrictions: { country: 'au' },
-    };
-
     function is_required(field: any) {
         if (required.all || required[field]) {return true}
     }
 
     run(() => {
+        let s = '';
         let fields = ['street_number', 'street_name', 'city', 'state', 'postcode', 'country'];
+        let country = address.country;
         if (mailing) {
             fields = fields.concat(['first_name', 'role', 'company_name'])
         }
-        
         incomplete = false;
         
         fields.forEach( field => {
@@ -62,29 +65,21 @@
                 incomplete = true
             }
         })
-
         if (incomplete) {
             formatted_address = '';
         }
-
-        let s = '';
-
+        
         if (address.unit_number) {
             s += `${address.unit_number}/`;
         }
-
-        let country = address.country;
-
         if (country === 'AU') {
             country = 'Australia';
         }
-
         s += `${address.street_number} ${address.street_name}, ${address.city} ${address.state} ${address.postcode}`;
-
         formatted_address =  s;
     });    
     
-    const empty_address = {
+    const empty_address: Address = {
         unit_number: '',
         street_number: '',
         street_name: '',
@@ -95,7 +90,7 @@
         po_box: '',
     };
 
-    const component_map = {
+    const component_map: ComponentMap = {
         street_number: 'street_number',
         route: 'street_name',
         locality: 'city',
@@ -111,26 +106,39 @@
             //fieldState.dirty = value == fieldState.initial_value;
         }
 
-        if (typeof google !== 'undefined') {
-            let gPlace = new google.maps.places.Autocomplete(element, options);
-            google.maps.event.addListener(
-                gPlace,
-                'place_changed',
-                function () {
-                    let place = gPlace.getPlace();
-                    let new_address = clonedeep(empty_address);
-                    search = '';
+        const loader = new Loader({
+          apiKey: PUBLIC_GOOGLE_MAPS_API_KEY,
+          version: 'weekly',
+          libraries: ['places']
+        });
 
-                    for (let component of place.address_components) {
-                        const addressType = component.types[0];
-                        if (component_map[addressType]) {
-                            new_address[component_map[addressType]] = component.short_name;
-                        }
-                    }
+        if (typeof google !== 'undefined' && element) {
+          const options = {
+            types: [],
+            componentRestrictions: { country: 'au' },
+          };
 
-                    address = new_address;
+          let gPlace = new google.maps.places.Autocomplete(element, options);
+
+          google.maps.event.addListener(
+            gPlace,
+            'place_changed',
+            function () {
+              let place = gPlace.getPlace();
+              let new_address = clonedeep(empty_address);
+              search = '';
+
+              if (place.address_components) {
+                for (let component of place.address_components) {
+                  const addressType = component.types[0];
+                  if (component_map[addressType]) {
+                    new_address[component_map[addressType]] = component.short_name;
+                  } 
                 }
-            );
+              }
+              address = new_address;
+            }
+          );
         }
     })
 
@@ -148,27 +156,27 @@
     formState={formState}
     on_change={on_change}
 >
-    {#snippet label()}
-        <div class="smart-form-input-label" style="display: flex; justify-content: space-between" >
-            {#if label}
-            <label for={name}>{label}
-                {#if required}
-                <span style="color: #ce0262">*</span>
-                {/if}
-            </label>
+    <div slot="label" class="smart-form-input-label" style="display: flex; justify-content: space-between" >
+        {#if label}
+        <label for={name}>{label}
+            {#if required}
+            <span style="color: #ce0262">*</span>
             {/if}
-            <button type="button" class="cursor-pointer" onclick={() => {show_full_address = !show_full_address }}> Show full address</button>
-        </div>
-    {/snippet}
-    
-    <input
-        bind:this={element}
-        class={classes}
-        placeholder="Search..."
-        name="{name}"
-        bind:value="{search}"
-        onkeyup={all_changes}
-    />
+        </label>
+        {/if}
+        <button type="button" class="cursor-pointer" onclick={() => {show_full_address = !show_full_address }}> Show full address</button>
+    </div>
+
+    <div slot="input">
+      <input
+          bind:this={element}
+          class={classes}
+          placeholder="Search..."
+          name="{name}"
+          bind:value="{search}"
+          onkeyup={all_changes}
+      />
+    </div>  
 </BaseInput>
 
 {#if !show_full_address}
