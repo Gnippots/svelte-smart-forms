@@ -16,7 +16,7 @@
 	import AddressField from '$lib/AddressField.svelte';
 	import { SvelteToast } from '@zerodevx/svelte-toast';
 
-	const PUBLIC_GOOGLE_MAPS_API_KEY = 'AIzaSyA6TiGYW4XTaa79sSv-UWvrjbRFCuB_HIM';
+	const PUBLIC_GOOGLE_MAPS_API_KEY = '';
 
 	const formState = createFormState();
 
