@@ -35,7 +35,6 @@
         />
         
         <label for={name} class="custom-control-label">
-            {value}
             <slot name="label"></slot>
         </label>
     </div>

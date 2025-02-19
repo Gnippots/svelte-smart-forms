@@ -18,7 +18,7 @@
     padding: 0.5rem 0.875rem;
 }
 
-.smart-form-input input {
+.smart-form-input input.pac-target-input {
   /* Override browser defaults with more specific selector */
   -webkit-appearance: none;
   appearance: none;
