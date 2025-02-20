@@ -70,7 +70,6 @@
     {#snippet input()}
     <div style="margin-bottom: 4px;" >
         <select
-          style="padding: .1rem"
           required={required}
           disabled={disabled}
           name={name}
