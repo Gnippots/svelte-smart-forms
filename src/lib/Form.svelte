@@ -9,9 +9,10 @@
     formState?: FormState | null;
     onSubmit?: (() => void) | null;
     children?: import('svelte').Snippet;
+    id? : string | null
   }
 
-  let { formState = null, onSubmit = null, children }: Props = $props();
+  let { formState = null, onSubmit = null, children, id = null }: Props = $props();
   
     const validate = () => {
       if (!$formState) return;
@@ -54,7 +55,7 @@
     });
   </script>
   
-  <form onsubmit={preventDefault(submitHandler)} novalidate>
+  <form onsubmit={preventDefault(submitHandler)} novalidate id={id}>
     {@render children?.()}
   </form>
   
