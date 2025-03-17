@@ -101,3 +101,7 @@ To publish your library to [npm](https://www.npmjs.com):
 ```bash
 npm publish
 ```
+
+# Misc notes
+## AddressField
+The AddressField component is currently built for a very specific use-case and is probably not developed enough to use elsewhere. 
