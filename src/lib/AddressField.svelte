@@ -1,185 +1,195 @@
 <script lang="ts">
-    import { run } from 'svelte/legacy';
+  import { run } from 'svelte/legacy';
 
-    import { onMount } from 'svelte';
-    import {BaseInput, TextInput, Dropdown, FieldErrors} from './';
-    import clonedeep from 'lodash.clonedeep';
-    
-    interface Props {
-        address?: any;
-        label?: string;
-        formState?: any;
-        required?: any;
-        on_change?: any;
-        classes?: string;
-        name?: string;
-        show_search?: boolean;
-        mailing?: boolean;
+  import { onMount } from 'svelte';
+  import { BaseInput, TextInput, Dropdown, FieldErrors } from './';
+  import clonedeep from 'lodash.clonedeep';
+
+  import * as Gmaps from '@googlemaps/js-api-loader';
+  const { Loader } = Gmaps;
+
+  import type { Address, ComponentMap, FieldState } from './Interfaces';
+
+  interface Props {
+    API_KEY: string;
+    address?: any;
+    label?: string;
+    formState?: any;
+    required?: any;
+    on_change?: any;
+    classes?: string;
+    name?: string;
+    show_search?: boolean;
+    mailing?: boolean;
+    placeholder?: string;
+  }
+
+  let {
+    API_KEY,
+    address = $bindable(),
+    label = '',
+    formState = null,
+    required = {},
+    on_change = () => {},
+    classes = 'smart-form-input',
+    name = 'null',
+    show_search = true,
+    mailing = false,
+    placeholder
+  }: Props = $props();
+
+  let element: HTMLInputElement | null = $state(null);
+  let incomplete = $state(false);
+  let formatted_address = $state('');
+  let search = $state('');
+  let show_full_address = $state(false);
+  let all_changes = $state(() => {});
+
+  function is_required(field: any) {
+    if (required.all || required[field]) {
+      return true;
     }
+  }
 
-    let {
-        address = $bindable({
-        'formatted': ''
-    }),
-        label = 'Address',
-        formState = null,
-        required = {},
-        on_change = () => {},
-        classes = 'smart-form-input',
-        name = 'null',
-        show_search = true,
-        mailing = false
-    }: Props = $props();
+  const empty_address: Address = {
+    unit_number: '',
+    street_number: '',
+    street_name: '',
+    city: '',
+    state: '',
+    postcode: '',
+    country: '',
+    po_box: ''
+  };
 
-    let element = $state(null);
-    let incomplete = $state(false);
-    let formatted_address = $state('');
-    let search = $state('');
+  const component_map: ComponentMap = {
+    street_number: 'street_number',
+    route: 'street_name',
+    locality: 'city',
+    country: 'country',
+    administrative_area_level_1: 'state',
+    postal_code: 'postcode',
+    subpremise: 'unit_number'
+  };
 
-    let all_changes = $state(() => {});
-    
-    let show_full_address = $state(false);
-
-    const options = {
-        types: [],
-        componentRestrictions: { country: 'au' },
-    };
-
-    function is_required(field) {
-        if (required.all || required[field]) {return true}
-    }
-
-    run(() => {
-        let fields = ['street_number', 'street_name', 'city', 'state', 'postcode', 'country'];
-        if (mailing) {
-            fields = fields.concat(['first_name', 'role', 'company_name'])
-        }
-        
-        incomplete = false;
-        
-        fields.forEach( field => {
-            if (!address[field] && is_required(field)) {                
-                incomplete = true
-            }
-        })
-
-        if (incomplete) {
-            formatted_address = '';
-        }
-
-        let s = '';
-
-        if (address.unit_number) {
-            s += `${address.unit_number}/`;
-        }
-
-        let country = address.country;
-
-        if (country === 'AU') {
-            country = 'Australia';
-        }
-
-        s += `${address.street_number} ${address.street_name}, ${address.city} ${address.state} ${address.postcode}`;
-
-        formatted_address =  s;
-    });    
-    
-    const empty_address = {
-        unit_number: '',
-        street_number: '',
-        street_name: '',
-        city: '',
-        state: '',
-        postcode: '',
-        country: '',
-        po_box: '',
-    };
-
-    const component_map = {
-        street_number: 'street_number',
-        route: 'street_name',
-        locality: 'city',
-        country: 'country',
-        administrative_area_level_1: 'state',
-        postal_code: 'postcode',
-        subpremise: 'unit_number',
-    };
-
-    onMount( async () => {
-        
-        all_changes = () => {
-            on_change();
-            //fieldState.dirty = value == fieldState.initial_value;
-        }
-
-        if (typeof google !== 'undefined') {
-
-            let gPlace = new google.maps.places.Autocomplete(element, options);
-
-            google.maps.event.addListener(
-                gPlace,
-                'place_changed',
-                function () {
-                    let place = gPlace.getPlace();
-                    let new_address = clonedeep(empty_address);
-                    search = '';
-
-                    for (let component of place.address_components) {
-                        const addressType = component.types[0];
-                        if (component_map[addressType]) {
-                            new_address[component_map[addressType]] = component.short_name;
-                        }
-                    }
-
-                    address = new_address;
-                }
-            );
-        }
-    })
-
-    run(() => {
-        if (!show_search) {
-            show_full_address = true;
-        }
+  async function initAutoComplete(inputElement: HTMLInputElement) {
+    const loader = new Loader({
+      apiKey: API_KEY,
+      version: 'weekly',
+      libraries: ['places']
     });
 
+    const options = {
+      types: ['address'],
+      componentRestrictions: { country: 'AU' }
+    };
+
+    const { Autocomplete } = await loader.importLibrary('places');
+    return new Autocomplete(inputElement, options);
+  }
+
+  function handlePlaceChanged(place: any) {
+    let new_address = clonedeep(empty_address);
+
+    if (place.address_components) {
+      for (let component of place.address_components) {
+        const addressType = component.types[0];
+        if (component_map[addressType]) {
+          new_address[component_map[addressType]] = component.short_name;
+        }
+      }
+    }
+    address = {...new_address};
+  }
+
+  onMount(async () => {
+    all_changes = () => {
+      on_change();
+      //fieldState.dirty = value == fieldState.initial_value;
+    };
+
+    if (element) {
+      const autoComplete = await initAutoComplete(element);
+
+      autoComplete.addListener('place_changed', () => {
+        handlePlaceChanged(autoComplete.getPlace())
+      });
+    }
+  });
+
+  run(() => {
+    let s = '';
+    let fields = ['street_number', 'street_name', 'city', 'state', 'postcode', 'country'];
+    let country = address.country;
+    if (mailing) {
+      fields = fields.concat(['first_name', 'role', 'company_name']);
+    }
+    incomplete = false;
+
+    fields.forEach((field) => {
+      if (!address[field] && is_required(field)) {
+        incomplete = true;
+      }
+    });
+    if (incomplete) {
+      formatted_address = '';
+    }
+
+    if (address.unit_number) {
+      s += `${address.unit_number}/`;
+    }
+    if (country === 'AU') {
+      country = 'Australia';
+    }
+    s += `${address.street_number} ${address.street_name} ${address.city} ${address.state} ${address.postcode}`;
+    formatted_address = s;
+  });
+
+  run(() => {
+    if (!show_search) {
+      show_full_address = true;
+    }
+  });
+
+  let fieldState = $state<FieldState>();
 </script>
 
 <BaseInput
     name={name}
     bind:value={search}
+    bind:fieldState={fieldState}
     formState={formState}
     on_change={on_change}
+    {required}
 >
-    {#snippet label()}
-        <div class="smart-form-input-label" style="display: flex; justify-content: space-between" >
-            {#if label}
-            <label for={name}>{label}
-                {#if required}
-                <span style="color: #ce0262">*</span>
-                {/if}
-            </label>
+    <div slot="label" class="smart-form-input-label" style="display: flex; justify-content: space-between">
+        {#if label}
+        <label for={name}>{label}
+            {#if required}
+            <span style="color: #ce0262">*</span>
             {/if}
-            <button type="button" class="cursor-pointer" onclick={() => {show_full_address = !show_full_address }}> Show full address</button>
-        </div>
-    {/snippet}
-    
-    <input
-        bind:this={element}
-        class={classes}
-        placeholder="Search..."
-        name="{name}"
-        bind:value="{search}"
-        onkeyup={all_changes}
-    />
+        </label>
+        {/if}
+    </div>
+
+    {#snippet input()}
+      <input
+          bind:this={element}
+          {placeholder}
+          {name}
+          onblur={() => {
+            fieldState?.blur();
+          }}
+          bind:value={search}
+          onkeyup={all_changes}
+      />
+    {/snippet} 
 </BaseInput>
 
 {#if !show_full_address}
 <div>
     {#if incomplete}
     <p class="smart-form-formatted-address">Address is incomplete</p>
-    {:else}
-    <p class="">{formatted_address}</p>
     {/if}
 </div>
 {/if}
