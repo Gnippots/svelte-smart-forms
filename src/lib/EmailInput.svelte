@@ -61,7 +61,7 @@
         placeholder={placeholder}
         type="email"
         name={name}
-        bind:value={value}
+        value={value}
       />
   {/snippet}
   </BaseInput>
