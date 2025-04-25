@@ -53,7 +53,6 @@
   >
     {#snippet input()}
     <input 
-        
         onblur={() => {fieldState.blur()}}
         required={required}
         onkeyup={on_keyup}
@@ -61,7 +60,7 @@
         placeholder={placeholder}
         type="email"
         name={name}
-        value={value}
+        bind:value={value}
       />
   {/snippet}
   </BaseInput>
