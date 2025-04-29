@@ -162,16 +162,6 @@
     on_change={on_change}
     {required}
 >
-    <div slot="label" class="smart-form-input-label" style="display: flex; justify-content: space-between">
-        {#if label}
-        <label for={name}>{label}
-            {#if required}
-            <span style="color: #ce0262">*</span>
-            {/if}
-        </label>
-        {/if}
-    </div>
-
     {#snippet input()}
       <input
           bind:this={element}
