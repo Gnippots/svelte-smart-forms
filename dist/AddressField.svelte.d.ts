@@ -1,4 +1,5 @@
 interface Props {
+    API_KEY: string;
     address?: any;
     label?: string;
     formState?: any;
@@ -8,6 +9,7 @@ interface Props {
     name?: string;
     show_search?: boolean;
     mailing?: boolean;
+    placeholder?: string;
 }
 declare const AddressField: import("svelte").Component<Props, {}, "address">;
 type AddressField = ReturnType<typeof AddressField>;

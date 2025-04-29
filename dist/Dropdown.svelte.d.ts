@@ -1,14 +1,14 @@
 import type { FormState } from './Interfaces';
 declare const Dropdown: import("svelte").Component<{
     label?: string;
-    value?: string | null;
+    value?: any;
     required?: boolean;
     name?: string;
     disabled?: boolean;
     formState?: FormState | null;
     classes?: string;
     options?: Array<string | {
-        value: string;
+        value: any;
         name: string;
         disabled?: boolean;
     }>;

@@ -30,3 +30,24 @@ export interface FieldState {
     blur: () => void;
     [key: string]: any;
 }
+export interface AddressComponents {
+    types: string[];
+    short_name: string;
+}
+export interface Place {
+    address_components?: AddressComponents[];
+}
+export interface Address {
+    [key: string]: string;
+    unit_number: string;
+    street_number: string;
+    street_name: string;
+    city: string;
+    state: string;
+    postcode: string;
+    country: string;
+    po_box: string;
+}
+export interface ComponentMap {
+    [key: string]: keyof Address;
+}

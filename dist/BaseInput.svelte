@@ -65,6 +65,7 @@
         delete $formState.errors[name];
       } else {
         $formState.errors[name] = fieldState.errors;
+        $formState.valid = false; // Added by Bailey - if field has an error then form is invalid
       }
 
 
