@@ -13,7 +13,7 @@ interface Props {
     min?: number | null;
     max?: number | null;
     currencySymbol?: string;
-    prefix: Snippet;
+    prefix?: Snippet;
 }
 declare const CashInput: import("svelte").Component<Props, {}, "value">;
 type CashInput = ReturnType<typeof CashInput>;
