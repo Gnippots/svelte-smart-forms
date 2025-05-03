@@ -1,3 +1,4 @@
+import type { Snippet } from 'svelte';
 import type { FormState } from './Interfaces';
 interface Props {
     label?: string;
@@ -10,6 +11,8 @@ interface Props {
     on_change?: any;
     placeholder?: string;
     confirm_against?: string;
+    showPasswordToggle?: Snippet;
+    hidePasswordToggle?: Snippet;
 }
 declare const PasswordInput: import("svelte").Component<Props, {}, "value">;
 type PasswordInput = ReturnType<typeof PasswordInput>;

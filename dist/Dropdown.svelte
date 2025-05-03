@@ -4,13 +4,13 @@
   
   interface Props {
     label?: string;
-    value?: string | null;
+    value?: any;
     required?: boolean;
     name?: string;
     disabled?: boolean;
     formState?: FormState | null;
     classes?: string;
-    options?: Array<string | { value: string; name: string; disabled?: boolean }>;
+    options?: Array<string | { value: any; name: string; disabled?: boolean }>;
     option_groups?: Array<{ label: string; options: Array<string | { value: string; name: string; disabled?: boolean }> }>;
     on_change?: any;
     placeholder?: string;
@@ -70,7 +70,6 @@
     {#snippet input()}
     <div style="margin-bottom: 4px;" >
         <select
-          style="padding: .1rem"
           required={required}
           disabled={disabled}
           name={name}
