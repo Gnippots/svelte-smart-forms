@@ -17,7 +17,7 @@
 		min?: number | null;
 		max?: number | null;
 		currencySymbol?: string; // Symbol for currency (e.g., '$', '€')
-    prefix: Snippet;
+    prefix?: Snippet;
 	}
 
 	// --- Props ---
@@ -148,13 +148,14 @@
 	bind:value={value} {formState}
 >
   {#snippet input()}
-    <div class="flex items-center relative">
+    <div class="smart-forms-cash-input">
       {@render prefix?.()}
 
       <input
         bind:this={inputElement}
         type="text"
-        inputmode="decimal" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-7 pr-3" {name}
+        inputmode="decimal"
+        {name}
         {required}
         {disabled}
         {placeholder}
