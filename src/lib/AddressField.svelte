@@ -161,6 +161,7 @@
     formState={formState}
     on_change={on_change}
     {required}
+    label={label}
 >
     {#snippet input()}
       <input
