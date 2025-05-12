@@ -86,7 +86,7 @@
           bind:value
         />
       {/if}
-      <button class="password-toggle" onclick={toggle_show}>
+      <button type="button" class="password-toggle" onclick={toggle_show}>
         {#if !show_password}
           {#if showPasswordToggle}
             {@render showPasswordToggle()}
