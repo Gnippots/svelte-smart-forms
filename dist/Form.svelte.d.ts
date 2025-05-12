@@ -1,6 +1,6 @@
-import type { FormState as FormStoreType } from './Interfaces';
+import type { FormState } from './Interfaces';
 interface Props {
-    formState: FormStoreType | null;
+    formState?: FormState | null;
     onSubmit?: (() => void) | null;
     children?: import('svelte').Snippet;
     id?: string | null;
