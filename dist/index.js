@@ -12,9 +12,10 @@ import PhoneInput from './PhoneInput.svelte';
 import TextArea from './TextArea.svelte';
 import TextInput from './TextInput.svelte';
 import CashInput from './CashInput.svelte';
+import PercentageInput from './PercentageInput.svelte';
 //import {toast_success, toast_error, toast_warning} from './toast_themes';
 import { createFormState } from './FormState';
-export { Form, AddressField, BaseInput, CheckBox, DatePicker, Dropdown, EmailInput, FieldErrors, NumberInput, PasswordInput, PhoneInput, TextArea, TextInput, CashInput, createFormState,
+export { Form, AddressField, BaseInput, CheckBox, DatePicker, Dropdown, EmailInput, FieldErrors, NumberInput, PasswordInput, PhoneInput, TextArea, TextInput, CashInput, PercentageInput, createFormState,
 // toast_success,
 // toast_error,
 // toast_warning

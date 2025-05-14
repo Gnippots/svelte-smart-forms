@@ -12,6 +12,7 @@ import PhoneInput from './PhoneInput.svelte';
 import TextArea from './TextArea.svelte';
 import TextInput from './TextInput.svelte';
 import CashInput from './CashInput.svelte';
+import PercentageInput from './PercentageInput.svelte';
 //import {toast_success, toast_error, toast_warning} from './toast_themes';
 
 import {createFormState} from './FormState';
@@ -31,6 +32,7 @@ export {
     TextArea, 
     TextInput,
     CashInput,
+    PercentageInput,
     createFormState,
     // toast_success,
     // toast_error,
