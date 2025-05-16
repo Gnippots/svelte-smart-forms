@@ -1,7 +1,6 @@
 <script lang="ts">
   import { run, preventDefault } from 'svelte/legacy';
   import type { FormState } from './Interfaces';
-  import { get } from 'svelte/store';
     
   
   interface Props {
@@ -13,9 +12,6 @@
   }
 
   let { formState = null, onSubmit = null, children, id = null }: Props = $props();
-
-  console.log(formState?.subscribe);
-  
   
     const validate = () => {
       if (!$formState) return;
