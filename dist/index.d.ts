@@ -11,5 +11,7 @@ import PasswordInput from './PasswordInput.svelte';
 import PhoneInput from './PhoneInput.svelte';
 import TextArea from './TextArea.svelte';
 import TextInput from './TextInput.svelte';
+import CashInput from './CashInput.svelte';
+import PercentageInput from './PercentageInput.svelte';
 import { createFormState } from './FormState';
-export { Form, AddressField, BaseInput, CheckBox, DatePicker, Dropdown, EmailInput, FieldErrors, NumberInput, PasswordInput, PhoneInput, TextArea, TextInput, createFormState, };
+export { Form, AddressField, BaseInput, CheckBox, DatePicker, Dropdown, EmailInput, FieldErrors, NumberInput, PasswordInput, PhoneInput, TextArea, TextInput, CashInput, PercentageInput, createFormState, };

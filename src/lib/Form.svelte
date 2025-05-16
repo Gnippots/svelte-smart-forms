@@ -1,7 +1,6 @@
 <script lang="ts">
   import { run, preventDefault } from 'svelte/legacy';
-
-    import type { FormState } from './Interfaces';
+  import type { FormState } from './Interfaces';
     
   
   interface Props {
