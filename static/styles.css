@@ -74,3 +74,80 @@
   border: 1px solid #dcdcdc;
   cursor:pointer;
 }
+
+/* The stuff below this comment is for the AddressInput Component */
+
+.address-container {
+  position: relative;
+}
+
+.suggestions-list {
+  position: absolute;
+  top: calc(100%);
+  left: 0;
+  right: 0;
+  background-color: #bcbcbc;
+  border: 1px solid #dcdcdc; 
+  border-top: none; 
+  border-radius: 0 0 2px 2px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  z-index: 1000; 
+  max-height: 250px; 
+  overflow-y: auto;
+  font-size: 13px;
+}
+
+.loading-indicator {
+  padding: 8px 12px;
+  color: #555;
+  font-style: italic;
+  font-size: 13px;
+  background-color: #fff;
+  border: 1px solid #dcdcdc;
+  border-top: none;
+  border-radius: 0 0 2px 2px;
+  margin-top: -1px;
+}
+
+.suggestion-item-button {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  text-align: left;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #eee; 
+  cursor: pointer;
+  font-size: 13px;
+  color: #495057;
+  line-height: 1.47;
+  transition: background-color 0.15s ease-in-out;
+}
+
+li:last-child .suggestion-item-button {
+  border-bottom: none; 
+}
+
+.suggestion-item-button:hover,
+.suggestion-item-button:focus { 
+  background-color: #f0f0f0;
+  color: #000;
+  outline: none; 
+}
+
+.selected-address-display {
+  margin-top: 15px;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.address-warning {
+  color: #dc3545; 
+  font-weight: bold;
+}
