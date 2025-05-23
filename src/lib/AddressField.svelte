@@ -83,7 +83,6 @@
       const gmapsRequest = {
         input: search,
         language: 'en-GB',
-        region: 'au', // Add Nz
         sessionToken: token,
         includedPrimaryTypes: ['apartment_building', 'apartment_complex', 'condominium_complex', 'housing_complex', 'street_address'],
         includedRegionCodes: ['au', 'nz']
@@ -142,7 +141,11 @@
         for (const component of place.addressComponents) {
           for (const type of component.types) {
             if (component_map[type]) {
-              newAddress[component_map[type]] = component.longText || component.shortText || '';
+              if (type === 'administrative_area_level_1' && component.shortText) {
+                newAddress[component_map[type]] = component.shortText;
+              } else {
+                newAddress[component_map[type]] = component.longText || component.shortText || '';
+              }
             }
           }
         }
