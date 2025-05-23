@@ -90,7 +90,6 @@
     ></EmailInput>
 
     <AddressField
-      API_KEY={PUBLIC_GOOGLE_MAPS_API_KEY}
       name="address"
       label="Address Field"
       bind:address={form.address}
