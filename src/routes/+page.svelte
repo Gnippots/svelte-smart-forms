@@ -15,6 +15,7 @@
   } from '$lib';
   import AddressField from '$lib/AddressField.svelte';
   import { SvelteToast } from '@zerodevx/svelte-toast';
+  import CashInput from '$lib/CashInput.svelte';
 
   const PUBLIC_GOOGLE_MAPS_API_KEY = 'AIzaSyA6TiGYW4XTaa79sSv-UWvrjbRFCuB_HIM';
 
@@ -139,6 +140,8 @@
       required={true}
       {formState}
     ></PhoneInput>
+
+    <CashInput/>
 
     <hr />
     <p>Error Message component</p>

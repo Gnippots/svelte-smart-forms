@@ -1,5 +1,4 @@
 interface Props {
-    API_KEY: string;
     address?: any;
     label?: string;
     formState?: any;
