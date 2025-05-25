@@ -17,9 +17,21 @@
   import { SvelteToast } from '@zerodevx/svelte-toast';
   import CashInput from '$lib/CashInput.svelte';
 
-  const PUBLIC_GOOGLE_MAPS_API_KEY = 'AIzaSyA6TiGYW4XTaa79sSv-UWvrjbRFCuB_HIM';
-
   const formState = createFormState();
+
+  // Add custom validation rule for number fields
+  formState.update(state => {
+    state.customRules = [() => {
+      const sum = (form.linkedNumber1 || 0) + (form.linkedNumber2 || 0);
+      if (sum <= 0) {
+        state.errors['number_sum'] = { message: 'The sum of both numbers must be greater than zero' };
+        state.valid = false;
+      } else {
+        delete state.errors['number_sum'];
+      }
+    }];
+    return state;
+  });
 
   const form: {
     text?: string;
@@ -33,6 +45,8 @@
     password2?: string;
     textarea?: string;
     phone?: string;
+    linkedNumber1?: number;
+    linkedNumber2?: number;
   } = $state({
     text: '',
     number: 0,
@@ -44,7 +58,9 @@
     password: '',
     password2: '',
     textarea: '',
-    phone: ''
+    phone: '',
+    linkedNumber1: 0,
+    linkedNumber2: 0
   });
 
   let submit = () => {
@@ -89,13 +105,13 @@
       {formState}
     ></EmailInput>
 
-    <AddressField
+    <!-- <AddressField
       name="address"
       label="Address Field"
       bind:address={form.address}
       required={true}
       {formState}
-    ></AddressField>
+    ></AddressField> -->
 
     <CheckBox
       label="Checkbox"
@@ -143,16 +159,35 @@
 
     <CashInput/>
 
+    <NumberInput
+      name={'linkedNumber1'}
+      label={'Linked Number 1'}
+      bind:value={form.linkedNumber1}
+      required={true}
+      {formState}
+    ></NumberInput>
+
+    <NumberInput
+      name={'linkedNumber2'}
+      label={'Linked Number 2'}
+      bind:value={form.linkedNumber2}
+      required={true}
+      {formState}
+    ></NumberInput>
+
+
     <hr />
     <p>Error Message component</p>
     <FieldErrors></FieldErrors>
 
     <hr />
 
+    
+
     <button>Submit</button>
   </Form>
 </div>
 
 <pre>{JSON.stringify($formState, null, 4)}</pre>
-<pre>{JSON.stringify(form, null, 4)}</pre>
+<pre>{JSON.stringify($state.snapshot(form), null, 4)}</pre>
 <SvelteToast />

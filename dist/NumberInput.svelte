@@ -32,7 +32,8 @@
 	let fieldState: FieldState = $state();
 </script>
 
-<BaseInput {label} {required} {classes} {name} bind:fieldState bind:value {formState}>
+
+  {#snippet input()}
 	<input
 		onblur={() => {
 			fieldState.blur();
@@ -47,4 +48,7 @@
 		{min}
 		{max}
 	/>
+  {/snippet}
+
+<BaseInput {label} {required} {classes} {name} bind:fieldState bind:value {formState} input={input}>
 </BaseInput>

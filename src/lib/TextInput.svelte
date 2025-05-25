@@ -1,5 +1,6 @@
 <script lang="ts">
   import BaseInput from '$lib/BaseInput.svelte';
+	import { createFieldState } from './FieldState.svelte';
   import type { FieldState, FormState } from './Interfaces';
 
   interface Props {
@@ -9,7 +10,7 @@
     name?: string;
     disabled?: boolean;
     show_validation?: boolean;
-    formState?: FormState | null;
+    formState: FormState;
     classes?: string;
     on_change?: () => void;
     on_keyup?: () => void;
@@ -23,28 +24,17 @@
     name = '',
     disabled = false,
     show_validation = true,
-    formState = null,
+    formState,
     classes = 'smart-form-input',
     on_change = () => {},
     on_keyup = () => {},
     placeholder = ''
   }: Props = $props();
 
-  let fieldState = $state<FieldState>();
+  let fieldState = $state<FieldState>(createFieldState());
+
 </script>
 
-<BaseInput
-  {label}
-  {classes}
-  {required}
-  {name}
-  bind:value
-  bind:fieldState
-  {formState}
-  {show_validation}
-  {on_change}
-  validation_functions={[]}
->
   {#snippet input()}
     <input
       onblur={() => {
@@ -59,4 +49,18 @@
       bind:value
     />
   {/snippet}
+
+<BaseInput
+  {label}
+  {classes}
+  {required}
+  {name}
+  {value}
+  {fieldState}
+  {formState}
+  {show_validation}
+  {on_change}
+  validation_functions={[]}
+  input={input}
+>
 </BaseInput>
