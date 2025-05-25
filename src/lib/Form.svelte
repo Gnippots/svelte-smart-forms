@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { run, preventDefault } from 'svelte/legacy';
+  import { preventDefault } from 'svelte/legacy';
   import type { FormState } from './Interfaces';
     
   
@@ -46,10 +46,10 @@
       onSubmit();
     };
   
-    run(() => {
+    // Initialize form state and validate fields
+    $effect.root(() => {
       if (formState) {
         validate();
-        $formState?.fields;
       }
     });
   </script>
