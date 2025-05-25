@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { preventDefault } from 'svelte/legacy';
   import type { FormState } from './Interfaces';
     
   
@@ -54,7 +53,7 @@
     });
   </script>
   
-  <form onsubmit={preventDefault(submitHandler)} novalidate id={id}>
+  <form onsubmit={submitHandler} novalidate id={id}>
     {@render children?.()}
   </form>
   
