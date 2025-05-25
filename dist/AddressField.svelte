@@ -1,17 +1,10 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
-  import { onMount } from 'svelte';
-  import { BaseInput, TextInput, Dropdown, FieldErrors } from './';
+  import { BaseInput } from './'; //, TextInput, Dropdown, FieldErrors } from './';
   import clonedeep from 'lodash.clonedeep';
-
-  import * as Gmaps from '@googlemaps/js-api-loader';
-  const { Loader } = Gmaps;
 
   import type { Address, ComponentMap, FieldState } from './Interfaces';
 
   interface Props {
-    API_KEY: string;
     address?: any;
     label?: string;
     formState?: any;
@@ -25,7 +18,6 @@
   }
 
   let {
-    API_KEY,
     address = $bindable(),
     label = '',
     formState = null,
@@ -33,8 +25,6 @@
     on_change = () => {},
     classes = 'smart-form-input',
     name = 'null',
-    show_search = true,
-    mailing = false,
     placeholder
   }: Props = $props();
 
@@ -44,6 +34,11 @@
   let search = $state('');
   let show_full_address = $state(false);
   let all_changes = $state(() => {});
+
+  let isLoading = $state(false);
+  let searchResults = $state([]) as any[];
+  let debounceTimeout: number;
+
 
   function is_required(field: any) {
     if (required.all || required[field]) {
@@ -71,85 +66,100 @@
     postal_code: 'postcode',
     subpremise: 'unit_number'
   };
+  
+  async function makeGoogleMapsRequest() {
+    if (typeof google === 'undefined' || typeof google.maps === 'undefined' || typeof google.maps.importLibrary === 'undefined') {
+      console.error('Google Maps JavaScript API not loaded yet. Please ensure the script tag in your HTML is correct and has loaded.');
+      isLoading = false;
+      return;
+    }
 
-  async function initAutoComplete(inputElement: HTMLInputElement) {
-    const loader = new Loader({
-      apiKey: API_KEY,
-      version: 'weekly',
-      libraries: ['places']
-    });
+    isLoading = true;
 
-    const options = {
-      types: ['address'],
-      componentRestrictions: { country: 'AU' }
-    };
+    try {
+      const { AutocompleteSessionToken, AutocompleteSuggestion } = await google.maps.importLibrary("places") as google.maps.PlacesLibrary;
+      const token = new AutocompleteSessionToken();
 
-    const { Autocomplete } = await loader.importLibrary('places');
-    return new Autocomplete(inputElement, options);
+      const gmapsRequest = {
+        input: search,
+        language: 'en-GB',
+        sessionToken: token,
+        includedPrimaryTypes: ['apartment_building', 'apartment_complex', 'condominium_complex', 'housing_complex', 'street_address'],
+        includedRegionCodes: ['au', 'nz']
+      };
+
+      const response = await AutocompleteSuggestion.fetchAutocompleteSuggestions(gmapsRequest);
+
+      if (response && response.suggestions) {
+        searchResults = response.suggestions.map(suggestion => ({
+          description: suggestion.placePrediction?.text.toString(),
+          place_id: suggestion.placePrediction?.placeId
+        }));
+      } else {
+        searchResults = [];
+      }
+   } catch(error) {
+      console.error('Error getting Google Maps Results: ', error);
+    } finally {
+      isLoading = false;
+    }
   }
 
-  function handlePlaceChanged(place: any) {
-    let new_address = clonedeep(empty_address);
+  function debouncedMakeGoogleMapsRequest() {
+    if (!search || search.trim() === '') return;
 
-    if (place.address_components) {
-      for (let component of place.address_components) {
-        const addressType = component.types[0];
-        if (component_map[addressType]) {
-          new_address[component_map[addressType]] = component.short_name;
+    clearTimeout(debounceTimeout);
+    debounceTimeout = window.setTimeout(() => {
+        makeGoogleMapsRequest();
+    }, 400); 
+  }
+
+  async function handleSuggestionClick(selectedSuggestion: { description: string, place_id: string }) {
+    if (!selectedSuggestion.place_id) {
+        console.error("Selected suggestion has no place_id:", selectedSuggestion);
+        return;
+    }
+
+    search = selectedSuggestion.description; // Update input field
+    searchResults = []; // Clear suggestions
+
+    try {
+      if (typeof google === 'undefined' || typeof google.maps === 'undefined' || typeof google.maps.importLibrary === 'undefined') {
+        console.error('Google Maps JavaScript API not loaded for fetching Place details.');
+        isLoading = false;
+        return;
+      }
+      const { Place } = await google.maps.importLibrary("places") as google.maps.PlacesLibrary;
+
+      const place = new Place({ id: selectedSuggestion.place_id });
+      await place.fetchFields({ fields: ['addressComponents', 'formattedAddress'] });
+
+      const newAddress = clonedeep(empty_address);
+      formatted_address = place.formattedAddress || selectedSuggestion.description;
+
+      if (place.addressComponents) {
+        for (const component of place.addressComponents) {
+          for (const type of component.types) {
+            if (component_map[type]) {
+              if (type === 'administrative_area_level_1' && component.shortText) {
+                newAddress[component_map[type]] = component.shortText;
+              } else {
+                newAddress[component_map[type]] = component.longText || component.shortText || '';
+              }
+            }
+          }
         }
       }
+      
+      // Basic check for incompleteness
+      incomplete = !(newAddress.street_name && newAddress.city && newAddress.postcode && newAddress.country);
+      
+      address = newAddress; // Update the bindable address prop
+    } catch (error) {
+      console.error('Error fetching place details:', error);
+      incomplete = true; // Assume incomplete on error
     }
-    address = {...new_address};
   }
-
-  onMount(async () => {
-    all_changes = () => {
-      on_change();
-      //fieldState.dirty = value == fieldState.initial_value;
-    };
-
-    if (element) {
-      const autoComplete = await initAutoComplete(element);
-
-      autoComplete.addListener('place_changed', () => {
-        handlePlaceChanged(autoComplete.getPlace())
-      });
-    }
-  });
-
-  run(() => {
-    let s = '';
-    let fields = ['street_number', 'street_name', 'city', 'state', 'postcode', 'country'];
-    let country = address.country;
-    if (mailing) {
-      fields = fields.concat(['first_name', 'role', 'company_name']);
-    }
-    incomplete = false;
-
-    fields.forEach((field) => {
-      if (!address[field] && is_required(field)) {
-        incomplete = true;
-      }
-    });
-    if (incomplete) {
-      formatted_address = '';
-    }
-
-    if (address.unit_number) {
-      s += `${address.unit_number}/`;
-    }
-    if (country === 'AU') {
-      country = 'Australia';
-    }
-    s += `${address.street_number} ${address.street_name} ${address.city} ${address.state} ${address.postcode}`;
-    formatted_address = s;
-  });
-
-  run(() => {
-    if (!show_search) {
-      show_full_address = true;
-    }
-  });
 
   let fieldState = $state<FieldState>();
 </script>
@@ -161,126 +171,67 @@
     formState={formState}
     on_change={on_change}
     {required}
+    label={label}
 >
-    <div slot="label" class="smart-form-input-label" style="display: flex; justify-content: space-between">
-        {#if label}
-        <label for={name}>{label}
-            {#if required}
-            <span style="color: #ce0262">*</span>
-            {/if}
-        </label>
-        {/if}
-    </div>
-
     {#snippet input()}
+    <div id="smart-forms-address-containter" class="address-container">
       <input
-          bind:this={element}
-          {placeholder}
-          {name}
-          onblur={() => {
-            fieldState?.blur();
-          }}
-          bind:value={search}
-          onkeyup={all_changes}
+        bind:this={element}
+        type="text"
+        class={classes}
+        placeholder={placeholder}
+        name={name} 
+        aria-label={label || 'Address search'}
+        autocomplete="off"
+        role="combobox"
+        aria-autocomplete="list"
+        aria-expanded={searchResults.length > 0}
+        aria-controls="suggestions-list"
+        onblur={() => {
+          fieldState?.blur();
+          // Slight delay to give chance to click on option
+          setTimeout(() => {
+            if (!element?.parentElement?.querySelector('.suggestions-list:hover')) {
+               searchResults = [];
+            }
+          }, 200);
+        }}
+        bind:value={search}
+        oninput={debouncedMakeGoogleMapsRequest}
+        onfocus={() => {
+          debouncedMakeGoogleMapsRequest();
+        }}
       />
+      {#if isLoading && searchResults.length === 0}
+        <div class="loading-indicator">Loading suggestions...</div>
+      {/if}
+      {#if searchResults.length > 0}
+      <ul id="suggestions-list" role="listbox" class="suggestions-list">
+        {#each searchResults as result, index (result.place_id)}
+        <li
+            role="option"
+            aria-selected={false}
+            id={`suggestion-${index}`}
+            onmouseenter={(e) => (e.target as HTMLLIElement).classList.add('suggestion-item-hover')}
+            onmouseleave={(e) => (e.target as HTMLLIElement).classList.remove('suggestion-item-hover')}
+            class="suggestion-item"
+        >
+          <button class="suggestion-item-button" onclick={() => handleSuggestionClick(result)}>{result.description}</button>
+        </li>
+        {/each}
+      </ul>
+      {/if}
+    </div>
     {/snippet} 
 </BaseInput>
 
 {#if !show_full_address}
 <div>
     {#if incomplete}
-    <p class="smart-form-formatted-address">Address is incomplete</p>
+    <p class="address-warning">Address is incomplete</p>
     {/if}
 </div>
 {/if}
 
-{#if show_full_address}
-<div>
-    {#if mailing}        
-
-    <TextInput 
-        name={name+'_name'} 
-        label={'Name'} 
-        bind:value={address.first_name} 
-        formState={formState}
-        required={mailing && (required.name || required.all)}
-    ></TextInput>
-
-    <TextInput 
-        name={name+'_role'} 
-        label={'Role'} 
-        bind:value={address.role} 
-        formState={formState}
-        required={mailing && (required.role || required.all)}
-    ></TextInput>
-
-    <TextInput 
-        name={name+'_company_name'} 
-        label={'Company Name'} 
-        bind:value={address.company_name} 
-        formState={formState}
-        required={mailing && (required.company_name || required.all)}
-    ></TextInput>
-    
-    {/if}
-
-    <TextInput 
-        name={name+'_unit_number'} 
-        label={'Unit #'} 
-        bind:value={address.unit_number} 
-        formState={formState}
-    ></TextInput>
-
-    <TextInput 
-        name={name+'_street_number'} 
-        label={'Street #'} 
-        bind:value={address.street_number}
-        formState={formState}
-        required={required.street_number || required.all}
-    ></TextInput>
-
-    <TextInput 
-        name={name+'_street_name'} 
-        label={'Street Name'} 
-        bind:value={address.street_name} 
-        formState={formState}
-        required={required.street_name || required.all}
-    ></TextInput>
-        
-    <TextInput 
-        name={name+'_city'} 
-        label={'City'} 
-        bind:value={address.city} 
-        formState={formState}
-        required={required.city || required.all}
-    ></TextInput>
-        
-    <Dropdown 
-        name={name+'_state'}
-        label={'State'}
-        options={['NSW', 'VIC', 'QLD', 'NT', 'WA', 'SA', 'ACT', 'TAS']}
-        bind:value={address.state}
-        formState={formState}
-        required={required.state || required.all}
-    ></Dropdown>
-        
-    <TextInput 
-        name={name+'_postcode'} 
-        label={'Postcode'} 
-        bind:value={address.postcode}
-        formState={formState}
-        required={required.postcode || required.all}
-    ></TextInput>
-
-    <Dropdown 
-        name={name+'_country'}
-        label={'Country'}
-        options={['AU']}                     
-        bind:value={address.country}
-        formState={formState}
-        required={required.city || required.all}
-    ></Dropdown>
-</div>
-{/if}
-
-<style></style>
+<style>
+</style>
