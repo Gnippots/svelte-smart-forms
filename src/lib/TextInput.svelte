@@ -56,7 +56,7 @@
   {required}
   {name}
   {value}
-  {fieldState}
+  bind:fieldState={fieldState}
   {formState}
   {show_validation}
   {on_change}

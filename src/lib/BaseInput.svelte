@@ -17,7 +17,7 @@
       formState, 
       on_change = () => {}, 
       validation_functions, 
-      fieldState,
+      fieldState = $bindable(),
       input
     } : {
       label: string, 
@@ -69,7 +69,6 @@
       $formState.fields[name] = fieldState;
     }
 
-  
     $effect(() => {
       validate(value);
     });

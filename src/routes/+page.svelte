@@ -35,7 +35,7 @@
 
   const form: {
     text?: string;
-    number?: number;
+    number: number;
     dropdown?: string;
     email?: string;
     address?: any;
@@ -78,6 +78,7 @@
       {formState}
     ></TextInput>
 
+<!-- 
     <NumberInput
       name={'number'}
       min={0}
@@ -87,7 +88,6 @@
       required={true}
       {formState}
     ></NumberInput>
-
     <Dropdown
       name={'dropdown'}
       options={['One', 'Two']}
@@ -105,13 +105,13 @@
       {formState}
     ></EmailInput>
 
-    <!-- <AddressField
+    <AddressField
       name="address"
       label="Address Field"
       bind:address={form.address}
       required={true}
       {formState}
-    ></AddressField> -->
+    ></AddressField>
 
     <CheckBox
       label="Checkbox"
@@ -174,7 +174,7 @@
       required={true}
       {formState}
     ></NumberInput>
-
+ -->
 
     <hr />
     <p>Error Message component</p>

@@ -22,8 +22,8 @@
 		name: string,
 		disabled?: boolean,
 		formState: FormState,
-		classes: string,
-		on_change: () => void,
+		classes?: string,
+		on_change?: () => void,
 		placeholder?: string,
 		min?: number | null,
 		max?: number | null
@@ -56,7 +56,7 @@
 	{required}
 	{name}
 	{value}
-	{fieldState}
+	bind:fieldState={fieldState}
 	{formState}
 	{on_change}
 	validation_functions={[]}
