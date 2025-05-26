@@ -16,7 +16,7 @@
 		placeholder = '',
 		min = null,
 		max = null
-	}: {
+	} : {
 		label: string,
 		value: number | null,
 		required: boolean,

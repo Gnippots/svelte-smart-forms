@@ -1,5 +1,6 @@
 <script lang="ts">
     import BaseInput from '$lib/BaseInput.svelte';
+	import { createFieldState } from './FieldState.svelte';
     import type { FieldState, FormState } from './Interfaces';
     interface Props {
         label?: string;
@@ -8,10 +9,11 @@
         rows?: number;
         name?: string;
         disabled?: boolean;
-        formState?: FormState | null;
+        formState: FormState;
         classes?: string;
         onChange?: any;
         placeholder?: string;
+        showValidation?: boolean;
     }
 
     let {
@@ -21,12 +23,13 @@
         rows = 4,
         name = '',
         disabled = false,
-        formState = null,
+        formState,
         classes = 'smart-form-input',
         onChange = () => {},
-        placeholder = ''
+        placeholder = '',
+        showValidation = true
     }: Props = $props();
-    let fieldState: FieldState = $state();
+  let fieldState = $state<FieldState>(createFieldState());
                 
 </script>
 
@@ -39,7 +42,7 @@
     bind:fieldState={fieldState}
     formState={formState}
     onChange={onChange}
-
+    {showValidation}
 >
     {#snippet input()}
         <textarea

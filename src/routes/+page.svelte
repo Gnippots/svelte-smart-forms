@@ -19,19 +19,18 @@
 
   const formState = createFormState();
 
-  // Add custom validation rule for number fields
-  // formState.update(state => {
-  //   state.customRules = [() => {
-  //     const sum = (form.linkedNumber1 || 0) + (form.linkedNumber2 || 0);
-  //     if (sum <= 0) {
-  //       state.errors['number_sum'] = { message: 'The sum of both numbers must be greater than zero' };
-  //       state.valid = false;
-  //     } else {
-  //       delete state.errors['number_sum'];
-  //     }
-  //   }];
-  //   return state;
-  // });
+   formState.update(state => {
+     state.customRules = [() => {
+       const sum = (form.linkedNumber1 || 0) + (form.linkedNumber2 || 0);
+       if (sum <= 0) {
+         state.errors['number_sum'] = { message: 'The sum of both numbers must be greater than zero' };
+         state.valid = false;
+       } else {
+         delete state.errors['number_sum'];
+       }
+     }];
+     return state;
+   });
 
   const form: {
     text?: string;
@@ -45,8 +44,8 @@
     password2?: string;
     textarea?: string;
     phone?: string;
-    linkedNumber1?: number;
-    linkedNumber2?: number;
+    linkedNumber1: number;
+    linkedNumber2: number;
   } = $state({
     text: '',
     number: 0,
@@ -121,46 +120,49 @@
       required={true}
       bind:value={form.checkbox}
       {formState}
-    ></CheckBox>
+    />
 
     <DatePicker name="datepicker" bind:value={form.datepicker} {formState}></DatePicker>
 
     <PasswordInput
-      name={'password'}
-      label={'Password'}
+      name='password'
+      label='Password'
       bind:value={form.password}
       required={true}
       {formState}
-    ></PasswordInput>
+    />
 
     <PasswordInput
-      name={'password2'}
-      label={'Confirm Password'}
+      name='password2'
+      label='Confirm Password'
       confirm_against={form.password}
       bind:value={form.password2}
       required={true}
       {formState}
-    ></PasswordInput>
-<!-- 
+    />
 
     <TextArea
-      name={'textarea'}
-      label={'Text Area'}
+      name='textarea'
+      label='Text Area'
       bind:value={form.textarea}
       required={true}
       rows={3}
       {formState}
-    ></TextArea>
+    />
 
     <PhoneInput
-      name={'phone'}
-      label={'Phone'}
+      name='phone'
+      label='Phone'
       bind:value={form.phone}
       required={true}
       {formState}
-    ></PhoneInput>
+    />
 
-    <CashInput/>
+    <CashInput
+    name='cash'
+    label='Cash'
+    {formState}
+    />
 
     <NumberInput
       name={'linkedNumber1'}
@@ -177,7 +179,6 @@
       required={true}
       {formState}
     ></NumberInput>
- -->
 
     <hr />
     <p>Error Message component</p>

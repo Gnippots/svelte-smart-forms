@@ -2,6 +2,7 @@
 	import { tick, type Snippet } from 'svelte';
 	import BaseInput from './BaseInput.svelte'; // Assuming BaseInput is in the same directory
 	import type { FormState, FieldState } from './Interfaces'; // Assuming Interfaces are defined
+	import { createFieldState } from './FieldState.svelte';
 
 	// --- Type Definitions ---
 	interface Props {
@@ -10,7 +11,7 @@
 		required?: boolean;
 		name?: string;
 		disabled?: boolean;
-		formState?: FormState | null;
+		formState: FormState;
 		classes?: string;
 		onChange?: (value: number | null) => void; // Callback with the numeric value
 		placeholder?: string;
@@ -27,7 +28,7 @@
 		required = false,
 		name = '',
 		disabled = false,
-		formState = null,
+		formState,
 		classes = 'smart-form-input',
 		onChange = () => {},
 		placeholder = '',
@@ -38,7 +39,7 @@
 	}: Props = $props();
 
 	// --- State ---
-	let fieldState: FieldState = $state();
+  let fieldState = $state<FieldState>(createFieldState());
 	let displayValue = $state('');
 	let inputElement: HTMLInputElement | undefined = $state();
 
@@ -145,7 +146,8 @@
 	{classes}
 	{name}
 	bind:fieldState={fieldState}
-	bind:value={value} {formState}
+	bind:value={value} 
+	{formState}
 >
   {#snippet input()}
     <div class="smart-forms-cash-input">

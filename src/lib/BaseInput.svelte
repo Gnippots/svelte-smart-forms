@@ -7,7 +7,7 @@
 
     let {
       label = '', 
-      value, 
+      value = $bindable(), 
       required = false, 
       disabled = false, 
       classes = 'smart-form-input', 
@@ -29,7 +29,7 @@
       showValidation?: boolean, 
       placeholder?: string, 
       formState: FormState, 
-      onChange: () => void, 
+      onChange?: () => void, 
       validationFunctions?: Array<() => void>, 
       fieldState: FieldState,
       input?: Snippet
