@@ -23,8 +23,25 @@
         }
       }
   
+      // Run custom validation rules
       $formState.customRules.forEach((rule) => {
-        rule();
+        console.log('custom rule', rule);
+        const errorMessage = rule.validate();
+        if (errorMessage) {
+          console.log('errorMessage', errorMessage);
+          const field = $formState.fields[rule.fieldName];
+          console.log('field', field);
+          if (field) {
+            console.log('field', field);
+            field.addError(rule.errorCode, errorMessage);
+            $formState.valid = false;
+          }
+        } else {
+          const field = $formState.fields[rule.fieldName];
+          if (field) {
+            field.removeError(rule.errorCode);
+          }
+        }
       });
     };
   

@@ -9,10 +9,16 @@ export interface Field {
 
 export type Error = Record<string, string>;
 
+export interface CustomValidationRule {
+  fieldName: string;
+  errorCode: string;
+  validate: () => string | null;
+}
+
 export interface FormStateStore {
     fields: Record<string, Field>;
     errors: Record<string, Error>;
-    customRules: Array<() => void>;
+    customRules: Array<CustomValidationRule>;
     dirty: boolean;
     valid: boolean;
     submitted: boolean;
@@ -22,6 +28,7 @@ export interface FormState {
     subscribe: Writable<FormStateStore>['subscribe'];
     set: Writable<FormStateStore>['set'];
     update: Writable<FormStateStore>['update'];
+    addCustomRule: (fieldName: string, errorCode: string, validate: () => string | null) => void;
 }
 
 export interface FieldState {

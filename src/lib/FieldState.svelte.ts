@@ -1,5 +1,3 @@
-import { writable } from 'svelte/store';
-
 export function createFieldState() {
   const state = $state({
     initialValue: null,

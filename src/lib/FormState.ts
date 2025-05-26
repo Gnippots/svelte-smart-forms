@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import type { FormState, FormStateStore } from './Interfaces';
+import type { FormState, FormStateStore, CustomValidationRule } from './Interfaces';
 
 export function createFormState(): FormState {
   const store = writable<FormStateStore>({
@@ -15,5 +15,18 @@ export function createFormState(): FormState {
     subscribe: store.subscribe,
     set: store.set,
     update: store.update,
+    addCustomRule: (fieldName: string, errorCode: string, validate: () => string | null) => {
+      store.update(state => {
+        const rule: CustomValidationRule = {
+          fieldName,
+          errorCode,
+          validate
+        };
+        return {
+          ...state,
+          customRules: [...state.customRules, rule]
+        };
+      });
+    }
   };
 }

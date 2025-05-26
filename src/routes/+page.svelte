@@ -19,18 +19,7 @@
 
   const formState = createFormState();
 
-   formState.update(state => {
-     state.customRules = [() => {
-       const sum = (form.linkedNumber1 || 0) + (form.linkedNumber2 || 0);
-       if (sum <= 0) {
-         state.errors['number_sum'] = { message: 'The sum of both numbers must be greater than zero' };
-         state.valid = false;
-       } else {
-         delete state.errors['number_sum'];
-       }
-     }];
-     return state;
-   });
+
 
   const form: {
     text?: string;
@@ -61,6 +50,17 @@
     linkedNumber1: 0,
     linkedNumber2: 0
   });
+
+  formState.addCustomRule(
+    'linkedNumber1',
+    'sum_validation',
+    () => {
+      if (form.linkedNumber1 + form.linkedNumber2 <= 0) {
+        return 'The sum of both numbers must be greater than zero';
+      }
+      return null;
+    }
+  );
 
   let submit = () => {
     console.log('submitted');
@@ -185,8 +185,6 @@
     <FieldErrors></FieldErrors>
 
     <hr />
-
-    
 
     <button>Submit</button>
   </Form>
