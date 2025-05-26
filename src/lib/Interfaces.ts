@@ -12,7 +12,7 @@ export type Error = Record<string, string>;
 export interface CustomValidationRule {
   fieldName: string;
   errorCode: string;
-  validate: () => string | null;
+  fn: () => string | null;
 }
 
 export interface FormStateStore {
@@ -28,7 +28,7 @@ export interface FormState {
     subscribe: Writable<FormStateStore>['subscribe'];
     set: Writable<FormStateStore>['set'];
     update: Writable<FormStateStore>['update'];
-    addCustomRule: (fieldName: string, errorCode: string, validate: () => string | null) => void;
+    addCustomRule: (fieldName: string, errorCode: string, fn: () => string | null) => void;
 }
 
 export interface FieldState {

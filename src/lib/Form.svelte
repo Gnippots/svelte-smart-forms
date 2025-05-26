@@ -26,7 +26,7 @@
       // Run custom validation rules
       $formState.customRules.forEach((rule) => {
         console.log('custom rule', rule);
-        const errorMessage = rule.validate();
+        const errorMessage = rule.fn();
         if (errorMessage) {
           console.log('errorMessage', errorMessage);
           const field = $formState.fields[rule.fieldName];

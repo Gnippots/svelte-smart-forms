@@ -15,12 +15,12 @@ export function createFormState(): FormState {
     subscribe: store.subscribe,
     set: store.set,
     update: store.update,
-    addCustomRule: (fieldName: string, errorCode: string, validate: () => string | null) => {
+    addCustomRule: (fieldName: string, errorCode: string, fn: () => string | null) => {
       store.update(state => {
         const rule: CustomValidationRule = {
           fieldName,
           errorCode,
-          validate
+          fn: fn
         };
         return {
           ...state,

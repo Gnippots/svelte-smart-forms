@@ -19,8 +19,6 @@
 
   const formState = createFormState();
 
-
-
   const form: {
     text?: string;
     number: number;
