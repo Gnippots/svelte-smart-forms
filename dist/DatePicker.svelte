@@ -1,17 +1,16 @@
 <script lang="ts">
     import BaseInput from './BaseInput.svelte';
+	import { createFieldState } from './FieldState.svelte';
     import type { FieldState, FormState } from './Interfaces';
-
-
     interface Props {
         label?: string;
         value?: Date | null;
         required?: boolean;
         name?: string;
         disabled?: boolean;
-        formState?: FormState | null;
+        formState: FormState;
         classes?: string;
-        on_change?: any;
+        onChange?: any;
         placeholder?: string;
     }
 
@@ -21,14 +20,20 @@
         required = false,
         name = '',
         disabled = false,
-        formState = null,
+        formState,
         classes = 'smart-form-input',
-        on_change = () => {},
+        onChange = () => {},
         placeholder = ''
     }: Props = $props();
-    let fieldState: FieldState = $state();
-                
+    let fieldState = $state<FieldState>(createFieldState());
 </script>
+
+{#snippet input()}
+  <div>
+    DatePicker Coming Soon
+    <!--<Datepicker/>-->
+  </div>
+{/snippet}
 
 <BaseInput
     label={label}
@@ -37,16 +42,10 @@
     required={required}
     name={name}
     disabled={disabled}
-    bind:value={value}
+    value={value}
     bind:fieldState={fieldState}
-    formState={formState}
-    on_change={on_change}
-
->
-{#snippet input()}
-        <div >
-        DatePicker Coming Soon
-        <!--<Datepicker/>-->
-    </div>
-    {/snippet}
-</BaseInput>
+    {formState}
+    onChange={onChange}
+    input={input}
+    showValidation={true}
+/>

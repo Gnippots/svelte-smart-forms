@@ -6,10 +6,11 @@ interface Props {
     rows?: number;
     name?: string;
     disabled?: boolean;
-    formState?: FormState | null;
+    formState: FormState;
     classes?: string;
-    on_change?: any;
+    onChange?: any;
     placeholder?: string;
+    showValidation?: boolean;
 }
 declare const TextArea: import("svelte").Component<Props, {}, "value">;
 type TextArea = ReturnType<typeof TextArea>;

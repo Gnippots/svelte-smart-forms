@@ -17,15 +17,13 @@
   import { SvelteToast } from '@zerodevx/svelte-toast';
   import CashInput from '$lib/CashInput.svelte';
 
-  const PUBLIC_GOOGLE_MAPS_API_KEY = 'AIzaSyA6TiGYW4XTaa79sSv-UWvrjbRFCuB_HIM';
-
   const formState = createFormState();
 
   const form: {
     text?: string;
-    number?: number;
+    number: number;
     dropdown?: string;
-    email?: string;
+    email: string;
     address?: any;
     checkbox?: boolean;
     datepicker?: Date;
@@ -33,6 +31,8 @@
     password2?: string;
     textarea?: string;
     phone?: string;
+    linkedNumber1: number;
+    linkedNumber2: number;
   } = $state({
     text: '',
     number: 0,
@@ -44,8 +44,28 @@
     password: '',
     password2: '',
     textarea: '',
-    phone: ''
+    phone: '',
+    linkedNumber1: 0,
+    linkedNumber2: 0
   });
+
+  const validateLinkedNumbers = () => {
+      if (form.linkedNumber1 + form.linkedNumber2 <= 0) {
+        return 'The sum of both numbers must be greater than zero';
+      }
+      return null;
+  }
+
+  formState.addCustomRule(
+    'linkedNumber1',
+    'sum_validation',
+    validateLinkedNumbers
+  );
+  formState.addCustomRule(
+    'linkedNumber2',
+    'sum_validation',
+    validateLinkedNumbers
+  );
 
   let submit = () => {
     console.log('submitted');
@@ -58,7 +78,7 @@
       name={'text'}
       label={'Text'}
       bind:value={form.text}
-      required={true}
+      required
       {formState}
     ></TextInput>
 
@@ -73,17 +93,17 @@
     ></NumberInput>
 
     <Dropdown
-      name={'dropdown'}
+      name='dropdown'
       options={['One', 'Two']}
-      label={'Dropdown'}
+      label='Dropdown'
       bind:value={form.dropdown}
       required={true}
       {formState}
     ></Dropdown>
 
     <EmailInput
-      name={'email'}
-      label={'Email'}
+      name='email'
+      label='Email'
       bind:value={form.email}
       required={true}
       {formState}
@@ -103,45 +123,65 @@
       required={true}
       bind:value={form.checkbox}
       {formState}
-    ></CheckBox>
+    />
 
     <DatePicker name="datepicker" bind:value={form.datepicker} {formState}></DatePicker>
 
     <PasswordInput
-      name={'password'}
-      label={'Password'}
+      name='password'
+      label='Password'
       bind:value={form.password}
       required={true}
       {formState}
-    ></PasswordInput>
+    />
 
     <PasswordInput
-      name={'password2'}
-      label={'Confirm Password'}
+      name='password2'
+      label='Confirm Password'
       confirm_against={form.password}
       bind:value={form.password2}
       required={true}
       {formState}
-    ></PasswordInput>
+    />
 
     <TextArea
-      name={'textarea'}
-      label={'Text Area'}
+      name='textarea'
+      label='Text Area'
       bind:value={form.textarea}
       required={true}
       rows={3}
       {formState}
-    ></TextArea>
+    />
 
     <PhoneInput
-      name={'phone'}
-      label={'Phone'}
+      name='phone'
+      label='Phone'
       bind:value={form.phone}
       required={true}
       {formState}
-    ></PhoneInput>
+    />
 
-    <CashInput/>
+    <CashInput
+    name='cash'
+    label='Cash'
+    {formState}
+    />
+
+    <NumberInput
+      name={'linkedNumber1'}
+      label={'Linked Number 1'}
+      bind:value={form.linkedNumber1}
+      required={true}
+      {formState}
+    ></NumberInput>
+
+    <NumberInput
+      name={'linkedNumber2'}
+      label={'Linked Number 2'}
+      bind:value={form.linkedNumber2}
+      required={true}
+      {formState}
+    ></NumberInput>
 
     <hr />
     <p>Error Message component</p>
@@ -154,5 +194,5 @@
 </div>
 
 <pre>{JSON.stringify($formState, null, 4)}</pre>
-<pre>{JSON.stringify(form, null, 4)}</pre>
+<pre>{JSON.stringify($state.snapshot(form), null, 4)}</pre>
 <SvelteToast />

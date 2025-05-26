@@ -1,43 +1,62 @@
 <!-- @migration-task Error while migrating Svelte code: This migration would change the name of a slot making the component unusable -->
 <script lang="ts">
     import BaseInput from '$lib/BaseInput.svelte';
+    import { createFieldState } from './FieldState.svelte';
     import type { FieldState, FormState } from './Interfaces';
-    export let label = '';
-    export let value = false;
-    export let required = false;
-    export let name = '';
-    export let disabled = false;
-    export let formState: FormState | null = null;
-    export let on_change = () => {};
-    let fieldState: FieldState;
+
+    interface Props {
+        label?: string;
+        value?: boolean;
+        required?: boolean;
+        name?: string;
+        disabled?: boolean;
+        showValidation?: boolean;
+        formState: FormState;
+        classes?: string;
+        onChange?: () => void;
+    }
+
+    let {
+        label = '',
+        value = $bindable(false),
+        required = false,
+        name = '',
+        disabled = false,
+        showValidation = true,
+        formState,
+        classes = 'smart-form-input',
+        onChange = () => {}
+    }: Props = $props();
+
+    let fieldState = $state<FieldState>(createFieldState());
 </script>
 
-<BaseInput
-    label={label}
-    name={name}
-    required={required}
-    bind:value={value}
-    formState={formState}
-    bind:fieldState={fieldState}
-    on_change={on_change}
->
-<div slot="input">
+{#snippet input()}
     <div class="custom-control custom-switch mb-2">
         <input
-            type=checkbox
+            type="checkbox"
             class="custom-control-input"
-            on:blur={() => {fieldState.blur()}}
-            name={name}
+            onblur={() => fieldState.blur()}
+            {name}
             id={name}
-            required={required}
+            {required}
             bind:checked={value}
-            disabled={disabled}
+            {disabled}
         />
-        
-        <label for={name} class="custom-control-label">
-            <slot name="label"></slot>
-        </label>
     </div>
-</div>
+{/snippet}
 
+<BaseInput
+    {label}
+    {classes}
+    {required}
+    {name}
+    {value}
+    bind:fieldState={fieldState}
+    {formState}
+    {showValidation}
+    {onChange}
+    validationFunctions={[]}
+    input={input}
+>
 </BaseInput>

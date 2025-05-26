@@ -1,20 +1,7 @@
 <script lang="ts">
 	import BaseInput from '$lib/BaseInput.svelte';
+	import { createFieldState } from './FieldState.svelte';
 	import type { FormState, FieldState } from './Interfaces';
-
-	interface Props {
-		label?: string;
-		value?: number | null;
-		required?: boolean;
-		name?: string;
-		disabled?: boolean;
-		formState?: FormState | null;
-		classes?: string;
-		on_change?: any;
-		placeholder?: string;
-		min?: number | null;
-		max?: number | null;
-	}
 
 	let {
 		label = '',
@@ -22,22 +9,38 @@
 		required = false,
 		name = '',
 		disabled = false,
-		formState = null,
+		showValidation = true,
+		formState,
 		classes = 'smart-form-input',
-		on_change = () => {},
+		onChange = () => {},
 		placeholder = '',
 		min = null,
 		max = null
-	}: Props = $props();
-	let fieldState: FieldState = $state();
+	} : {
+		label: string,
+		value: number | null,
+		required: boolean,
+		name: string,
+		disabled?: boolean,
+		showValidation?: boolean,
+		formState: FormState,
+		classes?: string,
+		onChange?: () => void,
+		placeholder?: string,
+		min?: number | null,
+		max?: number | null
+	} = $props();
+
+	let fieldState = $state<FieldState>(createFieldState());
+
 </script>
 
-<BaseInput {label} {required} {classes} {name} bind:fieldState bind:value {formState}>
+{#snippet input()}
 	<input
 		onblur={() => {
 			fieldState.blur();
 		}}
-		onkeyup={on_change}
+		onkeyup={onChange}
 		{required}
 		{disabled}
 		{placeholder}
@@ -47,4 +50,19 @@
 		{min}
 		{max}
 	/>
+{/snippet}
+
+<BaseInput
+	{label}
+	{classes}
+	{required}
+	{name}
+	{value}
+	bind:fieldState={fieldState}
+	{formState}
+	{showValidation}
+	{onChange}
+	validationFunctions={[]}
+	input={input}
+>
 </BaseInput>

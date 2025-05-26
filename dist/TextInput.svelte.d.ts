@@ -5,11 +5,11 @@ interface Props {
     required?: boolean;
     name?: string;
     disabled?: boolean;
-    show_validation?: boolean;
-    formState?: FormState | null;
+    showValidation?: boolean;
+    formState: FormState;
     classes?: string;
-    on_change?: () => void;
-    on_keyup?: () => void;
+    onChange?: () => void;
+    onKeyup?: () => void;
     placeholder?: string;
 }
 declare const TextInput: import("svelte").Component<Props, {}, "value">;

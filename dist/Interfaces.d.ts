@@ -6,27 +6,30 @@ export interface Field {
     [key: string]: any;
 }
 export type Error = Record<string, string>;
+export interface CustomValidationRule {
+    fieldName: string;
+    errorCode: string;
+    fn: () => string | null;
+}
 export interface FormStateStore {
     fields: Record<string, Field>;
     errors: Record<string, Error>;
-    customRules: Array<() => void>;
+    customRules: Array<CustomValidationRule>;
     dirty: boolean;
     valid: boolean;
     submitted: boolean;
 }
-export interface FormState {
-    subscribe: Writable<FormStateStore>['subscribe'];
-    set: Writable<FormStateStore>['set'];
-    update: Writable<FormStateStore>['update'];
+export interface FormState extends Writable<FormStateStore> {
+    addCustomRule: (fieldName: string, errorCode: string, fn: () => string | null) => void;
 }
 export interface FieldState {
     dirty: boolean;
     valid: boolean;
     blurred: boolean;
-    initial_value: any;
+    initialValue: any;
     errors: Error;
-    add_error: (error: string, message: string) => void;
-    remove_error: (error: string) => void;
+    addError: (error: string, message: string) => void;
+    removeError: (error: string) => void;
     blur: () => void;
     [key: string]: any;
 }

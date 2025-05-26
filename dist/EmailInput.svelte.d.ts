@@ -1,17 +1,17 @@
 import type { FormState } from './Interfaces';
-interface Props {
-    label?: string;
-    value?: string;
-    required?: boolean;
-    name?: string;
+type $$ComponentProps = {
+    label: string;
+    value: string;
+    required: boolean;
+    name: string;
     disabled?: boolean;
-    show_validation?: boolean;
-    formState?: FormState | null;
+    showValidation?: boolean;
+    formState: FormState;
     classes?: string;
-    on_change?: any;
-    on_keyup?: any;
+    onChange?: () => void;
+    onKeyup?: () => void;
     placeholder?: string;
-}
-declare const EmailInput: import("svelte").Component<Props, {}, "value">;
+};
+declare const EmailInput: import("svelte").Component<$$ComponentProps, {}, "value">;
 type EmailInput = ReturnType<typeof EmailInput>;
 export default EmailInput;

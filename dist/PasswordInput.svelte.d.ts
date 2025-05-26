@@ -6,13 +6,14 @@ interface Props {
     required?: boolean;
     name?: string;
     disabled?: boolean;
-    formState?: FormState | null;
+    formState: FormState;
     classes?: string;
-    on_change?: any;
+    onChange?: any;
     placeholder?: string;
     confirm_against?: string;
     showPasswordToggle?: Snippet;
     hidePasswordToggle?: Snippet;
+    showValidation?: boolean;
 }
 declare const PasswordInput: import("svelte").Component<Props, {}, "value">;
 type PasswordInput = ReturnType<typeof PasswordInput>;

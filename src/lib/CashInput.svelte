@@ -2,6 +2,7 @@
 	import { tick, type Snippet } from 'svelte';
 	import BaseInput from './BaseInput.svelte'; // Assuming BaseInput is in the same directory
 	import type { FormState, FieldState } from './Interfaces'; // Assuming Interfaces are defined
+	import { createFieldState } from './FieldState.svelte';
 
 	// --- Type Definitions ---
 	interface Props {
@@ -10,9 +11,9 @@
 		required?: boolean;
 		name?: string;
 		disabled?: boolean;
-		formState?: FormState | null;
+		formState: FormState;
 		classes?: string;
-		on_change?: (value: number | null) => void; // Callback with the numeric value
+		onChange?: (value: number | null) => void; // Callback with the numeric value
 		placeholder?: string;
 		min?: number | null;
 		max?: number | null;
@@ -27,9 +28,9 @@
 		required = false,
 		name = '',
 		disabled = false,
-		formState = null,
+		formState,
 		classes = 'smart-form-input',
-		on_change = () => {},
+		onChange = () => {},
 		placeholder = '',
 		min = null,
 		max = null,
@@ -38,7 +39,7 @@
 	}: Props = $props();
 
 	// --- State ---
-	let fieldState: FieldState = $state();
+  let fieldState = $state<FieldState>(createFieldState());
 	let displayValue = $state('');
 	let inputElement: HTMLInputElement | undefined = $state();
 
@@ -100,7 +101,7 @@
 		// Only update if the numeric value has actually changed
 		if (numericValue !== value) {
 			value = numericValue; // Update bindable prop
-			on_change(numericValue); // Trigger callback
+			onChange(numericValue); // Trigger callback
 		}
 
 		// Reformat the display value immediately for better UX
@@ -127,7 +128,7 @@
 		displayValue = formatNumber(numericValue); // Format the final number
 		if (value !== numericValue) {
 			// If parsing/clamping changed the value on blur, notify parent
-			on_change(numericValue);
+			onChange(numericValue);
 		}
 		fieldState?.blur(); // Notify BaseInput about the blur event
 	}
@@ -145,7 +146,8 @@
 	{classes}
 	{name}
 	bind:fieldState={fieldState}
-	bind:value={value} {formState}
+	bind:value={value} 
+	{formState}
 >
   {#snippet input()}
     <div class="smart-forms-cash-input">

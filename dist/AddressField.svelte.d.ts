@@ -1,15 +1,15 @@
-interface Props {
+type $$ComponentProps = {
     address?: any;
     label?: string;
     formState?: any;
-    required?: any;
-    on_change?: any;
+    required?: boolean;
+    onChange?: any;
     classes?: string;
     name?: string;
-    show_search?: boolean;
+    showValidation?: boolean;
     mailing?: boolean;
     placeholder?: string;
-}
-declare const AddressField: import("svelte").Component<Props, {}, "address">;
+};
+declare const AddressField: import("svelte").Component<$$ComponentProps, {}, "address">;
 type AddressField = ReturnType<typeof AddressField>;
 export default AddressField;

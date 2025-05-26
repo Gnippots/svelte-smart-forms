@@ -2,6 +2,7 @@
   import BaseInput from './BaseInput.svelte';
 	import type { Snippet } from 'svelte';
   import type { FieldState, FormState } from './Interfaces';
+	import { createFieldState } from './FieldState.svelte';
 
   interface Props {
     label?: string;
@@ -9,13 +10,14 @@
     required?: boolean;
     name?: string;
     disabled?: boolean;
-    formState?: FormState | null;
+    formState: FormState;
     classes?: string;
-    on_change?: any;
+    onChange?: any;
     placeholder?: string;
     confirm_against?: string;
     showPasswordToggle?: Snippet;
     hidePasswordToggle?: Snippet;
+    showValidation?: boolean;
   }
 
   let {
@@ -24,16 +26,17 @@
     required = false,
     name = '',
     disabled = false,
-    formState = null,
+    formState,
     classes = 'smart-form-input',
-    on_change = () => {},
+    onChange = () => {},
     placeholder = '',
     confirm_against = '',
     showPasswordToggle = undefined,
-    hidePasswordToggle = undefined
+    hidePasswordToggle = undefined,
+    showValidation = true
   }: Props = $props();
   
-  let fieldState = $state<FieldState>();
+  let fieldState = $state<FieldState>(createFieldState());
   let show_password: boolean = $state(false);
 
 
@@ -43,7 +46,7 @@
 
   let validate_confirmation = () => {
     if (confirm_against !== '' && value != '' && confirm_against !== value) {
-      fieldState?.add_error('confirm', 'Passwords do not match');
+      fieldState?.addError('confirm', 'Passwords do not match');
     }
   };
 </script>
@@ -53,11 +56,12 @@
   {name}
   {classes}
   {required}
-  bind:value
-  bind:fieldState
+  bind:value={value}
+  bind:fieldState={fieldState}
   {formState}
-  {on_change}
-  validation_functions={[validate_confirmation]}
+  {onChange}
+  validationFunctions={[validate_confirmation]}
+  {showValidation}
 >
   {#snippet input()}
     <div class="input-group">

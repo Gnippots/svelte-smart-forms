@@ -12,7 +12,7 @@
 		disabled?: boolean;
 		formState?: FormState | null;
 		classes?: string;
-		on_change?: any; // Callback with the numeric value
+		onChange?: any; // Callback with the numeric value
 		placeholder?: string;
 		min?: number | null;
 		max?: number | null;
@@ -28,7 +28,7 @@
 		disabled = false,
 		formState = null,
 		classes = 'smart-form-input',
-		on_change = () => {},
+		onChange = () => {},
 		placeholder = '',
 		min = 0,
 		max = 100,
@@ -58,7 +58,7 @@
         {placeholder}
         {max}
         {min}
-        oninput={on_change}
+        oninput={onChange}
         onblur={() => {
           fieldState.blur();
         }}

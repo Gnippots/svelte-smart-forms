@@ -1,68 +1,72 @@
 <script lang="ts">
     import BaseInput from '$lib/BaseInput.svelte';
+    import { createFieldState } from './FieldState.svelte';
     import type { FormState, FieldState } from './Interfaces';
-  interface Props {
-    label?: string;
-    value?: string;
-    required?: boolean;
-    name?: string;
-    disabled?: boolean;
-    show_validation?: boolean;
-    formState?: FormState | null;
-    classes?: string;
-    on_change?: any;
-    on_keyup?: any;
-    placeholder?: string;
-  }
 
-  let {
-    label = '',
-    value = $bindable(''),
-    required = false,
-    name = '',
-    disabled = false,
-    show_validation = true,
-    formState = null,
-    classes = 'smart-form-input',
-    on_change = () => {},
-    on_keyup = () => {},
-    placeholder = ''
-  }: Props = $props();
-    let fieldState: FieldState = $state();
+    let {
+        label = '',
+        value = $bindable(''),
+        required = false,
+        name = '',
+        disabled = false,
+        showValidation = true,
+        formState,
+        classes = 'smart-form-input',
+        onChange = () => {},
+        onKeyup: onKeyup = () => {},
+        placeholder = ''
+    }: {
+        label: string,
+        value: string,
+        required: boolean,
+        name: string,
+        disabled?: boolean,
+        showValidation?: boolean,
+        formState: FormState,
+        classes?: string,
+        onChange?: () => void,
+        onKeyup?: () => void,
+        placeholder?: string
+    } = $props();
+
+    let fieldState = $state<FieldState>(createFieldState());
   
     let validate_email = () => {
-      if (value) {
-        if (!value.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
-          fieldState.add_error('email', 'Invalid Email Address');
+        if (value) {
+            if (!value.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
+                fieldState.addError('email', 'Invalid Email Address');
+            }
         }
-      }
     }
-  </script>
-  
-  <BaseInput
-    label={label}
-    classes={classes}
-    required={required}
-    name={name}
-    bind:value={value}
-    bind:fieldState={fieldState}
-    formState={formState}
-    show_validation={show_validation}
-    on_change={on_change}
-    validation_functions={[validate_email]}
-  >
-    {#snippet input()}
+</script>
+
+{#snippet input()}
     <input 
-        
-        onblur={() => {fieldState.blur()}}
-        required={required}
-        onkeyup={on_keyup}
-        disabled={disabled}
-        placeholder={placeholder}
+        onblur={() => {
+            fieldState.blur();
+        }}
+        {required}
+        onkeyup={onKeyup}
+        {disabled}
+        {placeholder}
         type="email"
-        name={name}
-        bind:value={value}
-      />
-  {/snippet}
-  </BaseInput>
+        {name}
+        bind:value
+    />
+{/snippet}
+
+<BaseInput
+    {label}
+    {classes}
+    {required}
+    {name}
+    {value}
+    bind:fieldState={fieldState}
+    {formState}
+    {showValidation}
+    {onChange}
+    validationFunctions={[validate_email]}
+    input={input}
+>
+</BaseInput>
   

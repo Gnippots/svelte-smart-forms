@@ -1,45 +1,44 @@
 <!-- @migration-task Error while migrating Svelte code: This migration would change the name of a slot making the component unusable -->
 <!-- BaseInput.svelte -->
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { onMount, type Snippet } from 'svelte';
     import FieldErrors from './FieldErrors.svelte';
     import type { FormState, FieldState } from './Interfaces';
-  
-    export let label = '';
-    export let value: any = null;
-    export let required = false;
-    export let disabled = false;
-    export let classes = 'smart-form-input';
-    export let name = '';
-    export let show_validation = true;
-    export let placeholder = '';
-    export let formState: FormState | null = null;
-    export let on_change: () => void = () => {};
-    export let validation_functions: Array<() => void> = [];
-  
-    let all_changes = () => {};
-  
-    export let fieldState: FieldState = {
-      dirty: false,
-      valid: false,
-      blurred: false,
-      initial_value: null,
-      errors: {},
-      add_error: (error: string, message: string) => {
-        fieldState.valid = false;
-        fieldState.errors[error] = message;
-      },
-      remove_error: (error: string) => {
-        delete fieldState.errors[error];
-  
-        if (Object.keys(fieldState.errors).length === 0) {
-          fieldState.valid = true;
-        }
-      },
-      blur: () => {
-        fieldState.blurred = true;
-      },
-    };
+
+    let {
+      label = '', 
+      value = $bindable(), 
+      required = false, 
+      disabled = false, 
+      classes = 'smart-form-input', 
+      name = '', 
+      showValidation = false, 
+      placeholder = '', 
+      formState, 
+      onChange = () => {}, 
+      validationFunctions = [], 
+      fieldState = $bindable(),
+      input
+    } : {
+      label: string, 
+      value: any, 
+      required: boolean, 
+      disabled?: boolean, 
+      classes: string, 
+      name: string, 
+      showValidation?: boolean, 
+      placeholder?: string, 
+      formState: FormState, 
+      onChange?: () => void, 
+      validationFunctions?: Array<() => void>, 
+      fieldState: FieldState,
+      input?: Snippet
+    } = $props();
+
+    let all_changes = $state(() => {});
+    let initial_value = $state(value);
+    let isDirty = $derived(value !== initial_value);
+    let previousValue = $state(value);
   
     function validate(value: any) {
       if (!$formState) {
@@ -52,11 +51,10 @@
 
       // Check if the field is required
       if (required && (value === null || value === '' || value === false)) {
-        fieldState.add_error('required', 'This is required');
+        fieldState.addError('required', 'This is required');
       }
-
       // Run any validation passed from the level above
-      validation_functions.forEach((fn) => {
+      validationFunctions.forEach((fn: () => void) => {
         fn();
       });
 
@@ -68,59 +66,60 @@
         $formState.valid = false; // Added by Bailey - if field has an error then form is invalid
       }
 
-
       $formState.fields[name] = fieldState;
     }
 
-  
-    $: {
-      validate(value);
-    }
-  
-    $: {
-      fieldState.dirty = value === fieldState.initial_value;
-    }
+    // Run validation on mount and when value changes
+    $effect(() => {
+      if (value !== previousValue) {
+        validate(value);
+        previousValue = value;
+      }
+    });
   
     onMount(async () => {
       if ($formState) {
-        fieldState.initial_value = value;
+        fieldState.initialValue = value;
+        fieldState.isDirty = isDirty;
         $formState.fields[name] = fieldState;
+
+        // Run initial validation
+        validate(value);
       }
   
       all_changes = () => {
-        on_change();
+        onChange();
       };
     });
   </script>
   
   <div class={classes}>
-  <slot name="label">
+
     {#if label != ''}
       <label for="{name}" class="smart-form-input-label">{label}{#if required}<span style="color: #ce0262">*</span>{/if}</label>
     {/if}
-  </slot>
 
-  <slot name="input">
-    <input
-      on:keyup={all_changes}
-      on:blur={() => {fieldState.blur();}}
-      required={required}
-      disabled="{disabled}"
-      placeholder="{placeholder}"
-      type='text'
-      name={name}
-      bind:value={value}
-    />
-  </slot>
+    {#if input}
+      {@render input()}
+    {:else}
+      <input
+        onkeyup={all_changes}
+        onblur={() => {fieldState.blur();}}
+        required={required}
+        disabled="{disabled}"
+        placeholder="{placeholder}"
+        type='text'
+        name={name}
+        bind:value={value}
+      />
+    {/if}
 
-  <slot name="errors">
-    {#if show_validation }
+    {#if showValidation }
       <FieldErrors
         formState={formState}
         field={name}
       ></FieldErrors>
     {/if}
-  </slot>
 </div>
 
 <style></style>
