@@ -4,7 +4,16 @@
 
   import type { Address, ComponentMap, FieldState } from './Interfaces';
 
-  interface Props {
+  let {
+    address = $bindable(),
+    label = '',
+    formState = null,
+    required = {},
+    on_change = () => {},
+    classes = 'smart-form-input',
+    name = 'null',
+    placeholder
+  }: {
     address?: any;
     label?: string;
     formState?: any;
@@ -15,36 +24,7 @@
     show_search?: boolean;
     mailing?: boolean;
     placeholder?: string;
-  }
-
-  let {
-    address = $bindable(),
-    label = '',
-    formState = null,
-    required = {},
-    on_change = () => {},
-    classes = 'smart-form-input',
-    name = 'null',
-    placeholder
-  }: Props = $props();
-
-  let element: HTMLInputElement | null = $state(null);
-  let incomplete = $state(false);
-  let formatted_address = $state('');
-  let search = $state('');
-  let show_full_address = $state(false);
-  let all_changes = $state(() => {});
-
-  let isLoading = $state(false);
-  let searchResults = $state([]) as any[];
-  let debounceTimeout: number;
-
-
-  function is_required(field: any) {
-    if (required.all || required[field]) {
-      return true;
-    }
-  }
+  } = $props();
 
   const empty_address: Address = {
     unit_number: '',
@@ -54,9 +34,92 @@
     state: '',
     postcode: '',
     country: '',
-    po_box: ''
+    po_box: '',
+    placeId: ''
   };
 
+  let element: HTMLInputElement | null = $state(null);
+  let incomplete = $state(false);
+  let formatted_address = $state('');
+  let search = $state(!isAddressEffectivelyEmpty(address) ? formatAddressForSearch(address) : '');
+  let show_full_address = $state(false);
+
+  let isLoading = $state(false);
+  let searchResults = $state([]) as any[];
+  let debounceTimeout: number;
+
+  function isAddressEffectivelyEmpty(addr: Address | undefined | null): boolean {
+    if (!addr) return true;
+    return Object.keys(empty_address).every(key => {
+        const k = key as keyof Address;
+        if (k === 'placeId' || k === 'po_box') return true;
+        return !addr[k] || String(addr[k]).trim() === '';
+    });
+  }
+
+  function formatAddressForSearch(addr: Address): string {
+    if (!addr || Object.values(addr).every(val => !val || String(val).trim() === '')) {
+        return '';
+    }
+
+    const displayParts: string[] = [];
+
+    let streetLine = '';
+    const unit = addr.unit_number ? String(addr.unit_number).trim() : '';
+    const number = addr.street_number ? String(addr.street_number).trim() : '';
+    const namePart = addr.street_name ? String(addr.street_name).trim() : '';
+
+    if (unit) {
+        streetLine += unit + "/";
+    }
+    if (number) {
+        streetLine += number; // No space after '/' if unit was present
+    }
+    if (namePart) {
+        // Add space if streetLine already has content (unit/number) and doesn't end with '/'
+        if (streetLine && streetLine.slice(-1) !== '/') streetLine += ' '; 
+        streetLine += namePart;
+    }
+
+    if (streetLine.trim()) {
+        displayParts.push(streetLine.trim());
+    }
+
+    // Part 2: Locality (City, State, Postcode)
+    const localityLineParts: string[] = [];
+    const city = addr.city ? String(addr.city).trim() : '';
+    const state = addr.state ? String(addr.state).trim() : '';
+    const postcode = addr.postcode ? String(addr.postcode).trim() : '';
+
+    if (city) {
+        localityLineParts.push(city);
+    }
+
+    let statePostcodePart = '';
+    if (state) {
+        statePostcodePart += state;
+    }
+    if (postcode) {
+        if (statePostcodePart) statePostcodePart += ' ';
+        statePostcodePart += postcode;
+    }
+    if (statePostcodePart) {
+        localityLineParts.push(statePostcodePart);
+    }
+    
+    if (localityLineParts.length > 0) {
+        displayParts.push(localityLineParts.join(' ')); 
+    }
+
+    const country = addr.country ? String(addr.country).trim() : '';
+    if (country) {
+        displayParts.push(country);
+    }
+
+    return displayParts.join(', ');
+  }
+
+  // Map our address field names to Gmaps field names
   const component_map: ComponentMap = {
     street_number: 'street_number',
     route: 'street_name',
@@ -189,7 +252,7 @@
         aria-controls="suggestions-list"
         onblur={() => {
           fieldState?.blur();
-          // Slight delay to give chance to click on option
+          // Slight delay before hiding results
           setTimeout(() => {
             if (!element?.parentElement?.querySelector('.suggestions-list:hover')) {
                searchResults = [];

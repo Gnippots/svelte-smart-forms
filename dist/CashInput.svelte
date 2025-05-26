@@ -3,27 +3,9 @@
 	import BaseInput from './BaseInput.svelte'; // Assuming BaseInput is in the same directory
 	import type { FormState, FieldState } from './Interfaces'; // Assuming Interfaces are defined
 
-	// --- Type Definitions ---
-	interface Props {
-		label?: string;
-		value?: number | null; // The actual numeric value
-		required?: boolean;
-		name?: string;
-		disabled?: boolean;
-		formState?: FormState | null;
-		classes?: string;
-		on_change?: (value: number | null) => void; // Callback with the numeric value
-		placeholder?: string;
-		min?: number | null;
-		max?: number | null;
-		currencySymbol?: string; // Symbol for currency (e.g., '$', '€')
-    prefix?: Snippet;
-	}
-
-	// --- Props ---
 	let {
 		label = '',
-		value = $bindable(null), // Use $bindable for two-way binding from parent
+		value = $bindable(null), 
 		required = false,
 		name = '',
 		disabled = false,
@@ -33,20 +15,32 @@
 		placeholder = '',
 		min = null,
 		max = null,
-		currencySymbol = '$', // Default currency symbol
+		currencySymbol = '$',
     prefix
-	}: Props = $props();
+	}: {
+		label?: string;
+		value?: number | null;
+		required?: boolean;
+		name?: string;
+		disabled?: boolean;
+		formState?: FormState | null;
+		classes?: string;
+		on_change?: (value: number | null) => void;
+		placeholder?: string;
+		min?: number | null;
+		max?: number | null;
+		currencySymbol?: string;
+    prefix?: Snippet;
+	} = $props();
 
-	// --- State ---
 	let fieldState: FieldState = $state();
 	let displayValue = $state('');
 	let inputElement: HTMLInputElement | undefined = $state();
 
-	// --- Formatting ---
 	const currencyFormatter = $derived(
 		// Use browser's locale for formatting, ensuring 2 decimal places
 		new Intl.NumberFormat(typeof navigator !== 'undefined' ? navigator.language : 'en-US', {
-			style: 'decimal', // Use 'decimal' to avoid adding currency symbol automatically by Intl
+			style: 'decimal',
 			minimumFractionDigits: 0,
 			maximumFractionDigits: 0
 		})
@@ -54,13 +48,12 @@
 
 	function formatNumber(num: number | null | undefined): string {
 		if (num === null || num === undefined || isNaN(num)) {
-			return ''; // Return empty string for null, undefined, or NaN
+			return ''; 
 		}
-		// Use Intl.NumberFormat for currency-like decimal formatting
 		return currencyFormatter.format(num);
 	}
 
-	// --- Parsing ---
+  // Parses the input field and removes currency formatting and convert to a number
 	function parseInput(input: string): number | null {
 		if (input === null || input === undefined || input.trim() === '') {
 			return null;
@@ -69,12 +62,12 @@
 		// This regex handles the symbol safely. Adjust comma removal if locale uses '.' as thousands separator.
 		const numString = input
 			.replace(new RegExp(`\\${currencySymbol.trim()}`, 'g'), '')
-			.replace(/,/g, ''); // Assuming ',' is the thousands separator
+			.replace(/,/g, '');
 
 		const number = parseFloat(numString);
 
 		if (isNaN(number)) {
-			return null; // Return null if parsing fails
+			return null; 
 		}
 
 		// Clamp value between min and max if they are set
@@ -89,47 +82,41 @@
 		return clampedNumber;
 	}
 
-	// --- Event Handlers ---
 	async function handleInput(event: Event) {
 		const target = event.target as HTMLInputElement;
 		const rawValue = target.value;
-		const caretPosition = target.selectionStart; // Store caret position
+		const caretPosition = target.selectionStart;
 
 		const numericValue = parseInput(rawValue);
 
 		// Only update if the numeric value has actually changed
 		if (numericValue !== value) {
-			value = numericValue; // Update bindable prop
-			on_change(numericValue); // Trigger callback
+			value = numericValue;
+			on_change(numericValue); 
 		}
 
-		// Reformat the display value immediately for better UX
-		// Use the potentially clamped numericValue for formatting
 		displayValue = formatNumber(value);
 
 		// Restore caret position after formatting (important for usability)
-		await tick(); // Wait for DOM update
+		await tick();
 		if (inputElement && caretPosition !== null) {
-			// Basic caret restoration - might need refinement if formatting drastically changes length
-            try {
-			    inputElement.setSelectionRange(caretPosition, caretPosition);
-            } catch (e) {
-                // Ignore potential errors if element is not focused or selection is not possible
-                console.warn("Could not restore caret position.", e);
-            }
+      try {
+        inputElement.setSelectionRange(caretPosition, caretPosition);
+      } catch (e) {
+        console.warn("Could not restore caret position.", e);
+      }
 		}
 	}
 
 	function handleBlur() {
 		// Ensure the final value is correctly formatted on blur
-		const numericValue = parseInput(displayValue); // Parse current display value
-		value = numericValue; // Update internal state
-		displayValue = formatNumber(numericValue); // Format the final number
+		const numericValue = parseInput(displayValue);
+		value = numericValue;
+		displayValue = formatNumber(numericValue);
 		if (value !== numericValue) {
-			// If parsing/clamping changed the value on blur, notify parent
 			on_change(numericValue);
 		}
-		fieldState?.blur(); // Notify BaseInput about the blur event
+		fieldState?.blur();
 	}
 
 	// on change ensure input is formatted
@@ -167,11 +154,8 @@
 </BaseInput>
 
 <style>
-	/* Basic styling for disabled state */
 	input:disabled {
 		background-color: #f3f4f6;
 		cursor: not-allowed;
 	}
-	/* Ensure BaseInput's structure allows this flex container */
-    /* Adjust pl-7 if needed based on currency symbol width */
 </style>

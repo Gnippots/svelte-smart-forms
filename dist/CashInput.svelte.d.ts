@@ -1,6 +1,6 @@
 import { type Snippet } from 'svelte';
 import type { FormState } from './Interfaces';
-interface Props {
+type $$ComponentProps = {
     label?: string;
     value?: number | null;
     required?: boolean;
@@ -14,7 +14,7 @@ interface Props {
     max?: number | null;
     currencySymbol?: string;
     prefix?: Snippet;
-}
-declare const CashInput: import("svelte").Component<Props, {}, "value">;
+};
+declare const CashInput: import("svelte").Component<$$ComponentProps, {}, "value">;
 type CashInput = ReturnType<typeof CashInput>;
 export default CashInput;

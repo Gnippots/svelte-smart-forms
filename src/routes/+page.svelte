@@ -38,7 +38,16 @@
     number: 0,
     dropdown: '',
     email: '',
-    address: {},
+    address: {
+      unit_number: '',
+      street_number: '',
+      street_name: '',
+      city: '',
+      state: '',
+      postcode: '',
+      country: '',
+      po_box: ''
+    },
     checkbox: false,
     datepicker: new Date(),
     password: '',
