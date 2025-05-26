@@ -23,9 +23,9 @@
       dirty: false,
       valid: false,
       blurred: false,
-      initial_value: null,
+      initialValue: null,
       errors: {},
-      add_error: (error: string, message: string) => {
+      addError: (error: string, message: string) => {
         fieldState.valid = false;
         fieldState.errors[error] = message;
       },
@@ -52,7 +52,7 @@
 
       // Check if the field is required
       if (required && (value === null || value === '' || value === false)) {
-        fieldState.add_error('required', 'This is required');
+        fieldState.addError('required', 'This is required');
       }
 
       // Run any validation passed from the level above
@@ -78,12 +78,12 @@
     }
   
     $: {
-      fieldState.dirty = value === fieldState.initial_value;
+      fieldState.dirty = value === fieldState.initialValue;
     }
   
     onMount(async () => {
       if ($formState) {
-        fieldState.initial_value = value;
+        fieldState.initialValue = value;
         $formState.fields[name] = fieldState;
       }
   

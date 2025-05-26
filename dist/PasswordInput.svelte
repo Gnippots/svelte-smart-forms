@@ -43,7 +43,7 @@
 
   let validate_confirmation = () => {
     if (confirm_against !== '' && value != '' && confirm_against !== value) {
-      fieldState?.add_error('confirm', 'Passwords do not match');
+      fieldState?.addError('confirm', 'Passwords do not match');
     }
   };
 </script>

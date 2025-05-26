@@ -1,18 +1,13 @@
 import { writable } from 'svelte/store';
 
-export function createFieldState () {
-    let isDirty = $state(false);
-    let initial_value = $state(null);
-    let errors = $state<Record<string, string>>({});
-    let valid = $state(false);
-    let blurred = $state(false);
+export function createFieldState (initialValue: string | number) {
 
-    return {
-      get dirty() { return isDirty; },
+    return $state({
+      initialValue,
+      dirty: false,
       valid: false,
       blurred: false,
-      initial_value,
-      errors: {},
+      errors: [],
       add_error: (error: string, message: string) => {
         valid = false;
         errors[error] = message;
@@ -27,5 +22,5 @@ export function createFieldState () {
       blur: () => {
         blurred = true;
       },
-    };
+    });
 }

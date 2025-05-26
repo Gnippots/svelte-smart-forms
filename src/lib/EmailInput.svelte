@@ -34,7 +34,7 @@
     let validate_email = () => {
         if (value) {
             if (!value.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
-                fieldState.add_error('email', 'Invalid Email Address');
+                fieldState.addError('email', 'Invalid Email Address');
             }
         }
     }

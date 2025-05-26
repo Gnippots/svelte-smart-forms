@@ -20,18 +20,18 @@
   const formState = createFormState();
 
   // Add custom validation rule for number fields
-  formState.update(state => {
-    state.customRules = [() => {
-      const sum = (form.linkedNumber1 || 0) + (form.linkedNumber2 || 0);
-      if (sum <= 0) {
-        state.errors['number_sum'] = { message: 'The sum of both numbers must be greater than zero' };
-        state.valid = false;
-      } else {
-        delete state.errors['number_sum'];
-      }
-    }];
-    return state;
-  });
+  // formState.update(state => {
+  //   state.customRules = [() => {
+  //     const sum = (form.linkedNumber1 || 0) + (form.linkedNumber2 || 0);
+  //     if (sum <= 0) {
+  //       state.errors['number_sum'] = { message: 'The sum of both numbers must be greater than zero' };
+  //       state.valid = false;
+  //     } else {
+  //       delete state.errors['number_sum'];
+  //     }
+  //   }];
+  //   return state;
+  // });
 
   const form: {
     text?: string;
@@ -74,7 +74,7 @@
       name={'text'}
       label={'Text'}
       bind:value={form.text}
-      required={true}
+      required
       {formState}
     ></TextInput>
 

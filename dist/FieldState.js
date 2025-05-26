@@ -3,7 +3,7 @@ export function createFieldState() {
     const store = writable({
         'dirty': false,
         'valid': false,
-        'initial_value': null,
+        'initialValue': null,
         'errors': [],
     });
     return {

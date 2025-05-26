@@ -28,9 +28,9 @@ export interface FieldState {
   dirty: boolean;
   valid: boolean;
   blurred: boolean;
-  initial_value: any;
+  initialValue: any;
   errors: Error;
-  add_error: (error: string, message: string) => void;
+  addError: (error: string, message: string) => void;
   remove_error: (error: string) => void;
   blur: () => void;
   [key: string]: any;

@@ -38,8 +38,11 @@
     let all_changes = $state(() => {});
     let initial_value = null;
     let isDirty = $derived(value === initial_value || false);
+    let previousValue = $state(value);
   
     function validate(value: any) {
+
+      console.log("Validating")
       if (!$formState) {
         return;
       }
@@ -50,6 +53,7 @@
 
       // Check if the field is required
       if (required && (value === null || value === '' || value === false)) {
+        console.log('adding required')
         fieldState.add_error('required', 'This is required');
       }
       // Run any validation passed from the level above
@@ -70,7 +74,10 @@
     }
 
     $effect(() => {
-      validate(value);
+      if (value !== previousValue) {
+        validate(value);
+        previousValue = value;
+      }
     });
   
     onMount(async () => {
