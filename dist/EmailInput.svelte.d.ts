@@ -5,11 +5,11 @@ interface Props {
     required?: boolean;
     name?: string;
     disabled?: boolean;
-    show_validation?: boolean;
+    showValidation?: boolean;
     formState?: FormState | null;
     classes?: string;
-    on_change?: any;
-    on_keyup?: any;
+    onChange?: any;
+    onKeyup?: any;
     placeholder?: string;
 }
 declare const EmailInput: import("svelte").Component<Props, {}, "value">;

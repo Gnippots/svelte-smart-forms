@@ -3,7 +3,7 @@ interface Props {
     label?: string;
     formState?: any;
     required?: any;
-    on_change?: any;
+    onChange?: any;
     classes?: string;
     name?: string;
     show_search?: boolean;

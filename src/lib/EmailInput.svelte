@@ -9,11 +9,11 @@
         required = false,
         name = '',
         disabled = false,
-        show_validation = true,
+        showValidation = true,
         formState,
         classes = 'smart-form-input',
-        on_change = () => {},
-        on_keyup = () => {},
+        onChange = () => {},
+        onKeyup: onKeyup = () => {},
         placeholder = ''
     }: {
         label: string,
@@ -21,11 +21,11 @@
         required: boolean,
         name: string,
         disabled?: boolean,
-        show_validation: boolean,
+        showValidation?: boolean,
         formState: FormState,
-        classes: string,
-        on_change: () => void,
-        on_keyup: () => void,
+        classes?: string,
+        onChange?: () => void,
+        onKeyup?: () => void,
         placeholder?: string
     } = $props();
 
@@ -46,7 +46,7 @@
             fieldState.blur();
         }}
         {required}
-        onkeyup={on_keyup}
+        onkeyup={onKeyup}
         {disabled}
         {placeholder}
         type="email"
@@ -61,11 +61,11 @@
     {required}
     {name}
     {value}
-    {fieldState}
+    bind:fieldState={fieldState}
     {formState}
-    {show_validation}
-    {on_change}
-    validation_functions={[validate_email]}
+    {showValidation}
+    {onChange}
+    validationFunctions={[validate_email]}
     input={input}
 >
 </BaseInput>

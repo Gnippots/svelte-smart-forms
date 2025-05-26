@@ -12,7 +12,7 @@ declare const Dropdown: import("svelte").Component<{
         name: string;
         disabled?: boolean;
     }>;
-    option_groups?: Array<{
+    optionGroups?: Array<{
         label: string;
         options: Array<string | {
             value: string;
@@ -20,9 +20,9 @@ declare const Dropdown: import("svelte").Component<{
             disabled?: boolean;
         }>;
     }>;
-    on_change?: any;
+    onChange?: any;
     placeholder?: string;
-    on_blur?: any;
+    onBlur?: any;
 }, {}, "value">;
 type Dropdown = ReturnType<typeof Dropdown>;
 export default Dropdown;

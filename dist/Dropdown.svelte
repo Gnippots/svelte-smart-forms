@@ -11,10 +11,10 @@
     formState?: FormState | null;
     classes?: string;
     options?: Array<string | { value: any; name: string; disabled?: boolean }>;
-    option_groups?: Array<{ label: string; options: Array<string | { value: string; name: string; disabled?: boolean }> }>;
-    on_change?: any;
+    optionGroups?: Array<{ label: string; options: Array<string | { value: string; name: string; disabled?: boolean }> }>;
+    onChange?: any;
     placeholder?: string;
-    on_blur?: any;
+    onBlur?: any;
   }
 
   let {
@@ -26,14 +26,14 @@
     formState = null,
     classes = 'smart-form-input',
     options = [],
-    option_groups = [],
-    on_change = () => {},
+    optionGroups = [],
+    onChange = () => {},
     placeholder = '',
-    on_blur = () => {}
+    onBlur = () => {}
   }: Props = $props();
   
     let formatted_options: Array<{ value: string; name: string; disabled: boolean }> = $state([]);
-    let formatted_option_groups: Array<{ label: string; options: Array<{ value: string; name: string; disabled: boolean }> }> = [];
+    let formatted_optionGroups: Array<{ label: string; options: Array<{ value: string; name: string; disabled: boolean }> }> = [];
   
     function format_options(unformatted_options: Array<string | { value: string; name: string; disabled?: boolean }>) {
         unformatted_options.forEach((option, index) => {
@@ -46,9 +46,9 @@
         });
         return formatted_options;
         }
-    if (option_groups.length > 0) {
-      option_groups.forEach(o => {
-        formatted_option_groups.push({
+    if (optionGroups.length > 0) {
+      optionGroups.forEach(o => {
+        formatted_optionGroups.push({
           'label': o.label,
           'options': format_options(o.options)
         })
@@ -65,7 +65,7 @@
     bind:value={value}
     formState={formState}
     classes={classes}
-    on_change={on_change}
+    onChange={onChange}
   >
     {#snippet input()}
     <div style="margin-bottom: 4px;" >
@@ -74,14 +74,14 @@
           disabled={disabled}
           name={name}
           bind:value={value}
-          onblur={on_blur}
-          onchange={on_change}
+          onblur={onBlur}
+          onchange={onChange}
         >
           {#if placeholder}
           <option value={value}>{placeholder}</option>
           {/if}
     
-          {#each formatted_option_groups as group}
+          {#each formatted_optionGroups as group}
           <optgroup label={group.label}>
             {#each group.options as option}
             <option value={option.value}>{option.name}</option>

@@ -31,7 +31,7 @@ export interface FieldState {
   initialValue: any;
   errors: Error;
   addError: (error: string, message: string) => void;
-  remove_error: (error: string) => void;
+  removeError: (error: string) => void;
   blur: () => void;
   [key: string]: any;
 }

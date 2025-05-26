@@ -10,7 +10,7 @@
 		disabled?: boolean;
 		formState?: FormState | null;
 		classes?: string;
-		on_change?: any;
+		onChange?: any;
 		placeholder?: string;
 		min?: number | null;
 		max?: number | null;
@@ -24,7 +24,7 @@
 		disabled = false,
 		formState = null,
 		classes = 'smart-form-input',
-		on_change = () => {},
+		onChange = () => {},
 		placeholder = '',
 		min = null,
 		max = null
@@ -38,7 +38,7 @@
 		onblur={() => {
 			fieldState.blur();
 		}}
-		onkeyup={on_change}
+		onkeyup={onChange}
 		{required}
 		{disabled}
 		{placeholder}
@@ -50,5 +50,4 @@
 	/>
   {/snippet}
 
-<BaseInput {label} {required} {classes} {name} bind:fieldState bind:value {formState} input={input}>
-</BaseInput>
+<BaseInput {label} {required} {classes} {name} bind:fieldState bind:value {formState} input={input}/>

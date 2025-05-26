@@ -7,7 +7,7 @@ declare const DatePicker: import("svelte").Component<{
     disabled?: boolean;
     formState?: FormState | null;
     classes?: string;
-    on_change?: any;
+    onChange?: any;
     placeholder?: string;
 }, {}, "value">;
 type DatePicker = ReturnType<typeof DatePicker>;

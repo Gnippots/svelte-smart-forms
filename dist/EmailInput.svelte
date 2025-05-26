@@ -7,11 +7,11 @@
     required?: boolean;
     name?: string;
     disabled?: boolean;
-    show_validation?: boolean;
+    showValidation?: boolean;
     formState?: FormState | null;
     classes?: string;
-    on_change?: any;
-    on_keyup?: any;
+    onChange?: any;
+    onKeyup?: any;
     placeholder?: string;
   }
 
@@ -21,11 +21,11 @@
     required = false,
     name = '',
     disabled = false,
-    show_validation = true,
+    showValidation = true,
     formState = null,
     classes = 'smart-form-input',
-    on_change = () => {},
-    on_keyup = () => {},
+    onChange = () => {},
+    onKeyup = () => {},
     placeholder = ''
   }: Props = $props();
     let fieldState: FieldState = $state();
@@ -47,16 +47,16 @@
     bind:value={value}
     bind:fieldState={fieldState}
     formState={formState}
-    show_validation={show_validation}
-    on_change={on_change}
-    validation_functions={[validate_email]}
+    showValidation={showValidation}
+    onChange={onChange}
+    validationFunctions={[validate_email]}
   >
     {#snippet input()}
     <input 
         
         onblur={() => {fieldState.blur()}}
         required={required}
-        onkeyup={on_keyup}
+        onkeyup={onKeyup}
         disabled={disabled}
         placeholder={placeholder}
         type="email"

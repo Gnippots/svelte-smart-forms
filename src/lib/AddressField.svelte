@@ -9,7 +9,7 @@
     label?: string;
     formState?: any;
     required?: any;
-    on_change?: any;
+    onChange?: any;
     classes?: string;
     name?: string;
     show_search?: boolean;
@@ -22,7 +22,7 @@
     label = '',
     formState = null,
     required = {},
-    on_change = () => {},
+    onChange = () => {},
     classes = 'smart-form-input',
     name = 'null',
     placeholder
@@ -164,66 +164,66 @@
   let fieldState = $state<FieldState>();
 </script>
 
+{#snippet input()}
+<div id="smart-forms-address-containter" class="address-container">
+  <input
+    bind:this={element}
+    type="text"
+    class={classes}
+    placeholder={placeholder}
+    name={name} 
+    aria-label={label || 'Address search'}
+    autocomplete="off"
+    role="combobox"
+    aria-autocomplete="list"
+    aria-expanded={searchResults.length > 0}
+    aria-controls="suggestions-list"
+    onblur={() => {
+      fieldState?.blur();
+      // Slight delay to give chance to click on option
+      setTimeout(() => {
+        if (!element?.parentElement?.querySelector('.suggestions-list:hover')) {
+            searchResults = [];
+        }
+      }, 200);
+    }}
+    bind:value={search}
+    oninput={debouncedMakeGoogleMapsRequest}
+    onfocus={() => {
+      debouncedMakeGoogleMapsRequest();
+    }}
+  />
+  {#if isLoading && searchResults.length === 0}
+    <div class="loading-indicator">Loading suggestions...</div>
+  {/if}
+  {#if searchResults.length > 0}
+  <ul id="suggestions-list" role="listbox" class="suggestions-list">
+    {#each searchResults as result, index (result.place_id)}
+    <li
+        role="option"
+        aria-selected={false}
+        id={`suggestion-${index}`}
+        onmouseenter={(e) => (e.target as HTMLLIElement).classList.add('suggestion-item-hover')}
+        onmouseleave={(e) => (e.target as HTMLLIElement).classList.remove('suggestion-item-hover')}
+        class="suggestion-item"
+    >
+      <button class="suggestion-item-button" onclick={() => handleSuggestionClick(result)}>{result.description}</button>
+    </li>
+    {/each}
+  </ul>
+  {/if}
+</div>
+{/snippet}
+
 <BaseInput
     name={name}
     bind:value={search}
     bind:fieldState={fieldState}
     formState={formState}
-    on_change={on_change}
+    onChange={onChange}
     {required}
     label={label}
->
-    {#snippet input()}
-    <div id="smart-forms-address-containter" class="address-container">
-      <input
-        bind:this={element}
-        type="text"
-        class={classes}
-        placeholder={placeholder}
-        name={name} 
-        aria-label={label || 'Address search'}
-        autocomplete="off"
-        role="combobox"
-        aria-autocomplete="list"
-        aria-expanded={searchResults.length > 0}
-        aria-controls="suggestions-list"
-        onblur={() => {
-          fieldState?.blur();
-          // Slight delay to give chance to click on option
-          setTimeout(() => {
-            if (!element?.parentElement?.querySelector('.suggestions-list:hover')) {
-               searchResults = [];
-            }
-          }, 200);
-        }}
-        bind:value={search}
-        oninput={debouncedMakeGoogleMapsRequest}
-        onfocus={() => {
-          debouncedMakeGoogleMapsRequest();
-        }}
-      />
-      {#if isLoading && searchResults.length === 0}
-        <div class="loading-indicator">Loading suggestions...</div>
-      {/if}
-      {#if searchResults.length > 0}
-      <ul id="suggestions-list" role="listbox" class="suggestions-list">
-        {#each searchResults as result, index (result.place_id)}
-        <li
-            role="option"
-            aria-selected={false}
-            id={`suggestion-${index}`}
-            onmouseenter={(e) => (e.target as HTMLLIElement).classList.add('suggestion-item-hover')}
-            onmouseleave={(e) => (e.target as HTMLLIElement).classList.remove('suggestion-item-hover')}
-            class="suggestion-item"
-        >
-          <button class="suggestion-item-button" onclick={() => handleSuggestionClick(result)}>{result.description}</button>
-        </li>
-        {/each}
-      </ul>
-      {/if}
-    </div>
-    {/snippet} 
-</BaseInput>
+/>
 
 {#if !show_full_address}
 <div>

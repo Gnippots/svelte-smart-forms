@@ -9,7 +9,7 @@
     label?: string;
     formState?: any;
     required?: any;
-    on_change?: any;
+    onChange?: any;
     classes?: string;
     name?: string;
     show_search?: boolean;
@@ -22,7 +22,7 @@
     label = '',
     formState = null,
     required = {},
-    on_change = () => {},
+    onChange = () => {},
     classes = 'smart-form-input',
     name = 'null',
     placeholder
@@ -169,7 +169,7 @@
     bind:value={search}
     bind:fieldState={fieldState}
     formState={formState}
-    on_change={on_change}
+    onChange={onChange}
     {required}
     label={label}
 >

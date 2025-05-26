@@ -11,7 +11,7 @@
         disabled?: boolean;
         formState?: FormState | null;
         classes?: string;
-        on_change?: any;
+        onChange?: any;
         placeholder?: string;
     }
 
@@ -23,7 +23,7 @@
         disabled = false,
         formState = null,
         classes = 'smart-form-input',
-        on_change = () => {},
+        onChange = () => {},
         placeholder = ''
     }: Props = $props();
     let fieldState: FieldState = $state();
@@ -40,7 +40,7 @@
     bind:value={value}
     bind:fieldState={fieldState}
     formState={formState}
-    on_change={on_change}
+    onChange={onChange}
 
 >
 {#snippet input()}

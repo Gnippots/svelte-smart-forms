@@ -8,7 +8,7 @@ interface Props {
     disabled?: boolean;
     formState?: FormState | null;
     classes?: string;
-    on_change?: any;
+    onChange?: any;
     placeholder?: string;
 }
 declare const TextArea: import("svelte").Component<Props, {}, "value">;

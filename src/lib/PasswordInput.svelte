@@ -11,7 +11,7 @@
     disabled?: boolean;
     formState?: FormState | null;
     classes?: string;
-    on_change?: any;
+    onChange?: any;
     placeholder?: string;
     confirm_against?: string;
     showPasswordToggle?: Snippet;
@@ -26,7 +26,7 @@
     disabled = false,
     formState = null,
     classes = 'smart-form-input',
-    on_change = () => {},
+    onChange = () => {},
     placeholder = '',
     confirm_against = '',
     showPasswordToggle = undefined,
@@ -56,8 +56,8 @@
   bind:value
   bind:fieldState
   {formState}
-  {on_change}
-  validation_functions={[validate_confirmation]}
+  {onChange}
+  validationFunctions={[validate_confirmation]}
 >
   {#snippet input()}
     <div class="input-group">

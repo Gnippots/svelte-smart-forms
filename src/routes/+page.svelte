@@ -37,7 +37,7 @@
     text?: string;
     number: number;
     dropdown?: string;
-    email?: string;
+    email: string;
     address?: any;
     checkbox?: boolean;
     datepicker?: Date;
@@ -78,7 +78,6 @@
       {formState}
     ></TextInput>
 
-<!-- 
     <NumberInput
       name={'number'}
       min={0}
@@ -88,23 +87,25 @@
       required={true}
       {formState}
     ></NumberInput>
+
     <Dropdown
-      name={'dropdown'}
+      name='dropdown'
       options={['One', 'Two']}
-      label={'Dropdown'}
+      label='Dropdown'
       bind:value={form.dropdown}
       required={true}
       {formState}
     ></Dropdown>
 
     <EmailInput
-      name={'email'}
-      label={'Email'}
+      name='email'
+      label='Email'
       bind:value={form.email}
       required={true}
       {formState}
     ></EmailInput>
 
+<!-- 
     <AddressField
       name="address"
       label="Address Field"
@@ -112,6 +113,7 @@
       required={true}
       {formState}
     ></AddressField>
+  -->
 
     <CheckBox
       label="Checkbox"
@@ -139,6 +141,7 @@
       required={true}
       {formState}
     ></PasswordInput>
+<!-- 
 
     <TextArea
       name={'textarea'}

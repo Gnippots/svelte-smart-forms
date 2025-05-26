@@ -11,11 +11,11 @@
     export let disabled = false;
     export let classes = 'smart-form-input';
     export let name = '';
-    export let show_validation = true;
+    export let showValidation = true;
     export let placeholder = '';
     export let formState: FormState | null = null;
-    export let on_change: () => void = () => {};
-    export let validation_functions: Array<() => void> = [];
+    export let onChange: () => void = () => {};
+    export let validationFunctions: Array<() => void> = [];
   
     let all_changes = () => {};
   
@@ -29,7 +29,7 @@
         fieldState.valid = false;
         fieldState.errors[error] = message;
       },
-      remove_error: (error: string) => {
+      removeError: (error: string) => {
         delete fieldState.errors[error];
   
         if (Object.keys(fieldState.errors).length === 0) {
@@ -56,7 +56,7 @@
       }
 
       // Run any validation passed from the level above
-      validation_functions.forEach((fn) => {
+      validationFunctions.forEach((fn) => {
         fn();
       });
 
@@ -88,7 +88,7 @@
       }
   
       all_changes = () => {
-        on_change();
+        onChange();
       };
     });
   </script>
@@ -114,7 +114,7 @@
   </slot>
 
   <slot name="errors">
-    {#if show_validation }
+    {#if showValidation }
       <FieldErrors
         formState={formState}
         field={name}

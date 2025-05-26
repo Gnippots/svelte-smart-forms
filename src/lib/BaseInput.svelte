@@ -12,11 +12,11 @@
       disabled = false, 
       classes = 'smart-form-input', 
       name = '', 
-      show_validation = false, 
+      showValidation = false, 
       placeholder = '', 
       formState, 
-      on_change = () => {}, 
-      validation_functions, 
+      onChange = () => {}, 
+      validationFunctions = [], 
       fieldState = $bindable(),
       input
     } : {
@@ -26,23 +26,21 @@
       disabled?: boolean, 
       classes: string, 
       name: string, 
-      show_validation?: boolean, 
+      showValidation?: boolean, 
       placeholder?: string, 
       formState: FormState, 
-      on_change: () => void, 
-      validation_functions: Array<() => void>, 
+      onChange: () => void, 
+      validationFunctions?: Array<() => void>, 
       fieldState: FieldState,
       input?: Snippet
     } = $props();
 
     let all_changes = $state(() => {});
-    let initial_value = null;
-    let isDirty = $derived(value === initial_value || false);
+    let initial_value = $state(value);
+    let isDirty = $derived(value !== initial_value);
     let previousValue = $state(value);
   
     function validate(value: any) {
-
-      console.log("Validating")
       if (!$formState) {
         return;
       }
@@ -53,11 +51,10 @@
 
       // Check if the field is required
       if (required && (value === null || value === '' || value === false)) {
-        console.log('adding required')
-        fieldState.add_error('required', 'This is required');
+        fieldState.addError('required', 'This is required');
       }
       // Run any validation passed from the level above
-      validation_functions.forEach((fn: () => void) => {
+      validationFunctions.forEach((fn: () => void) => {
         fn();
       });
 
@@ -69,10 +66,10 @@
         $formState.valid = false; // Added by Bailey - if field has an error then form is invalid
       }
 
-
       $formState.fields[name] = fieldState;
     }
 
+    // Run validation on mount and when value changes
     $effect(() => {
       if (value !== previousValue) {
         validate(value);
@@ -82,12 +79,16 @@
   
     onMount(async () => {
       if ($formState) {
-        fieldState.initial_value = value;
+        fieldState.initialValue = value;
+        fieldState.isDirty = isDirty;
         $formState.fields[name] = fieldState;
+
+        // Run initial validation
+        validate(value);
       }
   
       all_changes = () => {
-        on_change();
+        onChange();
       };
     });
   </script>
@@ -113,7 +114,7 @@
       />
     {/if}
 
-    {#if show_validation }
+    {#if showValidation }
       <FieldErrors
         formState={formState}
         field={name}

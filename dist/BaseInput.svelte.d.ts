@@ -19,11 +19,11 @@ declare const BaseInput: $$__sveltets_2_IsomorphicComponent<{
     disabled?: boolean;
     classes?: string;
     name?: string;
-    show_validation?: boolean;
+    showValidation?: boolean;
     placeholder?: string;
     formState?: FormState | null;
-    on_change?: () => void;
-    validation_functions?: Array<() => void>;
+    onChange?: () => void;
+    validationFunctions?: Array<() => void>;
     fieldState?: FieldState;
 }, {
     [evt: string]: CustomEvent<any>;

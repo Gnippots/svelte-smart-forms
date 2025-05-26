@@ -1,26 +1,26 @@
 import { writable } from 'svelte/store';
 
-export function createFieldState (initialValue: string | number) {
+export function createFieldState() {
+  const state = $state({
+    initialValue: null,
+    dirty: false,
+    valid: true,
+    blurred: false,
+    errors: {} as Record<string, string>,
+    addError(error: string, message: string) {
+      this.valid = false;
+      this.errors[error] = message;
+    },
+    removeError(error: string) {
+      delete this.errors[error];
+      if (Object.keys(this.errors).length === 0) {
+        this.valid = true;
+      }
+    },
+    blur() {
+      this.blurred = true;
+    }
+  });
 
-    return $state({
-      initialValue,
-      dirty: false,
-      valid: false,
-      blurred: false,
-      errors: [],
-      add_error: (error: string, message: string) => {
-        valid = false;
-        errors[error] = message;
-      },
-      remove_error: (error: string) => {
-        delete errors[error];
-  
-        if (Object.keys(errors).length === 0) {
-          valid = true;
-        }
-      },
-      blur: () => {
-        blurred = true;
-      },
-    });
+  return state;
 }

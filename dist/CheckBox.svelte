@@ -8,7 +8,7 @@
     export let name = '';
     export let disabled = false;
     export let formState: FormState | null = null;
-    export let on_change = () => {};
+    export let onChange = () => {};
     let fieldState: FieldState;
 </script>
 
@@ -19,7 +19,7 @@
     bind:value={value}
     formState={formState}
     bind:fieldState={fieldState}
-    on_change={on_change}
+    onChange={onChange}
 >
 <div slot="input">
     <div class="custom-control custom-switch mb-2">

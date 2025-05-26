@@ -12,7 +12,7 @@
 		disabled?: boolean;
 		formState?: FormState | null;
 		classes?: string;
-		on_change?: (value: number | null) => void; // Callback with the numeric value
+		onChange?: (value: number | null) => void; // Callback with the numeric value
 		placeholder?: string;
 		min?: number | null;
 		max?: number | null;
@@ -29,7 +29,7 @@
 		disabled = false,
 		formState = null,
 		classes = 'smart-form-input',
-		on_change = () => {},
+		onChange = () => {},
 		placeholder = '',
 		min = null,
 		max = null,
@@ -100,7 +100,7 @@
 		// Only update if the numeric value has actually changed
 		if (numericValue !== value) {
 			value = numericValue; // Update bindable prop
-			on_change(numericValue); // Trigger callback
+			onChange(numericValue); // Trigger callback
 		}
 
 		// Reformat the display value immediately for better UX
@@ -127,7 +127,7 @@
 		displayValue = formatNumber(numericValue); // Format the final number
 		if (value !== numericValue) {
 			// If parsing/clamping changed the value on blur, notify parent
-			on_change(numericValue);
+			onChange(numericValue);
 		}
 		fieldState?.blur(); // Notify BaseInput about the blur event
 	}

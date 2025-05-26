@@ -7,7 +7,7 @@ interface Props {
     disabled?: boolean;
     formState?: FormState | null;
     classes?: string;
-    on_change?: any;
+    onChange?: any;
     placeholder?: string;
     min?: number | null;
     max?: number | null;

@@ -10,10 +10,10 @@
         required?: boolean;
         name?: string;
         disabled?: boolean;
-        show_validation?: boolean;
+        showValidation?: boolean;
         formState: FormState;
         classes?: string;
-        on_change?: () => void;
+        onChange?: () => void;
     }
 
     let {
@@ -22,10 +22,10 @@
         required = false,
         name = '',
         disabled = false,
-        show_validation = true,
+        showValidation = true,
         formState,
         classes = 'smart-form-input',
-        on_change = () => {}
+        onChange = () => {}
     }: Props = $props();
 
     let fieldState = $state<FieldState>(createFieldState());
@@ -52,11 +52,11 @@
     {required}
     {name}
     {value}
-    {fieldState}
+    bind:fieldState={fieldState}
     {formState}
-    {show_validation}
-    {on_change}
-    validation_functions={[]}
+    {showValidation}
+    {onChange}
+    validationFunctions={[]}
     input={input}
 >
 </BaseInput>

@@ -19,7 +19,7 @@ declare const CheckBox: $$__sveltets_2_IsomorphicComponent<{
     name?: string;
     disabled?: boolean;
     formState?: FormState | null;
-    on_change?: () => void;
+    onChange?: () => void;
 }, {
     [evt: string]: CustomEvent<any>;
 }, {
