@@ -26,7 +26,6 @@ export interface FormStateStore {
 
 export interface FormState extends Writable<FormStateStore> {
     addCustomRule: (fieldName: string, errorCode: string, fn: () => string | null) => void;
-    validate: () => void;
 }
 
 export interface FieldState {
