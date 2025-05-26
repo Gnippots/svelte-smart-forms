@@ -24,11 +24,9 @@ export interface FormStateStore {
     submitted: boolean;
 }
 
-export interface FormState {
-    subscribe: Writable<FormStateStore>['subscribe'];
-    set: Writable<FormStateStore>['set'];
-    update: Writable<FormStateStore>['update'];
+export interface FormState extends Writable<FormStateStore> {
     addCustomRule: (fieldName: string, errorCode: string, fn: () => string | null) => void;
+    validate: () => void;
 }
 
 export interface FieldState {

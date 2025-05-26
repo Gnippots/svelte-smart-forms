@@ -49,15 +49,22 @@
     linkedNumber2: 0
   });
 
-  formState.addCustomRule(
-    'linkedNumber1',
-    'sum_validation',
-    () => {
+  const validateLinkedNumbers = () => {
       if (form.linkedNumber1 + form.linkedNumber2 <= 0) {
         return 'The sum of both numbers must be greater than zero';
       }
       return null;
-    }
+  }
+
+  formState.addCustomRule(
+    'linkedNumber1',
+    'sum_validation',
+    validateLinkedNumbers
+  );
+  formState.addCustomRule(
+    'linkedNumber2',
+    'sum_validation',
+    validateLinkedNumbers
   );
 
   let submit = () => {
@@ -102,7 +109,6 @@
       {formState}
     ></EmailInput>
 
-<!-- 
     <AddressField
       name="address"
       label="Address Field"
@@ -110,7 +116,6 @@
       required={true}
       {formState}
     ></AddressField>
-  -->
 
     <CheckBox
       label="Checkbox"
