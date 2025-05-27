@@ -14,7 +14,6 @@ interface Props {
     max?: number | null;
     currencySymbol?: string;
     prefix?: Snippet;
-    showValidation?: boolean;
 }
 declare const CashInput: import("svelte").Component<Props, {}, "value">;
 type CashInput = ReturnType<typeof CashInput>;
