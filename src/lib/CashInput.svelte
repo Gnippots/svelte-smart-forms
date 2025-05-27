@@ -19,6 +19,7 @@
 		max?: number | null;
 		currencySymbol?: string; // Symbol for currency (e.g., '$', '€')
     prefix?: Snippet;
+    showValidation?: boolean
 	}
 
 	// --- Props ---
@@ -35,7 +36,8 @@
 		min = null,
 		max = null,
 		currencySymbol = '$', // Default currency symbol
-    prefix
+    prefix,
+    showValidation = true
 	}: Props = $props();
 
 	// --- State ---
@@ -148,6 +150,8 @@
 	bind:fieldState={fieldState}
 	bind:value={value} 
 	{formState}
+  {showValidation}
+  onChange={onChange}
 >
   {#snippet input()}
     <div class="smart-forms-cash-input">
@@ -169,11 +173,8 @@
 </BaseInput>
 
 <style>
-	/* Basic styling for disabled state */
-	input:disabled {
+  input:disabled {
 		background-color: #f3f4f6;
 		cursor: not-allowed;
 	}
-	/* Ensure BaseInput's structure allows this flex container */
-    /* Adjust pl-7 if needed based on currency symbol width */
 </style>

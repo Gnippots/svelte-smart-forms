@@ -16,6 +16,7 @@
   import AddressField from '$lib/AddressField.svelte';
   import { SvelteToast } from '@zerodevx/svelte-toast';
   import CashInput from '$lib/CashInput.svelte';
+	import MonthInput from '$lib/MonthInput.svelte';
 
   const formState = createFormState();
 
@@ -127,6 +128,13 @@
 
     <DatePicker name="datepicker" bind:value={form.datepicker} {formState}></DatePicker>
 
+    <MonthInput 
+      label="Month Picker"
+      name="Month"
+      required={true}
+      {formState}
+    />
+
     <PasswordInput
       name='password'
       label='Password'
@@ -165,6 +173,7 @@
     name='cash'
     label='Cash'
     {formState}
+    required={true}
     />
 
     <NumberInput

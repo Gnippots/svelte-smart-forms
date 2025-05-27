@@ -57,6 +57,7 @@
 	"dependencies": {
 		"@googlemaps/js-api-loader": "^1.16.8",
 		"@zerodevx/svelte-toast": "^0.9.3",
+		"air-datepicker": "^3.6.0",
 		"lodash.clonedeep": "^4.5.0"
 	}
 }
