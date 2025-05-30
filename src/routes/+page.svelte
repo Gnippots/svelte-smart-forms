@@ -27,7 +27,7 @@
     email: string;
     address?: any;
     checkbox?: boolean;
-    datepicker?: Date;
+    datepicker?: string;
     password?: string;
     password2?: string;
     textarea?: string;
@@ -41,7 +41,7 @@
     email: '',
     address: {},
     checkbox: false,
-    datepicker: new Date(),
+    datepicker: '2021 - 03',
     password: '',
     password2: '',
     textarea: '',
@@ -133,6 +133,7 @@
       name="Month"
       required={true}
       {formState}
+      bind:value={form.datepicker}
     />
 
     <PasswordInput
