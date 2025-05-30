@@ -38,32 +38,12 @@
   let datepicker: any;
   let inputElement: HTMLInputElement;
 
-  function formatDate(date: Date | string | null) {
-    if (!date) return '';
-
-    const dateObj = typeof date === 'string' ? new Date(date) : date;
-    const year = dateObj.getFullYear();
-    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-    return `${year}-${month}`;
-  }
-
-  $effect(() => {
-    inputElement.value = formatDate(value);
-  });
-
   onMount(() => {
     datepicker = new AirDatepicker(`#${name}`, {
       view: 'months',
       minView: 'months',
-      dateFormat: 'yyyy-MM',
-      onSelect({ date }) {
-        const selectedDate = Array.isArray(date) ? date[0] : date;
-        // Format the date to match backend
-        // line 404 backend/src/services/waterfall.py can't handle normal dates
-        const year = selectedDate.getFullYear();
-        const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
-        value = `${year}-${month}`; // Format as YYYY-MM-01 as thats what backend expects for months
-      },
+      dateFormat: 'MMMM, yyyy',
+
       locale: en,
       container: container
     });
