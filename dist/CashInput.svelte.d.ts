@@ -8,12 +8,13 @@ interface Props {
     disabled?: boolean;
     formState: FormState;
     classes?: string;
-    onChange?: (value: number | null) => void;
+    onChange?: () => void;
     placeholder?: string;
     min?: number | null;
     max?: number | null;
     currencySymbol?: string;
     prefix?: Snippet;
+    showValidation?: boolean;
 }
 declare const CashInput: import("svelte").Component<Props, {}, "value">;
 type CashInput = ReturnType<typeof CashInput>;

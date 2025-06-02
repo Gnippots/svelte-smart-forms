@@ -13,12 +13,13 @@
     disabled?: boolean;
     formState: FormState;
     classes?: string;
-    onChange?: (value: number | null) => void; // Callback with the numeric value
+    onChange?: () => void;
     placeholder?: string;
     min?: number | null;
     max?: number | null;
     currencySymbol?: string; 
     prefix?: Snippet;
+    showValidation?: boolean;
   }
 
   let {
@@ -31,9 +32,8 @@
     classes = 'smart-form-input',
     onChange = () => {},
     placeholder = '',
-    min = null,
-    max = null,
-    prefix
+    prefix,
+    showValidation = true
   }: Props = $props();
 
   let fieldState = $state<FieldState>(createFieldState());
@@ -106,6 +106,8 @@
   bind:fieldState={fieldState}
   bind:value={value} 
   {formState}
+  {onChange}
+  {showValidation}
 >
   {#snippet input()}
     <div class="smart-forms-cash-input">

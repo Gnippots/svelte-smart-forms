@@ -76,6 +76,8 @@
       minView: 'months',
       dateFormat:'MMM-yyyy',
       onSelect({ date }) {
+        console.log(date);
+        
         const selectedDate = Array.isArray(date) ? date[0] : date;
         // Format the date to match backend
         // line 404 backend/src/services/waterfall.py can't handle normal dates
