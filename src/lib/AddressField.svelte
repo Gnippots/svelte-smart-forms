@@ -228,8 +228,8 @@
 
 <BaseInput
   {name}
-  value={search}
-  {fieldState}
+  bind:value={search}
+  bind:fieldState={fieldState}
   {formState}
   onChange={onChange}
   {required}

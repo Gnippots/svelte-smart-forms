@@ -38,18 +38,6 @@
   let datepicker: any;
   let inputElement: HTMLInputElement;
 
-  console.log(value);
-  
-
-  function formatDate(date: Date | string | null) {
-    if (!date) return '';
-
-    const dateObj = typeof date === 'string' ? new Date(date) : date;
-    const year = dateObj.getFullYear();
-    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-    return `${year}-${month}`;
-  }
-
   function convertToMonthCommaYear(inputDate: string | Date | null) {
     if (!inputDate) return '';
     let dateObj;
