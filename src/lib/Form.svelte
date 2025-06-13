@@ -22,6 +22,13 @@
       return;
     }
     if (!$formState.valid) {
+      const firstErrorFieldKey = Object.keys($formState.errors)[0];
+      if (firstErrorFieldKey && $formState.fields[firstErrorFieldKey]) {
+        const fieldElement = $formState.fields[firstErrorFieldKey].element;
+        if (fieldElement) {
+          fieldElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
       //toast_error('Some fields were missing or incorrect');
       return;
     }

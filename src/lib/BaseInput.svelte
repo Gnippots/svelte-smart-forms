@@ -39,6 +39,7 @@
     let initial_value = $state(value);
     let isDirty = $derived(value !== initial_value);
     let previousValue = $state(value);
+    let element: HTMLDivElement;
   
     function validate(value: any) {
       if (!$formState) {
@@ -81,6 +82,7 @@
       if ($formState) {
         fieldState.initialValue = value;
         fieldState.isDirty = isDirty;
+        fieldState.element = element;
         $formState.fields[name] = fieldState;
 
         // Run initial validation
@@ -93,7 +95,7 @@
     });
   </script>
   
-  <div class={classes}>
+  <div class={classes} bind:this={element}>
 
     {#if label != ''}
       <label for="{name}" class="smart-form-input-label">{label}{#if required}<span style="color: #ce0262">*</span>{/if}</label>

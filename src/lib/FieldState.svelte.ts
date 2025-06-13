@@ -1,6 +1,7 @@
 export function createFieldState() {
   const state = $state({
     initialValue: null,
+    element: null,
     dirty: false,
     valid: true,
     blurred: false,
