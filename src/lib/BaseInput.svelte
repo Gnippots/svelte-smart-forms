@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: This migration would change the name of a slot making the component unusable -->
 <!-- BaseInput.svelte -->
 <script lang="ts">
-    import { onMount, type Snippet } from 'svelte';
+    import { onDestroy, onMount, type Snippet } from 'svelte';
     import FieldErrors from '$lib/FieldErrors.svelte';
     import type { FormState, FieldState } from './Interfaces';
 
@@ -93,6 +93,15 @@
         onChange();
       };
     });
+
+    onDestroy(() => {
+      if ($formState.fields[name]) {
+        delete $formState.fields[name];
+      }
+      if ($formState.errors[name]) {
+        delete $formState.errors[name];
+      }
+    })
   </script>
   
   <div class={classes} bind:this={element}>
