@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: This migration would change the name of a slot making the component unusable -->
 <!-- BaseInput.svelte -->
 <script lang="ts">
-    import { onMount, type Snippet } from 'svelte';
+    import { onDestroy, onMount, type Snippet } from 'svelte';
     import FieldErrors from './FieldErrors.svelte';
     import type { FormState, FieldState } from './Interfaces';
 
@@ -39,6 +39,7 @@
     let initial_value = $state(value);
     let isDirty = $derived(value !== initial_value);
     let previousValue = $state(value);
+    let element: HTMLDivElement;
   
     function validate(value: any) {
       if (!$formState) {
@@ -81,6 +82,7 @@
       if ($formState) {
         fieldState.initialValue = value;
         fieldState.isDirty = isDirty;
+        fieldState.element = element;
         $formState.fields[name] = fieldState;
 
         // Run initial validation
@@ -91,9 +93,18 @@
         onChange();
       };
     });
+
+    onDestroy(() => {
+      if ($formState.fields[name]) {
+        delete $formState.fields[name];
+      }
+      if ($formState.errors[name]) {
+        delete $formState.errors[name];
+      }
+    })
   </script>
   
-  <div class={classes}>
+  <div class={classes} bind:this={element}>
 
     {#if label != ''}
       <label for="{name}" class="smart-form-input-label">{label}{#if required}<span style="color: #ce0262">*</span>{/if}</label>

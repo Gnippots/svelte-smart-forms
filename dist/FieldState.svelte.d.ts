@@ -1,5 +1,6 @@
 export declare function createFieldState(): {
     initialValue: null;
+    element: null;
     dirty: boolean;
     valid: boolean;
     blurred: boolean;
