@@ -2,6 +2,7 @@
     import BaseInput from '$lib/BaseInput.svelte';
     import { createFieldState } from './FieldState.svelte';
     import type { FormState, FieldState } from './Interfaces';
+    import type { FullAutoFill } from 'svelte/elements';
 
     let {
         label = '',
@@ -14,7 +15,8 @@
         classes = 'smart-form-input',
         onChange = () => {},
         onKeyup: onKeyup = () => {},
-        placeholder = ''
+        placeholder = '',
+        autocomplete = 'off'
     }: {
         label: string,
         value: string,
@@ -26,7 +28,8 @@
         classes?: string,
         onChange?: () => void,
         onKeyup?: () => void,
-        placeholder?: string
+        placeholder?: string,
+        autocomplete?: FullAutoFill
     } = $props();
 
     let fieldState = $state<FieldState>(createFieldState());
@@ -52,6 +55,7 @@
         type="email"
         {name}
         bind:value
+        autocomplete={autocomplete}
     />
 {/snippet}
 

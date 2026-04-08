@@ -6,13 +6,14 @@ interface Props {
     required?: boolean;
     name?: string;
     disabled?: boolean;
-    formState?: FormState | null;
+    formState: FormState;
     classes?: string;
     onChange?: any;
     placeholder?: string;
     min?: number | null;
     max?: number | null;
     suffix?: Snippet;
+    showValidation?: boolean;
 }
 declare const PercentageInput: import("svelte").Component<Props, {}, "value">;
 type PercentageInput = ReturnType<typeof PercentageInput>;

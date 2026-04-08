@@ -3,6 +3,7 @@
 	import type { Snippet } from 'svelte';
   import type { FieldState, FormState } from './Interfaces';
 	import { createFieldState } from './FieldState.svelte';
+  import type { FullAutoFill } from 'svelte/elements';
 
   interface Props {
     label?: string;
@@ -18,6 +19,7 @@
     showPasswordToggle?: Snippet;
     hidePasswordToggle?: Snippet;
     showValidation?: boolean;
+    autocomplete?: FullAutoFill;
   }
 
   let {
@@ -33,7 +35,8 @@
     confirm_against = '',
     showPasswordToggle = undefined,
     hidePasswordToggle = undefined,
-    showValidation = true
+    showValidation = true,
+    autocomplete = 'off'
   }: Props = $props();
   
   let fieldState = $state<FieldState>(createFieldState());
@@ -76,6 +79,7 @@
           type="text"
           {name}
           bind:value
+          autocomplete={autocomplete}
         />
       {:else}
         <input
@@ -88,6 +92,7 @@
           type="password"
           {name}
           bind:value
+          autocomplete={autocomplete}
         />
       {/if}
       <button type="button" class="password-toggle" onclick={toggle_show}>

@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { tick, type Snippet } from 'svelte';
+	import { type Snippet } from 'svelte';
 	import BaseInput from './BaseInput.svelte'; // Assuming BaseInput is in the same directory
 	import type { FormState, FieldState } from './Interfaces'; // Assuming Interfaces are defined
+  import { createFieldState } from './FieldState.svelte';
 
 	// --- Type Definitions ---
 	interface Props {
@@ -10,13 +11,14 @@
 		required?: boolean;
 		name?: string;
 		disabled?: boolean;
-		formState?: FormState | null;
+		formState: FormState;
 		classes?: string;
 		onChange?: any; // Callback with the numeric value
 		placeholder?: string;
 		min?: number | null;
 		max?: number | null;
     suffix?: Snippet;
+    showValidation?: boolean;
 	}
 
 	// --- Props ---
@@ -26,17 +28,18 @@
 		required = false,
 		name = '',
 		disabled = false,
-		formState = null,
+		formState,
 		classes = 'smart-form-input',
 		onChange = () => {},
 		placeholder = '',
 		min = 0,
 		max = 100,
-    suffix
+    suffix,
+    showValidation = true
 	}: Props = $props();
 
 	// --- State ---
-	let fieldState: FieldState = $state();
+  let fieldState = $state<FieldState>(createFieldState());
 </script>
 
 <BaseInput
@@ -45,7 +48,9 @@
 	{classes}
 	{name}
 	bind:fieldState={fieldState}
-	bind:value={value} {formState}
+	bind:value={value}
+  {formState}
+  {showValidation}
 >
   {#snippet input()}
     <div class="smart-forms-percentage-input">

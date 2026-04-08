@@ -1,4 +1,5 @@
 import type { FormState } from './Interfaces';
+import type { FullAutoFill } from 'svelte/elements';
 declare const Dropdown: import("svelte").Component<{
     label: string;
     value: any;
