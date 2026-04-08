@@ -1,5 +1,6 @@
 import type { Snippet } from 'svelte';
 import type { FormState } from './Interfaces';
+import type { FullAutoFill } from 'svelte/elements';
 interface Props {
     label?: string;
     value?: string;

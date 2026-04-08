@@ -1,13 +1,12 @@
 <script lang="ts">
   import type { FormState } from './Interfaces';
-    
-  
+
   interface Props {
     //import { toast_error } from '../lib/toast_themes';
     formState?: FormState | null;
     onSubmit?: (() => void) | null;
     children?: import('svelte').Snippet;
-    id? : string | null
+    id? : string | null;
   }
 
   let { formState = null, onSubmit = null, children, id = null }: Props = $props();

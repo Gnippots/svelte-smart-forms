@@ -13,6 +13,7 @@
         onChange?: any;
         placeholder?: string;
     }
+	});
 
     let {
         label = '',

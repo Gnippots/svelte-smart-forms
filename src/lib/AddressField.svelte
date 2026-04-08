@@ -1,5 +1,5 @@
 <script lang="ts">
-  import BaseInput from '$lib/BaseInput.svelte';
+  import BaseInput from './BaseInput.svelte';
   import clonedeep from 'lodash.clonedeep';
   import { createFieldState } from './FieldState.svelte';
   import type { Address, ComponentMap, FieldState } from './Interfaces';
@@ -223,20 +223,26 @@
     }
   }
 
+  let validateAddress = () => {
+    if (search && (isAddressEffectivelyEmpty(address) || incomplete)) {
+      fieldState.addError(name, 'Please select a valid Address');
+    }
+  }
+
   let fieldState = $state<FieldState>(createFieldState());
 </script>
 
 <BaseInput
   {name}
-  value={search}
-  {fieldState}
+  bind:value={search}
+  bind:fieldState={fieldState}
   {formState}
   onChange={onChange}
   {required}
   {classes}
   {label}
   {showValidation}
-  validationFunctions={[]}
+  validationFunctions={[validateAddress]}
 >
     {#snippet input()}
     <div id="smart-forms-address-containter" class="address-container">
@@ -288,10 +294,6 @@
     </div>
     {/snippet} 
 </BaseInput>
-
-{#if incomplete}
-  <p class="address-warning">Address is incomplete</p>
-{/if}
 
 <style>
 </style>

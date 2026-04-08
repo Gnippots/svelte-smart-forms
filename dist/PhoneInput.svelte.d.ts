@@ -1,4 +1,5 @@
 import type { FormState } from './Interfaces';
+import type { FullAutoFill } from 'svelte/elements';
 interface Props {
     label?: string;
     value?: string;
@@ -11,6 +12,7 @@ interface Props {
     onChange?: any;
     onKeyup?: any;
     placeholder?: string;
+    autocomplete?: FullAutoFill;
 }
 declare const PhoneInput: import("svelte").Component<Props, {}, "value">;
 type PhoneInput = ReturnType<typeof PhoneInput>;

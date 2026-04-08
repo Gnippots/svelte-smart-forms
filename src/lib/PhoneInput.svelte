@@ -2,6 +2,7 @@
 import type { FieldState, FormState } from './Interfaces';
 import BaseInput from '$lib/BaseInput.svelte';
 import { createFieldState } from './FieldState.svelte';
+import type { FullAutoFill } from 'svelte/elements';
 interface Props {
     label?: string;
     value?: string;
@@ -14,6 +15,7 @@ interface Props {
     onChange?: any;
     onKeyup?: any;
     placeholder?: string;
+    autocomplete?: FullAutoFill;
 }
 
 let {
@@ -28,6 +30,7 @@ let {
     onChange = () => {},
     onKeyup = () => {},
     placeholder = '',
+    autocomplete = 'tel',
 }: Props = $props();
 let fieldState = $state<FieldState>(createFieldState());
                 
@@ -54,6 +57,7 @@ let fieldState = $state<FieldState>(createFieldState());
             type="text"
             name={name}
             bind:value="{value}"
+            autocomplete={autocomplete}
         />
     {/snippet}
 </BaseInput>

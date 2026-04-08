@@ -16,6 +16,7 @@
   import AddressField from '$lib/AddressField.svelte';
   import { SvelteToast } from '@zerodevx/svelte-toast';
   import CashInput from '$lib/CashInput.svelte';
+	import MonthInput from '$lib/MonthInput.svelte';
 
   const formState = createFormState();
 
@@ -26,7 +27,7 @@
     email: string;
     address?: any;
     checkbox?: boolean;
-    datepicker?: Date;
+    datepicker?: string;
     password?: string;
     password2?: string;
     textarea?: string;
@@ -40,7 +41,7 @@
     email: '',
     address: {},
     checkbox: false,
-    datepicker: new Date(),
+    datepicker: '2021 - 03',
     password: '',
     password2: '',
     textarea: '',
@@ -127,6 +128,14 @@
 
     <DatePicker name="datepicker" bind:value={form.datepicker} {formState}></DatePicker>
 
+    <MonthInput 
+      label="Month Picker"
+      name="Month"
+      required={true}
+      {formState}
+      bind:value={form.datepicker}
+    />
+
     <PasswordInput
       name='password'
       label='Password'
@@ -165,6 +174,7 @@
     name='cash'
     label='Cash'
     {formState}
+    required={true}
     />
 
     <NumberInput

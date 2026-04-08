@@ -54,6 +54,7 @@ let fieldState = $state<FieldState>(createFieldState());
             type="text"
             name={name}
             bind:value="{value}"
+            autocomplete={autocomplete}
         />
     {/snippet}
 </BaseInput>

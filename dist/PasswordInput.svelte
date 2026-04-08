@@ -76,6 +76,7 @@
           type="text"
           {name}
           bind:value
+          autocomplete={autocomplete}
         />
       {:else}
         <input
@@ -88,6 +89,7 @@
           type="password"
           {name}
           bind:value
+          autocomplete={autocomplete}
         />
       {/if}
       <button type="button" class="password-toggle" onclick={toggle_show}>
