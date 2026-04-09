@@ -2,6 +2,7 @@
     import BaseInput from './BaseInput.svelte';
     import { createFieldState } from './FieldState.svelte';
     import type { FormState, FieldState } from './Interfaces';
+    import type { FullAutoFill } from 'svelte/elements';
   
     let {
         label = '',
@@ -16,7 +17,8 @@
         onChange = () => {},
         placeholder = '',
         onBlur = () => {},
-        showValidation = true
+        showValidation = true,
+        autocomplete = 'off'
     }: {
         label: string,
         value: any,
@@ -30,7 +32,8 @@
         onChange?: () => void,
         placeholder?: string,
         onBlur?: () => void,
-        showValidation?: boolean
+        showValidation?: boolean,
+        autocomplete?: FullAutoFill
     } = $props();
   
     let fieldState = $state<FieldState>(createFieldState());
@@ -73,6 +76,7 @@
                 onBlur();
             }}
             onchange={onChange}
+            autocomplete={autocomplete}
         >
             {#if placeholder}
                 <option value={value}>{placeholder}</option>

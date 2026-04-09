@@ -1,48 +1,44 @@
 <script lang="ts">
-	import { tick, type Snippet } from 'svelte';
-	import BaseInput from './BaseInput.svelte'; // Assuming BaseInput is in the same directory
-	import type { FormState, FieldState } from './Interfaces'; // Assuming Interfaces are defined
-	import { createFieldState } from './FieldState.svelte';
+  import { tick, type Snippet } from 'svelte';
+  import BaseInput from './BaseInput.svelte'; // Assuming BaseInput is in the same directory
+  import type { FormState, FieldState } from './Interfaces'; // Assuming Interfaces are defined
+  import { createFieldState } from './FieldState.svelte';
 
-	// --- Type Definitions ---
-	interface Props {
-		label?: string;
-		value?: number | null; // The actual numeric value
-		required?: boolean;
-		name?: string;
-		disabled?: boolean;
-		formState: FormState;
-		classes?: string;
-		onChange?: (value: number | null) => void; // Callback with the numeric value
-		placeholder?: string;
-		min?: number | null;
-		max?: number | null;
-		currencySymbol?: string; // Symbol for currency (e.g., '$', '€')
+  // --- Type Definitions ---
+  interface Props {
+    label?: string;
+    value?: number | null; // The actual numeric value
+    required?: boolean;
+    name?: string;
+    disabled?: boolean;
+    formState: FormState;
+    classes?: string;
+    onChange?: () => void;
+    placeholder?: string;
+    min?: number | null;
+    max?: number | null;
+    currencySymbol?: string; 
     prefix?: Snippet;
     showValidation?: boolean;
   }
 
-	// --- Props ---
-	let {
-		label = '',
-		value = $bindable(null), // Use $bindable for two-way binding from parent
-		required = false,
-		name = '',
-		disabled = false,
-		formState,
-		classes = 'smart-form-input',
-		onChange = () => {},
-		placeholder = '',
-		min = null,
-		max = null,
-		currencySymbol = '$', // Default currency symbol
-    prefix
-	}: Props = $props();
+  let {
+    label = '',
+    value = $bindable(null),
+    required = false,
+    name = '',
+    disabled = false,
+    formState,
+    classes = 'smart-form-input',
+    onChange = () => {},
+    placeholder = '',
+    prefix,
+    showValidation = true
+  }: Props = $props();
 
-	// --- State ---
   let fieldState = $state<FieldState>(createFieldState());
-	let displayValue = $state('');
-	let inputElement: HTMLInputElement | undefined = $state();
+  let displayValue = $state('');
+  let inputElement: HTMLInputElement | undefined = $state();
 
   const currencyFormatter = $derived(
     new Intl.NumberFormat(typeof navigator !== 'undefined' ? navigator.language : 'en-US', {
@@ -95,64 +91,23 @@
       event.preventDefault();
   }
 
-	// --- Event Handlers ---
-	async function handleInput(event: Event) {
-		const target = event.target as HTMLInputElement;
-		const rawValue = target.value;
-		const caretPosition = target.selectionStart; // Store caret position
-
-		const numericValue = parseInput(rawValue);
-
-		// Only update if the numeric value has actually changed
-		if (numericValue !== value) {
-			value = numericValue; // Update bindable prop
-			onChange(numericValue); // Trigger callback
-		}
-
-		// Reformat the display value immediately for better UX
-		// Use the potentially clamped numericValue for formatting
-		displayValue = formatNumber(value);
-
-		// Restore caret position after formatting (important for usability)
-		await tick(); // Wait for DOM update
-		if (inputElement && caretPosition !== null) {
-			// Basic caret restoration - might need refinement if formatting drastically changes length
-            try {
-			    inputElement.setSelectionRange(caretPosition, caretPosition);
-            } catch (e) {
-                // Ignore potential errors if element is not focused or selection is not possible
-                console.warn("Could not restore caret position.", e);
-            }
-		}
-	}
-
-	function handleBlur() {
-		// Ensure the final value is correctly formatted on blur
-		const numericValue = parseInput(displayValue); // Parse current display value
-		value = numericValue; // Update internal state
-		displayValue = formatNumber(numericValue); // Format the final number
-		if (value !== numericValue) {
-			// If parsing/clamping changed the value on blur, notify parent
-			onChange(numericValue);
-		}
-		fieldState?.blur(); // Notify BaseInput about the blur event
-	}
-
-	// on change ensure input is formatted
-	$effect(() => {
-		displayValue = formatNumber(value);
-	});
+  // on change ensure input is formatted
+  $effect(() => {
+    displayValue = formatNumber(value);
+  });
 
 </script>
 
 <BaseInput
-	{label}
-	{required}
-	{classes}
-	{name}
-	bind:fieldState={fieldState}
-	bind:value={value} 
-	{formState}
+  {label}
+  {required}
+  {classes}
+  {name}
+  bind:fieldState={fieldState}
+  bind:value={value} 
+  {formState}
+  {onChange}
+  {showValidation}
 >
   {#snippet input()}
     <div class="smart-forms-cash-input">

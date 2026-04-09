@@ -30,7 +30,8 @@
     classes = 'smart-form-input',
     onChange = () => {},
     onKeyup = () => {},
-    placeholder = ''
+    placeholder = '',
+    autocomplete = 'off'
   }: Props = $props();
 
   let fieldState = $state<FieldState>(createFieldState());

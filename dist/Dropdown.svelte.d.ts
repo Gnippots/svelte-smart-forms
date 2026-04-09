@@ -25,6 +25,7 @@ declare const Dropdown: import("svelte").Component<{
     placeholder?: string;
     onBlur?: () => void;
     showValidation?: boolean;
+    autocomplete?: FullAutoFill;
 }, {}, "value">;
 type Dropdown = ReturnType<typeof Dropdown>;
 export default Dropdown;

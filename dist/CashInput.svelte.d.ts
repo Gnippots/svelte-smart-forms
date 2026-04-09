@@ -8,7 +8,7 @@ interface Props {
     disabled?: boolean;
     formState: FormState;
     classes?: string;
-    onChange?: (value: number | null) => void;
+    onChange?: () => void;
     placeholder?: string;
     min?: number | null;
     max?: number | null;
