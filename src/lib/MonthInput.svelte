@@ -1,136 +1,107 @@
 <script lang="ts">
-	import BaseInput from '$lib/BaseInput.svelte';
-	import { createFieldState } from './FieldState.svelte';
-	import type { FieldState, FormState } from './Interfaces';
-  import AirDatepicker from 'air-datepicker';
-  import 'air-datepicker/air-datepicker.css';
-  import en from 'air-datepicker/locale/en';
-  import { onMount, onDestroy } from 'svelte';
+  import TextInput from './TextInput.svelte';
+  import type { FormState } from './Interfaces';
 
-	let {
-		label = '',
-		value = $bindable(null),
-		required = false,
-		name = '',
-		disabled = false,
-		formState,
-		classes = 'smart-form-input',
-		onChange = () => {},
-		placeholder = '',
-    showValidation = true,
-    container = '',
-    minDate,
-    maxDate
-	}: {
-		label?: string;
-		value?: string | Date | null;
-		required?: boolean;
-		name?: string;
-		disabled?: boolean;
-		formState: FormState;
-		classes?: string;
-		onChange?: any;
-		placeholder?: string;
+  interface Props {
+    label?: string;
+    value?: string | Date | null;
+    required?: boolean;
+    name?: string;
+    disabled?: boolean;
+    formState: FormState;
+    classes?: string;
+    onChange?: () => void;
+    placeholder?: string;
     showValidation?: boolean;
     container?: string;
     minDate?: Date;
-    maxDate?: Date
-	} = $props();
-
-	let fieldState = $state<FieldState>(createFieldState());
-
-  let datepicker: any;
-  let inputElement: HTMLInputElement;
-
-  function convertToMonthCommaYear(inputDate: string | Date | null) {
-    if (!inputDate) return '';
-    let dateObj;
-
-    if (typeof inputDate === 'string') {
-      // Handle "YYYY-MM" string input
-      const parts = inputDate.split('-');
-
-      const yearString = parts[0].trim();
-      const monthString = parts[1].trim();
-
-      const year = parseInt(yearString, 10);
-      const month = parseInt(monthString, 10);
-
-
-      // Create a Date object. Month is 0-indexed for Date constructor.
-      dateObj = new Date(year, month - 1, 1);
-    } else {
-      dateObj = inputDate
-    }
-
-    // Get the short month name (e.g., "Jan", "Feb")
-    const shortMonthName = dateObj.toLocaleString('default', { month: 'short' });
-    const year = dateObj.getFullYear();
-
-    return `${shortMonthName}, ${year}`;
+    maxDate?: Date;
   }
 
+  let {
+    label = '',
+    value = $bindable(null),
+    required = false,
+    name = '',
+    disabled = false,
+    formState,
+    classes = 'smart-form-input',
+    onChange = () => {},
+    placeholder = 'MMM, YYYY',
+    showValidation = true,
+    container = '',
+    minDate = undefined,
+    maxDate = undefined
+  }: Props = $props();
 
-  $effect(() => {
-    if (inputElement) {
-      inputElement.value = convertToMonthCommaYear(value);
+  const monthLookup = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+  function formatMonth(currentValue: string | Date | null | undefined) {
+    if (!currentValue) {
+      return '';
     }
-  });
 
+    const monthDate =
+      currentValue instanceof Date
+        ? currentValue
+        : /^\d{4}-\d{2}$/.test(currentValue)
+          ? new Date(`${currentValue}-01`)
+          : new Date(currentValue);
 
-  onMount(() => {
-    datepicker = new AirDatepicker(`#${name}`, {
-      view: 'months',
-      minView: 'months',
-      dateFormat:'MMM-yyyy',
-      autoClose: true,
-      onSelect({ date, datepicker: adp }) {
-        const selectedDate = Array.isArray(date) ? date[0] : date;
-        // Format the date to match backend
-        // line 404 backend/src/services/waterfall.py can't handle normal dates
-        const year = selectedDate.getFullYear();
-        const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
-        value = `${year}-${month}`; // Format as YYYY-MM-01 as thats what backend expects for months
-        
-        adp.hide();
-      },
-      locale: en,
-      container: container,
-      minDate: minDate,
-      maxDate: maxDate
-    });
-  });
-
-  onDestroy(() => {
-    if (datepicker) {
-      datepicker.destroy();
+    if (Number.isNaN(monthDate.getTime())) {
+      return String(currentValue);
     }
-  });
 
+    return monthDate.toLocaleString('default', { month: 'short', year: 'numeric' });
+  }
+
+  function parseMonth(inputValue: string) {
+    const normalized = inputValue.trim();
+
+    if (!normalized) {
+      return null;
+    }
+
+    if (/^\d{4}-\d{2}$/.test(normalized)) {
+      return normalized;
+    }
+
+    const monthYearMatch = normalized.match(/^([A-Za-z]{3,9})[\s,/.-]+(\d{4})$/);
+    if (monthYearMatch) {
+      const monthIndex = monthLookup.indexOf(monthYearMatch[1].slice(0, 3).toLowerCase());
+      if (monthIndex !== -1) {
+        return `${monthYearMatch[2]}-${String(monthIndex + 1).padStart(2, '0')}`;
+      }
+    }
+
+    const numericMonthMatch = normalized.match(/^(\d{1,2})[\s,/.-]+(\d{4})$/);
+    if (numericMonthMatch) {
+      const month = Number(numericMonthMatch[1]);
+      if (month >= 1 && month <= 12) {
+        return `${numericMonthMatch[2]}-${String(month).padStart(2, '0')}`;
+      }
+    }
+
+    return normalized;
+  }
+
+  // Kept for backwards compatibility while the specialized component is deprecated.
+  void container;
+  void minDate;
+  void maxDate;
 </script>
 
-<BaseInput
-	{label}
-	{classes}
-	{placeholder}
-	{required}
-	{name}
-	{disabled}
-	{value}
-	bind:fieldState
-	{formState}
-	{onChange}
-	{showValidation}
->
-  {#snippet input()}
-    <input
-      id={name}
-      {name}
-      class="monthInput"
-      placeholder="Choose Date"
-      readonly
-      {required}
-      bind:this={inputElement}
-    />
-  {/snippet}
-</BaseInput>
+<TextInput
+  {label}
+  {classes}
+  {name}
+  bind:value
+  {formState}
+  {required}
+  {disabled}
+  {onChange}
+  {placeholder}
+  {showValidation}
+  format={formatMonth}
+  parse={(inputValue) => parseMonth(inputValue)}
+/>

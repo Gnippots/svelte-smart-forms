@@ -1,208 +1,420 @@
 <script lang="ts">
   import {
-    Form,
-    TextInput,
-    NumberInput,
+    CashInput,
+    CheckBox,
+    DatePicker,
     Dropdown,
     EmailInput,
     FieldErrors,
-    CheckBox,
-    DatePicker,
+    Form,
+    MonthInput,
+    NumberInput,
     PasswordInput,
+    PercentageInput,
     PhoneInput,
     TextArea,
+    TextInput,
     createFormState
   } from '$lib';
   import AddressField from '$lib/AddressField.svelte';
-  import { SvelteToast } from '@zerodevx/svelte-toast';
-  import CashInput from '$lib/CashInput.svelte';
-	import MonthInput from '$lib/MonthInput.svelte';
 
   const formState = createFormState();
+  const currencyFormatter = new Intl.NumberFormat('en-AU', {
+    maximumFractionDigits: 0
+  });
 
-  const form: {
-    text?: string;
-    number: number;
-    dropdown?: string;
-    email: string;
-    address?: any;
-    checkbox?: boolean;
-    datepicker?: string;
-    password?: string;
-    password2?: string;
-    textarea?: string;
-    phone?: string;
-    linkedNumber1: number;
-    linkedNumber2: number;
-  } = $state({
+  const form = $state({
     text: '',
-    number: 0,
+    number: 10,
     dropdown: '',
     email: '',
     address: {},
     checkbox: false,
-    datepicker: '2021 - 03',
+    datepicker: '2026-04-08',
+    monthText: '2026-04',
     password: '',
     password2: '',
     textarea: '',
     phone: '',
+    amount: 1250,
+    percent: 25,
+    legacyCash: 750,
+    legacyPercentage: 15,
+    legacyMonth: '2026-04',
     linkedNumber1: 0,
     linkedNumber2: 0
   });
 
-  const validateLinkedNumbers = () => {
-      if (form.linkedNumber1 + form.linkedNumber2 <= 0) {
-        return 'The sum of both numbers must be greater than zero';
-      }
-      return null;
+  function formatCurrency(value: string | number | null | undefined) {
+    if (value === null || value === undefined || value === '') {
+      return '';
+    }
+
+    return currencyFormatter.format(Number(value));
   }
 
-  formState.addCustomRule(
-    'linkedNumber1',
-    'sum_validation',
-    validateLinkedNumbers
-  );
-  formState.addCustomRule(
-    'linkedNumber2',
-    'sum_validation',
-    validateLinkedNumbers
-  );
+  function parseCurrency(inputValue: string) {
+    const cleaned = inputValue.replace(/[^0-9]/g, '');
+    return cleaned === '' ? null : Number(cleaned);
+  }
 
-  let submit = () => {
-    console.log('submitted');
-  };
+  function formatPercent(value: string | number | null | undefined) {
+    if (value === null || value === undefined || value === '') {
+      return '';
+    }
+
+    return String(value);
+  }
+
+  function parsePercent(inputValue: string) {
+    const cleaned = inputValue.replace(/[^0-9.-]/g, '');
+    if (cleaned === '' || cleaned === '-' || cleaned === '.') {
+      return null;
+    }
+
+    const parsed = Number(cleaned);
+    if (Number.isNaN(parsed)) {
+      return form.percent;
+    }
+
+    return parsed;
+  }
+
+  function clampPercent(value: string | number | null | undefined) {
+    if (value === null || value === undefined || value === '') {
+      return null;
+    }
+
+    const parsed = typeof value === 'number' ? value : Number(value);
+    if (Number.isNaN(parsed)) {
+      return form.percent;
+    }
+
+    return Math.min(100, Math.max(0, parsed));
+  }
+
+  const monthLookup = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+  function formatMonth(value: string | number | null | undefined) {
+    if (!value || typeof value === 'number') {
+      return value ? String(value) : '';
+    }
+
+    const monthDate = /^\d{4}-\d{2}$/.test(value) ? new Date(`${value}-01`) : new Date(value);
+    if (Number.isNaN(monthDate.getTime())) {
+      return value;
+    }
+
+    return monthDate.toLocaleString('default', { month: 'short', year: 'numeric' });
+  }
+
+  function parseMonth(inputValue: string) {
+    const normalized = inputValue.trim();
+
+    if (!normalized) {
+      return null;
+    }
+
+    if (/^\d{4}-\d{2}$/.test(normalized)) {
+      return normalized;
+    }
+
+    const monthYearMatch = normalized.match(/^([A-Za-z]{3,9})[\s,/.-]+(\d{4})$/);
+    if (monthYearMatch) {
+      const monthIndex = monthLookup.indexOf(monthYearMatch[1].slice(0, 3).toLowerCase());
+      if (monthIndex !== -1) {
+        return `${monthYearMatch[2]}-${String(monthIndex + 1).padStart(2, '0')}`;
+      }
+    }
+
+    return normalized;
+  }
+
+  function validateLinkedNumbers() {
+    if (form.linkedNumber1 + form.linkedNumber2 <= 0) {
+      return 'The sum of both numbers must be greater than zero';
+    }
+
+    return null;
+  }
+
+  formState.addCustomRule('linkedNumber1', 'sum_validation', validateLinkedNumbers);
+  formState.addCustomRule('linkedNumber2', 'sum_validation', validateLinkedNumbers);
+
+  function submit() {
+    console.log('submitted', $state.snapshot(form));
+  }
+
+  function serializeFormState(state: ReturnType<typeof createFormState> extends { subscribe: (run: (value: infer T) => void) => () => void } ? T : never) {
+    return {
+      ...state,
+      fields: Object.fromEntries(
+        Object.entries(state.fields).map(([fieldName, field]) => [
+          fieldName,
+          {
+            value: field.value,
+            initialValue: field.initialValue,
+            dirty: field.dirty,
+            valid: field.valid,
+            blurred: field.blurred,
+            errors: field.errors
+          }
+        ])
+      )
+    };
+  }
+
+  function serializeBoundValues() {
+    return {
+      text: form.text,
+      number: form.number,
+      dropdown: form.dropdown,
+      email: form.email,
+      address: form.address,
+      checkbox: form.checkbox,
+      datepicker: form.datepicker,
+      monthText: form.monthText,
+      password: form.password,
+      password2: form.password2,
+      textarea: form.textarea,
+      phone: form.phone,
+      amount: form.amount,
+      percent: form.percent,
+      legacyCash: form.legacyCash,
+      legacyPercentage: form.legacyPercentage,
+      legacyMonth: form.legacyMonth,
+      linkedNumber1: form.linkedNumber1,
+      linkedNumber2: form.linkedNumber2
+    };
+  }
+
+  const formStateDebug = $derived(JSON.stringify(serializeFormState($formState), null, 2));
+  const boundValuesDebug = $derived(JSON.stringify(serializeBoundValues(), null, 2));
 </script>
 
-<div style="width: 500px">
-  <Form {formState} onSubmit={submit}>
-    <TextInput
-      name={'text'}
-      label={'Text'}
-      bind:value={form.text}
-      required
-      {formState}
-    ></TextInput>
+<svelte:head>
+  <title>svelte-smart-forms showcase</title>
+</svelte:head>
 
-    <NumberInput
-      name={'number'}
-      min={0}
-      max={100}
-      label={'Number'}
-      bind:value={form.number}
-      required={true}
-      {formState}
-    ></NumberInput>
+<div class="page">
+  <div class="demo">
+    <h1>svelte-smart-forms</h1>
+    <p>Core supported components plus compatibility wrappers for the deprecated text-like APIs.</p>
 
-    <Dropdown
-      name='dropdown'
-      options={['One', 'Two']}
-      label='Dropdown'
-      bind:value={form.dropdown}
-      required={true}
-      {formState}
-    ></Dropdown>
+    <Form {formState} onSubmit={submit}>
+      <h2>Supported core inputs</h2>
 
-    <EmailInput
-      name='email'
-      label='Email'
-      bind:value={form.email}
-      required={true}
-      {formState}
-    ></EmailInput>
+      <TextInput
+        name="text"
+        label="Text"
+        bind:value={form.text}
+        required
+        {formState}
+      />
 
-    <AddressField
-      name="address"
-      label="Address Field"
-      bind:address={form.address}
-      required={true}
-      {formState}
-    ></AddressField>
+      <TextInput
+        name="amount"
+        label="Amount (preferred API)"
+        bind:value={form.amount}
+        prefixText="$"
+        format={formatCurrency}
+        parse={parseCurrency}
+        {formState}
+      />
 
-    <CheckBox
-      label="Checkbox"
-      name={'checkbox'}
-      required={true}
-      bind:value={form.checkbox}
-      {formState}
-    />
+      <TextInput
+        name="percent"
+        label="Percent (preferred API)"
+        bind:value={form.percent}
+        suffixText="%"
+        format={formatPercent}
+        parse={parsePercent}
+        normalizeOnBlur={clampPercent}
+        {formState}
+      />
 
-    <DatePicker name="datepicker" bind:value={form.datepicker} {formState}></DatePicker>
+      <TextInput
+        name="monthText"
+        label="Month (preferred API)"
+        bind:value={form.monthText}
+        format={formatMonth}
+        parse={parseMonth}
+        {formState}
+      />
 
-    <MonthInput 
-      label="Month Picker"
-      name="Month"
-      required={true}
-      {formState}
-      bind:value={form.datepicker}
-    />
+      <NumberInput
+        name="number"
+        min={0}
+        max={100}
+        label="Number"
+        bind:value={form.number}
+        required
+        {formState}
+      />
 
-    <PasswordInput
-      name='password'
-      label='Password'
-      bind:value={form.password}
-      required={true}
-      {formState}
-    />
+      <Dropdown
+        name="dropdown"
+        options={['One', 'Two']}
+        label="Dropdown"
+        bind:value={form.dropdown}
+        required
+        {formState}
+      />
 
-    <PasswordInput
-      name='password2'
-      label='Confirm Password'
-      confirm_against={form.password}
-      bind:value={form.password2}
-      required={true}
-      {formState}
-    />
+      <EmailInput
+        name="email"
+        label="Email"
+        bind:value={form.email}
+        required
+        {formState}
+      />
 
-    <TextArea
-      name='textarea'
-      label='Text Area'
-      bind:value={form.textarea}
-      required={true}
-      rows={3}
-      {formState}
-    />
+      <PhoneInput
+        name="phone"
+        label="Phone"
+        bind:value={form.phone}
+        required
+        {formState}
+      />
 
-    <PhoneInput
-      name='phone'
-      label='Phone'
-      bind:value={form.phone}
-      required={true}
-      {formState}
-    />
+      <TextArea
+        name="textarea"
+        label="Text area"
+        bind:value={form.textarea}
+        required
+        rows={3}
+        {formState}
+      />
 
-    <CashInput
-    name='cash'
-    label='Cash'
-    {formState}
-    required={true}
-    />
+      <CheckBox
+        label="Checkbox"
+        name="checkbox"
+        bind:value={form.checkbox}
+        {formState}
+      />
 
-    <NumberInput
-      name={'linkedNumber1'}
-      label={'Linked Number 1'}
-      bind:value={form.linkedNumber1}
-      required={true}
-      {formState}
-    ></NumberInput>
+      <DatePicker
+        name="datepicker"
+        label="Date picker"
+        bind:value={form.datepicker}
+        {formState}
+      />
 
-    <NumberInput
-      name={'linkedNumber2'}
-      label={'Linked Number 2'}
-      bind:value={form.linkedNumber2}
-      required={true}
-      {formState}
-    ></NumberInput>
+      <AddressField
+        name="address"
+        label="Address field"
+        bind:address={form.address}
+        {formState}
+      />
 
-    <hr />
-    <p>Error Message component</p>
-    <FieldErrors></FieldErrors>
+      <PasswordInput
+        name="password"
+        label="Password"
+        bind:value={form.password}
+        required
+        {formState}
+      />
 
-    <hr />
+      <PasswordInput
+        name="password2"
+        label="Confirm password"
+        confirm_against={form.password}
+        bind:value={form.password2}
+        required
+        {formState}
+      />
 
-    <button>Submit</button>
-  </Form>
+      <FieldErrors formState={formState} field="password2" />
+
+      <NumberInput
+        name="linkedNumber1"
+        label="Linked number 1"
+        bind:value={form.linkedNumber1}
+        required
+        {formState}
+      />
+
+      <NumberInput
+        name="linkedNumber2"
+        label="Linked number 2"
+        bind:value={form.linkedNumber2}
+        required
+        {formState}
+      />
+
+      <h2>Deprecated compatibility wrappers</h2>
+
+      <CashInput
+        name="legacyCash"
+        label="CashInput"
+        bind:value={form.legacyCash}
+        {formState}
+      />
+
+      <PercentageInput
+        name="legacyPercentage"
+        label="PercentageInput"
+        bind:value={form.legacyPercentage}
+        {formState}
+      />
+
+      <MonthInput
+        name="legacyMonth"
+        label="MonthInput"
+        bind:value={form.legacyMonth}
+        {formState}
+      />
+
+      <button>Submit</button>
+    </Form>
+  </div>
+
+  <div class="state">
+    <h2>Form state</h2>
+    <pre>{formStateDebug}</pre>
+
+    <h2>Bound values</h2>
+    <pre>{boundValuesDebug}</pre>
+  </div>
 </div>
 
-<pre>{JSON.stringify($formState, null, 4)}</pre>
-<pre>{JSON.stringify($state.snapshot(form), null, 4)}</pre>
-<SvelteToast />
+<style>
+  .page {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: minmax(0, 680px) minmax(0, 1fr);
+    align-items: start;
+    padding: 2rem;
+  }
+
+  .demo,
+  .state {
+    min-width: 0;
+  }
+
+  .demo :global(form) {
+    display: grid;
+    gap: 1rem;
+  }
+
+  h1,
+  h2,
+  p {
+    margin: 0;
+  }
+
+  pre {
+    margin: 0;
+    padding: 1rem;
+    overflow: auto;
+    background: #111827;
+    color: #e5e7eb;
+    border-radius: 0.5rem;
+  }
+
+  @media (max-width: 960px) {
+    .page {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

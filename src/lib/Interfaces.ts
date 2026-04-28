@@ -1,13 +1,6 @@
-import type { Writable } from 'svelte/store'
+import type { Writable } from 'svelte/store';
 
-export interface Field {
-    valid: boolean;
-    errors: Record<string, string>;
-    blurred: boolean;
-    [key: string]: any;
-  }
-
-export type Error = Record<string, string>;
+export type ValidationErrors = Record<string, string>;
 
 export interface CustomValidationRule {
   fieldName: string;
@@ -15,29 +8,40 @@ export interface CustomValidationRule {
   fn: () => string | null;
 }
 
-export interface FormStateStore {
-    fields: Record<string, Field>;
-    errors: Record<string, Error>;
-    customRules: Array<CustomValidationRule>;
-    dirty: boolean;
-    valid: boolean;
-    submitted: boolean;
-}
-
-export interface FormState extends Writable<FormStateStore> {
-    addCustomRule: (fieldName: string, errorCode: string, fn: () => string | null) => void;
-}
-
 export interface FieldState {
+  value: unknown;
   dirty: boolean;
   valid: boolean;
   blurred: boolean;
-  initialValue: any;
-  errors: Error;
+  initialValue: unknown;
+  errors: ValidationErrors;
   addError: (error: string, message: string) => void;
   removeError: (error: string) => void;
+  resetValidation: () => void;
   blur: () => void;
-  [key: string]: any;
+  resetBlur: () => void;
+  setDirty: (dirty: boolean) => void;
+  setValue: (value: unknown) => void;
+  setInitialValue: (value: unknown) => void;
+}
+
+export type Field = FieldState;
+
+export interface FormStateStore {
+  fields: Record<string, FieldState>;
+  errors: Record<string, ValidationErrors>;
+  customRules: Array<CustomValidationRule>;
+  dirty: boolean;
+  valid: boolean;
+  submitted: boolean;
+}
+
+export interface FormState extends Writable<FormStateStore> {
+  addCustomRule: (fieldName: string, errorCode: string, fn: () => string | null) => void;
+  registerField: (fieldName: string, field: FieldState) => void;
+  syncField: (fieldName: string, field: FieldState) => void;
+  unregisterField: (fieldName: string) => void;
+  setSubmitted: (submitted: boolean) => void;
 }
 
 
@@ -63,5 +67,5 @@ export interface Address {
 }
 
 export interface ComponentMap {
-  [key: string]: keyof Address;  // This maps strings to valid Address keys
+  [key: string]: keyof Address;
 }
