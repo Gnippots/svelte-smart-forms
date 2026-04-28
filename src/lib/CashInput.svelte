@@ -1,13 +1,11 @@
 <script lang="ts">
-  import { tick, type Snippet } from 'svelte';
-  import BaseInput from './BaseInput.svelte'; // Assuming BaseInput is in the same directory
-  import type { FormState, FieldState } from './Interfaces'; // Assuming Interfaces are defined
-  import { createFieldState } from './FieldState.svelte';
+  import type { Snippet } from 'svelte';
+  import TextInput from './TextInput.svelte';
+  import type { FormState } from './Interfaces';
 
-  // --- Type Definitions ---
   interface Props {
     label?: string;
-    value?: number | null; // The actual numeric value
+    value?: number | null;
     required?: boolean;
     name?: string;
     disabled?: boolean;
@@ -32,13 +30,10 @@
     classes = 'smart-form-input',
     onChange = () => {},
     placeholder = '',
+    currencySymbol = '',
     prefix,
     showValidation = true
   }: Props = $props();
-
-  let fieldState = $state<FieldState>(createFieldState());
-  let displayValue = $state('');
-  let inputElement: HTMLInputElement | undefined = $state();
 
   const currencyFormatter = $derived(
     new Intl.NumberFormat(typeof navigator !== 'undefined' ? navigator.language : 'en-US', {
@@ -52,90 +47,43 @@
     if (num === null || num === undefined || isNaN(num)) {
       return '';
     }
+
     return currencyFormatter.format(num);
   }
 
-  const parseInput = (str: string) => {
+  function normalizeCashValue(currentValue: string | number | null | undefined) {
+    if (typeof currentValue === 'number') {
+      return currentValue;
+    }
+
+    if (currentValue === null || currentValue === undefined || currentValue === '') {
+      return null;
+    }
+
+    const parsed = Number(currentValue);
+    return Number.isNaN(parsed) ? null : parsed;
+  }
+
+  function parseInput(str: string) {
     const cleaned = str.replace(/[^0-9]/g, '');
     return cleaned === '' ? 0 : parseInt(cleaned, 10);
-  };
-
-  const handleInputChange = (e: Event) => {
-    const target = e.target as HTMLInputElement;
-    const inputValue = target.value;
-    
-    const numericValue = parseInput(inputValue);
-    
-    displayValue = formatNumber(numericValue);;
-    
-    value = numericValue;
-  };
-
-  const handleBlur = () => {
-    displayValue = formatNumber(value);
-  };
-
-  // Checks if the key pressed is allowed
-  function handleKeyDown(event: KeyboardEvent) {
-    const isDeletion = event.key === 'Backspace' || event.key === 'Delete';
-    const isModifier = event.metaKey || event.altKey || event.ctrlKey;
-    const isArrowKey = event.key === 'ArrowLeft' || event.key === 'ArrowRight';
-    const isTab = event.key === 'Tab';
-    const isEnter = event.key === 'Enter';
-    // Keys that are not a digit
-    const isInvalidCharacter = !/^[0-9]*$/.test(event.key);
-
-    if (
-      (!isDeletion && !isModifier && !isArrowKey && isInvalidCharacter && !isTab && !isEnter)
-    )
-      event.preventDefault();
   }
-
-  // on change ensure input is formatted
-  $effect(() => {
-    displayValue = formatNumber(value);
-  });
-
 </script>
 
-<BaseInput
+<TextInput
   {label}
-  {required}
   {classes}
   {name}
-  bind:fieldState={fieldState}
-  bind:value={value} 
+  bind:value
   {formState}
+  {required}
+  {disabled}
   {onChange}
+  {placeholder}
   {showValidation}
->
-  {#snippet input()}
-    <div class="smart-forms-cash-input">
-      {@render prefix?.()}
-
-      <input
-        bind:this={inputElement}
-        type="text"
-        inputmode="decimal"
-        {name}
-        {required}
-        {disabled}
-        {placeholder}
-        value={displayValue} 
-        oninput={handleInputChange}
-        onkeydown={handleKeyDown}
-        onblur={handleBlur}
-        aria-label={label || name || 'Currency input'} />
-    </div>
-  {/snippet}
-</BaseInput>
-
-<style>
-  /* Basic styling for disabled state */
-  input:disabled {
-    background-color: #f3f4f6;
-    cursor: not-allowed;
-  }
-  /* Ensure BaseInput's structure allows this flex container */
-    /* Adjust pl-7 if needed based on currency symbol width */
-</style>
+  {prefix}
+  prefixText={prefix ? '' : currencySymbol}
+  inputmode="numeric"
+  format={(currentValue) => formatNumber(normalizeCashValue(currentValue))}
+  parse={(inputValue) => parseInput(inputValue)}
+/>

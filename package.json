@@ -2,7 +2,14 @@
 	"name": "@gnippots/svelte-smart-forms",
 	"version": "0.0.6",
 	"author": "Gnippots",
-	"description": "",
+	"description": "Prototype-friendly Svelte 5 form components with shared form state and inline validation.",
+	"keywords": [
+		"svelte",
+		"svelte5",
+		"forms",
+		"validation",
+		"components"
+	],
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build && npm run package",
