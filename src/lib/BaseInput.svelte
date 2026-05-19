@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount, type Snippet } from 'svelte';
+  import { onDestroy, onMount, untrack, type Snippet } from 'svelte';
   import FieldErrors from '$lib/FieldErrors.svelte';
   import type { FormState, FieldState } from './Interfaces';
 
@@ -9,12 +9,13 @@
     required?: boolean;
     disabled?: boolean;
     classes?: string;
-    name?: string;
+    name: string;
     showValidation?: boolean;
     placeholder?: string;
     formState: FormState;
     onChange?: () => void;
     validationFunctions?: Array<() => void>;
+    validationDependencies?: Array<unknown>;
     fieldState: FieldState;
     input?: Snippet;
   }
@@ -25,43 +26,48 @@
     required = false,
     disabled = false,
     classes = 'smart-form-input',
-    name = '',
+    name,
     showValidation = false,
     placeholder = '',
     formState,
     onChange = () => {},
     validationFunctions = [],
+    validationDependencies = [],
     fieldState = $bindable(),
     input
   }: Props = $props();
 
   let mounted = $state(false);
-  let registeredName = $state(name);
+  let registeredName = '';
   let previousBlurred = $state(fieldState.blurred);
-  let previousValue = $state<unknown>(value);
-  let previousRequired = $state(required);
 
   function isEmptyValue(currentValue: unknown) {
     return currentValue === null || currentValue === '' || currentValue === false;
   }
 
+  // Push the current field object through the store so aggregate form state recalculates.
   function syncField() {
-    if (!mounted || !name) {
+    if (!mounted || !registeredName) {
       return;
     }
 
-    formState.syncField(name, fieldState);
+    formState.syncField(registeredName, fieldState);
   }
 
-  function validate(currentValue: unknown) {
+  // Keep all validation mutations in one place before syncing the field into the form store.
+  function validate(
+    currentValue: unknown,
+    currentRequired = required,
+    currentValidationFunctions = validationFunctions
+  ) {
     fieldState.setValue(currentValue);
     fieldState.resetValidation();
 
-    if (required && isEmptyValue(currentValue)) {
+    if (currentRequired && isEmptyValue(currentValue)) {
       fieldState.addError('required', 'This is required');
     }
 
-    validationFunctions.forEach((fn) => {
+    currentValidationFunctions.forEach((fn) => {
       fn();
     });
 
@@ -69,19 +75,17 @@
     syncField();
   }
 
+  // Register once after mount. Field names are expected to be stable for a field's lifetime.
   onMount(() => {
     if (!name) {
-      mounted = true;
       return;
     }
 
     fieldState.setInitialValue(value);
     formState.registerField(name, fieldState);
     registeredName = name;
-    previousValue = value;
-    previousRequired = required;
     mounted = true;
-    validate(value);
+    validate(value, required, validationFunctions);
   });
 
   onDestroy(() => {
@@ -90,39 +94,24 @@
     }
   });
 
+  // Re-run validation when the bound value, required flag, or external validation inputs change.
   $effect(() => {
-    if (!mounted || !name || name === registeredName) {
-      return;
-    }
-
-    if (registeredName) {
-      formState.unregisterField(registeredName);
-    }
-
-    formState.registerField(name, fieldState);
-    registeredName = name;
-    validate(value);
-  });
-
-  $effect(() => {
-    if (!mounted || !name) {
+    if (!mounted) {
       return;
     }
 
     const currentValue = value;
     const currentRequired = required;
+    const currentValidationFunctions = validationFunctions;
+    const currentValidationDependencies = validationDependencies;
 
-    if (Object.is(currentValue, previousValue) && currentRequired === previousRequired) {
-      return;
-    }
-
-    previousValue = currentValue;
-    previousRequired = currentRequired;
-    validate(currentValue);
+    currentValidationDependencies.forEach((dependency) => dependency);
+    untrack(() => validate(currentValue, currentRequired, currentValidationFunctions));
   });
 
+  // Child input snippets own their native blur handlers, so BaseInput syncs the shared state here.
   $effect(() => {
-    if (!mounted || !name) {
+    if (!mounted) {
       return;
     }
 

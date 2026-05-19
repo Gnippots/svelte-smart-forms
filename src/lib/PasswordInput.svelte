@@ -63,6 +63,7 @@
   {formState}
   {onChange}
   validationFunctions={[validateConfirmation]}
+  validationDependencies={[confirm_against]}
   {showValidation}
 >
   {#snippet input()}

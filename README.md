@@ -100,42 +100,35 @@ The currently supported core surface is:
 - `suffixText`
 - `prefix`
 - `suffix`
+- `inputmode`
 - `format`
 - `parse`
+- `normalizeOnBlur`
 
 Example:
 
 ```svelte
 <script lang="ts">
-  import { TextInput } from '@gnippots/svelte-smart-forms';
+  import { TextInput, createMoneyMask } from '@gnippots/svelte-smart-forms';
 
   let amount = $state<number | null>(1250);
-
-  const currencyFormatter = new Intl.NumberFormat('en-AU', {
-    maximumFractionDigits: 0
-  });
-
-  function formatCurrency(value: string | number | null | undefined) {
-    if (value === null || value === undefined || value === '') return '';
-    return currencyFormatter.format(Number(value));
-  }
-
-  function parseCurrency(inputValue: string) {
-    const cleaned = inputValue.replace(/[^0-9]/g, '');
-    return cleaned === '' ? null : Number(cleaned);
-  }
+  const moneyMask = createMoneyMask({ locale: 'en-AU', prefixText: '$' });
 </script>
 
 <TextInput
   name="amount"
   label="Amount"
   bind:value={amount}
-  prefixText="$"
-  format={formatCurrency}
-  parse={parseCurrency}
+  prefixText={moneyMask.prefixText}
+  inputmode={moneyMask.inputmode}
+  format={moneyMask.format}
+  parse={moneyMask.parse}
+  normalizeOnBlur={moneyMask.normalizeOnBlur}
   formState={formState}
 />
 ```
+
+The library also exports `createPercentageMask()` for percentage fields using the same `TextInput` props.
 
 ## Deprecated compatibility wrappers
 

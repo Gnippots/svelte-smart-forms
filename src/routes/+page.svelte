@@ -14,14 +14,15 @@
     PhoneInput,
     TextArea,
     TextInput,
+    createMoneyMask,
+    createPercentageMask,
     createFormState
   } from '$lib';
   import AddressField from '$lib/AddressField.svelte';
 
   const formState = createFormState();
-  const currencyFormatter = new Intl.NumberFormat('en-AU', {
-    maximumFractionDigits: 0
-  });
+  const moneyMask = createMoneyMask({ locale: 'en-AU', prefixText: '$' });
+  const percentageMask = createPercentageMask();
 
   const form = $state({
     text: '',
@@ -44,54 +45,6 @@
     linkedNumber1: 0,
     linkedNumber2: 0
   });
-
-  function formatCurrency(value: string | number | null | undefined) {
-    if (value === null || value === undefined || value === '') {
-      return '';
-    }
-
-    return currencyFormatter.format(Number(value));
-  }
-
-  function parseCurrency(inputValue: string) {
-    const cleaned = inputValue.replace(/[^0-9]/g, '');
-    return cleaned === '' ? null : Number(cleaned);
-  }
-
-  function formatPercent(value: string | number | null | undefined) {
-    if (value === null || value === undefined || value === '') {
-      return '';
-    }
-
-    return String(value);
-  }
-
-  function parsePercent(inputValue: string) {
-    const cleaned = inputValue.replace(/[^0-9.-]/g, '');
-    if (cleaned === '' || cleaned === '-' || cleaned === '.') {
-      return null;
-    }
-
-    const parsed = Number(cleaned);
-    if (Number.isNaN(parsed)) {
-      return form.percent;
-    }
-
-    return parsed;
-  }
-
-  function clampPercent(value: string | number | null | undefined) {
-    if (value === null || value === undefined || value === '') {
-      return null;
-    }
-
-    const parsed = typeof value === 'number' ? value : Number(value);
-    if (Number.isNaN(parsed)) {
-      return form.percent;
-    }
-
-    return Math.min(100, Math.max(0, parsed));
-  }
 
   const monthLookup = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
 
@@ -216,9 +169,11 @@
         name="amount"
         label="Amount (preferred API)"
         bind:value={form.amount}
-        prefixText="$"
-        format={formatCurrency}
-        parse={parseCurrency}
+        prefixText={moneyMask.prefixText}
+        inputmode={moneyMask.inputmode}
+        format={moneyMask.format}
+        parse={moneyMask.parse}
+        normalizeOnBlur={moneyMask.normalizeOnBlur}
         {formState}
       />
 
@@ -226,10 +181,11 @@
         name="percent"
         label="Percent (preferred API)"
         bind:value={form.percent}
-        suffixText="%"
-        format={formatPercent}
-        parse={parsePercent}
-        normalizeOnBlur={clampPercent}
+        suffixText={percentageMask.suffixText}
+        inputmode={percentageMask.inputmode}
+        format={percentageMask.format}
+        parse={percentageMask.parse}
+        normalizeOnBlur={percentageMask.normalizeOnBlur}
         {formState}
       />
 

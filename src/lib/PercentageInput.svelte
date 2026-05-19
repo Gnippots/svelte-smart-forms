@@ -2,6 +2,7 @@
   import type { Snippet } from 'svelte';
   import TextInput from './TextInput.svelte';
   import type { FormState } from './Interfaces';
+  import { createPercentageMask } from './masks';
 
   interface Props {
     label?: string;
@@ -35,41 +36,7 @@
     showValidation = true
   }: Props = $props();
 
-  function parsePercentage(inputValue: string) {
-    const cleaned = inputValue.replace(/[^0-9.-]/g, '');
-
-    if (cleaned === '' || cleaned === '-' || cleaned === '.') {
-      return null;
-    }
-
-    const parsed = Number(cleaned);
-    if (Number.isNaN(parsed)) {
-      return value;
-    }
-
-    return parsed;
-  }
-
-  function clampPercentage(currentValue: string | number | null | undefined) {
-    if (currentValue === null || currentValue === undefined || currentValue === '') {
-      return null;
-    }
-
-    const parsed = typeof currentValue === 'number' ? currentValue : Number(currentValue);
-    if (Number.isNaN(parsed)) {
-      return value;
-    }
-
-    if (min !== null && parsed < min) {
-      return min;
-    }
-
-    if (max !== null && parsed > max) {
-      return max;
-    }
-
-    return parsed;
-  }
+  const percentageMask = $derived(createPercentageMask({ suffixText: suffix ? '' : '%', min, max }));
 </script>
 
 <TextInput
@@ -84,9 +51,9 @@
   {placeholder}
   {showValidation}
   {suffix}
-  suffixText={suffix ? '' : '%'}
-  inputmode="decimal"
-  format={(currentValue) => (currentValue === null || currentValue === undefined ? '' : String(currentValue))}
-  parse={(inputValue) => parsePercentage(inputValue)}
-  normalizeOnBlur={clampPercentage}
+  suffixText={percentageMask.suffixText}
+  inputmode={percentageMask.inputmode}
+  format={percentageMask.format}
+  parse={percentageMask.parse}
+  normalizeOnBlur={percentageMask.normalizeOnBlur}
 />

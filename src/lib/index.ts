@@ -14,6 +14,8 @@ import TextInput from './TextInput.svelte';
 import CashInput from './CashInput.svelte';
 import MonthInput from './MonthInput.svelte';
 import PercentageInput from './PercentageInput.svelte';
+import { createMoneyMask, createPercentageMask } from './masks';
+export type { MoneyMaskOptions, PercentageMaskOptions, TextInputMask } from './masks';
 //import {toast_success, toast_error, toast_warning} from './toast_themes';
 
 import {createFormState} from './FormState';
@@ -35,6 +37,8 @@ export {
     CashInput,
     PercentageInput,
     MonthInput,
+    createMoneyMask,
+    createPercentageMask,
     createFormState,
     // toast_success,
     // toast_error,
