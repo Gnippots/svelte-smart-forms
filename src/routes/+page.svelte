@@ -46,43 +46,6 @@
     linkedNumber2: 0
   });
 
-  const monthLookup = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-
-  function formatMonth(value: string | number | null | undefined) {
-    if (!value || typeof value === 'number') {
-      return value ? String(value) : '';
-    }
-
-    const monthDate = /^\d{4}-\d{2}$/.test(value) ? new Date(`${value}-01`) : new Date(value);
-    if (Number.isNaN(monthDate.getTime())) {
-      return value;
-    }
-
-    return monthDate.toLocaleString('default', { month: 'short', year: 'numeric' });
-  }
-
-  function parseMonth(inputValue: string) {
-    const normalized = inputValue.trim();
-
-    if (!normalized) {
-      return null;
-    }
-
-    if (/^\d{4}-\d{2}$/.test(normalized)) {
-      return normalized;
-    }
-
-    const monthYearMatch = normalized.match(/^([A-Za-z]{3,9})[\s,/.-]+(\d{4})$/);
-    if (monthYearMatch) {
-      const monthIndex = monthLookup.indexOf(monthYearMatch[1].slice(0, 3).toLowerCase());
-      if (monthIndex !== -1) {
-        return `${monthYearMatch[2]}-${String(monthIndex + 1).padStart(2, '0')}`;
-      }
-    }
-
-    return normalized;
-  }
-
   function validateLinkedNumbers() {
     if (form.linkedNumber1 + form.linkedNumber2 <= 0) {
       return 'The sum of both numbers must be greater than zero';
@@ -189,15 +152,6 @@
         {formState}
       />
 
-      <TextInput
-        name="monthText"
-        label="Month (preferred API)"
-        bind:value={form.monthText}
-        format={formatMonth}
-        parse={parseMonth}
-        {formState}
-      />
-
       <NumberInput
         name="number"
         min={0}
@@ -253,6 +207,13 @@
         name="datepicker"
         label="Date picker"
         bind:value={form.datepicker}
+        {formState}
+      />
+
+      <MonthInput
+        name="monthText"
+        label="Month"
+        bind:value={form.monthText}
         {formState}
       />
 

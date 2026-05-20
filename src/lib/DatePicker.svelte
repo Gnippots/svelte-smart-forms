@@ -48,7 +48,15 @@
       return null;
     }
 
-    const dateValue = currentValue instanceof Date ? currentValue : new Date(currentValue);
+    if (currentValue instanceof Date) {
+      return currentValue;
+    }
+
+    const isoDateMatch = currentValue.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    const dateValue = isoDateMatch
+      ? new Date(Number(isoDateMatch[1]), Number(isoDateMatch[2]) - 1, Number(isoDateMatch[3]))
+      : new Date(currentValue);
+
     return Number.isNaN(dateValue.getTime()) ? null : dateValue;
   }
 
@@ -131,6 +139,7 @@
     {placeholder}
     {required}
     {disabled}
+    type="text"
     readonly
     onblur={() => {
       fieldState.blur();

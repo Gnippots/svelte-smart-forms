@@ -1,6 +1,11 @@
 <script lang="ts">
-  import TextInput from './TextInput.svelte';
-  import type { FormState } from './Interfaces';
+  import BaseInput from './BaseInput.svelte';
+  import { createFieldState } from './FieldState.svelte';
+  import type { FieldState, FormState } from './Interfaces';
+  import AirDatepicker from 'air-datepicker';
+  import 'air-datepicker/air-datepicker.css';
+  import en from 'air-datepicker/locale/en';
+  import { onDestroy, onMount, tick } from 'svelte';
 
   interface Props {
     label?: string;
@@ -34,7 +39,16 @@
     maxDate = undefined
   }: Props = $props();
 
+  let fieldState = $state<FieldState>(createFieldState());
+  let datepicker: AirDatepicker | undefined = $state();
+  let inputElement: HTMLInputElement | undefined = $state();
+
   const monthLookup = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+  function toLocalMonthDate(monthValue: string) {
+    const [year, month] = monthValue.split('-').map(Number);
+    return new Date(year, month - 1, 1);
+  }
 
   function formatMonth(currentValue: string | Date | null | undefined) {
     if (!currentValue) {
@@ -45,7 +59,7 @@
       currentValue instanceof Date
         ? currentValue
         : /^\d{4}-\d{2}$/.test(currentValue)
-          ? new Date(`${currentValue}-01`)
+          ? toLocalMonthDate(currentValue)
           : new Date(currentValue);
 
     if (Number.isNaN(monthDate.getTime())) {
@@ -85,23 +99,109 @@
     return normalized;
   }
 
-  // Kept for backwards compatibility while the specialized component is deprecated.
-  void container;
-  void minDate;
-  void maxDate;
+  function formatForStorage(dateValue: Date) {
+    const year = dateValue.getFullYear();
+    const month = String(dateValue.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}`;
+  }
+
+  function toSelectedMonth(currentValue: string | Date | null | undefined) {
+    if (!currentValue) {
+      return null;
+    }
+
+    if (currentValue instanceof Date) {
+      return new Date(currentValue.getFullYear(), currentValue.getMonth(), 1);
+    }
+
+    const parsedMonth = parseMonth(currentValue);
+    return parsedMonth && /^\d{4}-\d{2}$/.test(parsedMonth) ? toLocalMonthDate(parsedMonth) : null;
+  }
+
+  const displayMonth = $derived(formatMonth(value));
+  const selectedMonth = $derived(toSelectedMonth(value));
+
+  onMount(async () => {
+    await tick();
+
+    if (!inputElement) {
+      return;
+    }
+
+    datepicker = new AirDatepicker(inputElement, {
+      view: 'months',
+      minView: 'months',
+      dateFormat: 'MMM yyyy',
+      autoClose: true,
+      locale: en,
+      container,
+      minDate,
+      maxDate,
+      onSelect({ date, datepicker: instance }) {
+        const selectedDate = Array.isArray(date) ? date[0] : date;
+
+        value = selectedDate ? formatForStorage(selectedDate) : null;
+        onChange();
+        instance.hide();
+      }
+    });
+  });
+
+  $effect(() => {
+    if (inputElement) {
+      inputElement.value = displayMonth;
+    }
+
+    if (!datepicker) {
+      return;
+    }
+
+    const currentPickerDate = datepicker.selectedDates[0];
+
+    if (!selectedMonth) {
+      datepicker.clear({ silent: true });
+      return;
+    }
+
+    if (!currentPickerDate || selectedMonth.getTime() !== currentPickerDate.getTime()) {
+      datepicker.selectDate(selectedMonth, { silent: true });
+    }
+  });
+
+  onDestroy(() => {
+    datepicker?.destroy();
+  });
 </script>
 
-<TextInput
+{#snippet input()}
+  <input
+    id={name}
+    {name}
+    class="monthInput"
+    {placeholder}
+    {required}
+    {disabled}
+    type="text"
+    readonly
+    onblur={() => {
+      fieldState.blur();
+    }}
+    bind:this={inputElement}
+  />
+{/snippet}
+
+<BaseInput
   {label}
   {classes}
   {name}
-  bind:value
+  {value}
+  bind:fieldState
   {formState}
   {required}
   {disabled}
-  {onChange}
   {placeholder}
+  {onChange}
   {showValidation}
-  format={formatMonth}
-  parse={(inputValue) => parseMonth(inputValue)}
-/>
+  input={input}
+>
+</BaseInput>

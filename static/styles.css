@@ -196,7 +196,8 @@ li:last-child .suggestion-item-button {
 }
 
 
-/* Month picker stuff */
+/* Month/date picker stuff */
+.dateInput,
 .monthInput {
   width: 100%;
   background: transparent;
@@ -209,6 +210,7 @@ li:last-child .suggestion-item-button {
   line-height: 1.47;
 }
 
+.dateInput:disabled,
 .monthInput:disabled {
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1));
