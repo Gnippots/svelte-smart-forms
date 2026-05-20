@@ -87,7 +87,7 @@
     const nextValue = parse ? parse(inputValue, value) : inputValue;
 
     draftValue = inputValue;
-    value = nextValue;
+    value = nextValue === undefined ? '' : nextValue;
     onChange();
   }
 
@@ -98,7 +98,8 @@
 
   function handleBlur() {
     if (normalizeOnBlur) {
-      value = normalizeOnBlur(value);
+      const nextValue = normalizeOnBlur(value);
+      value = nextValue === undefined ? '' : nextValue;
       onChange();
     }
 
