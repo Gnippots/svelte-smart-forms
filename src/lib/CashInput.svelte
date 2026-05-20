@@ -32,6 +32,8 @@
     classes = 'smart-form-input',
     onChange = () => {},
     placeholder = '',
+    min = null,
+    max = null,
     prefix,
     showValidation = true
   }: Props = $props();
@@ -39,6 +41,9 @@
   let fieldState = $state<FieldState>(createFieldState());
   let displayValue = $state('');
   let inputElement: HTMLInputElement | undefined = $state();
+  // True while the user has typed a lone "-" with no digits yet; suppresses the
+  // $effect that would otherwise reformat value→'' and erase the minus sign.
+  let isTypingMinus = $state(false);
 
   const currencyFormatter = $derived(
     new Intl.NumberFormat(typeof navigator !== 'undefined' ? navigator.language : 'en-US', {
@@ -56,23 +61,61 @@
   }
 
   const parseInput = (str: string) => {
+    const negative = str.trimStart().startsWith('-');
     const cleaned = str.replace(/[^0-9]/g, '');
-    return cleaned === '' ? 0 : parseInt(cleaned, 10);
+    if (cleaned === '') return 0;
+    const num = parseInt(cleaned, 10);
+    return negative ? -num : num;
   };
+
+  function clamp(n: number | null): number | null {
+    if (n === null) return null;
+    let result = n;
+    if (min !== null && result < min) result = min;
+    if (max !== null && result > max) result = max;
+    return result;
+  }
+
+  function updateBoundsErrors(n: number | null) {
+    if (min !== null && n !== null && n < min) {
+      fieldState.addError('min', `Minimum is ${formatNumber(min)}`);
+    } else {
+      fieldState.removeError('min');
+    }
+    if (max !== null && n !== null && n > max) {
+      fieldState.addError('max', `Maximum is ${formatNumber(max)}`);
+    } else {
+      fieldState.removeError('max');
+    }
+  }
 
   const handleInputChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
     const inputValue = target.value;
-    
+
+    // Mid-type: lone "-" with no digits yet — keep it visible so the user can keep typing.
+    if (inputValue.trim() === '-') {
+      isTypingMinus = true;
+      displayValue = '-';
+      value = null;
+      updateBoundsErrors(null);
+      return;
+    }
+
+    isTypingMinus = false;
     const numericValue = parseInput(inputValue);
-    
-    displayValue = formatNumber(numericValue);;
-    
+    displayValue = formatNumber(numericValue);
     value = numericValue;
+    updateBoundsErrors(numericValue);
   };
 
   const handleBlur = () => {
+    isTypingMinus = false;
+    const clamped = clamp(value);
+    if (clamped !== value) value = clamped;
     displayValue = formatNumber(value);
+    fieldState.removeError('min');
+    fieldState.removeError('max');
   };
 
   // Checks if the key pressed is allowed
@@ -82,17 +125,19 @@
     const isArrowKey = event.key === 'ArrowLeft' || event.key === 'ArrowRight';
     const isTab = event.key === 'Tab';
     const isEnter = event.key === 'Enter';
+    const isMinus = event.key === '-';
     // Keys that are not a digit
     const isInvalidCharacter = !/^[0-9]*$/.test(event.key);
 
     if (
-      (!isDeletion && !isModifier && !isArrowKey && isInvalidCharacter && !isTab && !isEnter)
+      (!isDeletion && !isModifier && !isArrowKey && isInvalidCharacter && !isTab && !isEnter && !isMinus)
     )
       event.preventDefault();
   }
 
   // on change ensure input is formatted
   $effect(() => {
+    if (isTypingMinus) return;
     displayValue = formatNumber(value);
   });
 

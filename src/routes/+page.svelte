@@ -34,6 +34,7 @@
     phone?: string;
     linkedNumber1: number;
     linkedNumber2: number;
+    cash: number;
   } = $state({
     text: '',
     number: 0,
@@ -47,7 +48,8 @@
     textarea: '',
     phone: '',
     linkedNumber1: 0,
-    linkedNumber2: 0
+    linkedNumber2: 0,
+    cash: 0
   });
 
   const validateLinkedNumbers = () => {
@@ -175,6 +177,8 @@
     label='Cash'
     {formState}
     required={true}
+    max={form.number}
+    bind:value={form.cash}
     />
 
     <NumberInput

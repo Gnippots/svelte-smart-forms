@@ -1,9 +1,10 @@
+import { type Snippet } from 'svelte';
 import type { FormState } from './Interfaces';
-type $$ComponentProps = {
-    label: string;
-    value: number | null;
-    required: boolean;
-    name: string;
+interface Props {
+    label?: string;
+    value?: number | null;
+    required?: boolean;
+    name?: string;
     disabled?: boolean;
     showValidation?: boolean;
     formState: FormState;
@@ -12,7 +13,8 @@ type $$ComponentProps = {
     placeholder?: string;
     min?: number | null;
     max?: number | null;
-};
-declare const NumberInput: import("svelte").Component<$$ComponentProps, {}, "value">;
+    suffix?: Snippet;
+}
+declare const NumberInput: import("svelte").Component<Props, {}, "value">;
 type NumberInput = ReturnType<typeof NumberInput>;
 export default NumberInput;
