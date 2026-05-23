@@ -1,26 +1,33 @@
-<!-- ErrorMessage.svelte -->
 <script lang="ts">
-    import type { FormState, Field } from './Interfaces';
-  
+  import type { FormState, FormStateStore } from './Interfaces';
+
   interface Props {
     formState?: FormState | null;
-    field?: keyof Field | null;
+    field?: string | null;
   }
 
   let { formState = null, field = null }: Props = $props();
-  </script>
-  
-  {#if $formState && field}
-    <p class="error-message">
-    {#if 
-        $formState.fields[field] &&
-        Object.keys($formState.fields[field].errors).length !== 0 && 
-        ($formState.fields[field].blurred || $formState.submitted)}
-        
-        {$formState.fields[field].errors[Object.keys($formState.fields[field].errors)[0]]}
+  let state = $state<FormStateStore | null>(null);
+
+  $effect(() => {
+    if (!formState) {
+      state = null;
+      return;
+    }
+
+    return formState.subscribe((nextState) => {
+      state = nextState;
+    });
+  });
+</script>
+
+{#if state && field}
+  <p class="error-message">
+    {#if
+      state.fields[field] &&
+      Object.keys(state.fields[field].errors).length !== 0 &&
+      (state.fields[field].blurred || state.submitted)}
+      {state.fields[field].errors[Object.keys(state.fields[field].errors)[0]]}
     {/if}
   </p>
-  
-  {/if}
-  
-  <style></style>
+{/if}

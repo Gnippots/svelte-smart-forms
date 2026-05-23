@@ -1,76 +1,101 @@
-import { writable, derived } from 'svelte/store';
-export function createFormState() {
-    const baseStore = writable({
+import { writable } from 'svelte/store';
+function createInitialState() {
+    return {
         fields: {},
+        errors: {},
         customRules: [],
         dirty: false,
-        submitted: false,
-    });
-    // Create a derived store that computes valid and errors
-    const derivedStore = derived(baseStore, (state) => {
-        let valid = true;
-        const errors = {};
-        // Check all fields
-        for (const [fieldName, field] of Object.entries(state.fields)) {
-            if (!field.valid) {
-                valid = false;
-                errors[fieldName] = field.errors;
-            }
+        valid: true,
+        submitted: false
+    };
+}
+function applyCustomRules(fields, customRules) {
+    for (const rule of customRules) {
+        const field = fields[rule.fieldName];
+        if (!field) {
+            continue;
         }
-        // Run custom validation rules
-        state.customRules.forEach((rule) => {
-            const errorMessage = rule.fn();
-            if (errorMessage) {
-                const field = state.fields[rule.fieldName];
-                if (field) {
-                    field.addError(rule.errorCode, errorMessage);
-                    valid = false;
-                    errors[rule.fieldName] = field.errors;
-                }
-            }
-            else {
-                const field = state.fields[rule.fieldName];
-                if (field) {
-                    field.removeError(rule.errorCode);
-                }
-            }
-        });
-        return {
-            ...state,
-            valid,
-            errors
-        };
-    });
+        field.removeError(rule.errorCode);
+        const errorMessage = rule.fn();
+        if (errorMessage) {
+            field.addError(rule.errorCode, errorMessage);
+        }
+    }
+}
+function recalculateState(state) {
+    applyCustomRules(state.fields, state.customRules);
+    const errors = {};
+    for (const [fieldName, field] of Object.entries(state.fields)) {
+        if (Object.keys(field.errors).length > 0) {
+            errors[fieldName] = { ...field.errors };
+        }
+    }
     return {
-        subscribe: derivedStore.subscribe,
+        ...state,
+        errors,
+        dirty: Object.values(state.fields).some((field) => field.dirty),
+        valid: Object.keys(errors).length === 0
+    };
+}
+export function createFormState() {
+    const store = writable(createInitialState());
+    const sync = (updater) => {
+        store.update((state) => recalculateState(updater(state)));
+    };
+    return {
+        subscribe: store.subscribe,
         set: (value) => {
-            const { valid, errors, ...baseValue } = value;
-            baseStore.set(baseValue);
+            store.set(recalculateState(value));
         },
         update: (updater) => {
-            baseStore.update((baseValue) => {
-                const currentValue = {
-                    ...baseValue,
-                    valid: true,
-                    errors: {}
-                };
-                const newValue = updater(currentValue);
-                const { valid, errors, ...newBaseValue } = newValue;
-                return newBaseValue;
-            });
+            sync(updater);
         },
         addCustomRule: (fieldName, errorCode, fn) => {
-            baseStore.update(state => {
-                const rule = {
-                    fieldName,
-                    errorCode,
-                    fn: fn
-                };
+            sync((state) => ({
+                ...state,
+                customRules: [
+                    ...state.customRules,
+                    {
+                        fieldName,
+                        errorCode,
+                        fn
+                    }
+                ]
+            }));
+        },
+        registerField: (fieldName, field) => {
+            sync((state) => ({
+                ...state,
+                fields: {
+                    ...state.fields,
+                    [fieldName]: field
+                }
+            }));
+        },
+        syncField: (fieldName, field) => {
+            sync((state) => ({
+                ...state,
+                fields: {
+                    ...state.fields,
+                    [fieldName]: field
+                }
+            }));
+        },
+        unregisterField: (fieldName) => {
+            sync((state) => {
+                const fields = { ...state.fields };
+                delete fields[fieldName];
                 return {
                     ...state,
-                    customRules: [...state.customRules, rule]
+                    fields
                 };
             });
+        },
+        setSubmitted: (submitted) => {
+            sync((state) => ({
+                ...state,
+                submitted
+            }));
         }
     };
 }

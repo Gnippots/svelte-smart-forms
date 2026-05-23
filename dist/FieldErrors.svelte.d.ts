@@ -1,7 +1,7 @@
-import type { FormState, Field } from './Interfaces';
+import type { FormState } from './Interfaces';
 interface Props {
     formState?: FormState | null;
-    field?: keyof Field | null;
+    field?: string | null;
 }
 declare const FieldErrors: import("svelte").Component<Props, {}, "">;
 type FieldErrors = ReturnType<typeof FieldErrors>;

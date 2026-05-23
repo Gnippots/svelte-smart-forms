@@ -1,17 +1,18 @@
 import { type Snippet } from 'svelte';
 import type { FormState, FieldState } from './Interfaces';
 declare const BaseInput: import("svelte").Component<{
-    label: string;
-    value: any;
-    required: boolean;
+    label?: string;
+    value?: unknown;
+    required?: boolean;
     disabled?: boolean;
-    classes: string;
+    classes?: string;
     name: string;
     showValidation?: boolean;
     placeholder?: string;
     formState: FormState;
     onChange?: () => void;
     validationFunctions?: Array<() => void>;
+    validationDependencies?: Array<unknown>;
     fieldState: FieldState;
     input?: Snippet;
 }, {}, "value" | "fieldState">;

@@ -1,15 +1,15 @@
 import type { FormState } from './Interfaces';
 import type { FullAutoFill } from 'svelte/elements';
 declare const Dropdown: import("svelte").Component<{
-    label: string;
-    value: any;
-    required: boolean;
-    name: string;
+    label?: string;
+    value?: string;
+    required?: boolean;
+    name?: string;
     disabled?: boolean;
     formState: FormState;
     classes?: string;
     options?: Array<string | {
-        value: any;
+        value: string;
         name: string;
         disabled?: boolean;
     }>;
@@ -25,6 +25,7 @@ declare const Dropdown: import("svelte").Component<{
     placeholder?: string;
     onBlur?: () => void;
     showValidation?: boolean;
+    autocomplete?: FullAutoFill;
 }, {}, "value">;
 type Dropdown = ReturnType<typeof Dropdown>;
 export default Dropdown;

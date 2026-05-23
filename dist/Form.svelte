@@ -1,37 +1,35 @@
 <script lang="ts">
+  import { get } from 'svelte/store';
   import type { FormState } from './Interfaces';
 
   interface Props {
-    //import { toast_error } from '../lib/toast_themes';
     formState?: FormState | null;
     onSubmit?: (() => void) | null;
     children?: import('svelte').Snippet;
-    id? : string | null;
+    id?: string | null;
   }
 
   let { formState = null, onSubmit = null, children, id = null }: Props = $props();
-  
+
   const submitHandler = (event: Event) => {
     event.preventDefault();
 
-    if (!$formState) return;
+    if (!formState) {
+      return;
+    }
 
-    $formState.submitted = true;
+    formState.setSubmitted(true);
     if (!onSubmit) {
       return;
     }
-    if (!$formState.valid) {
-      //toast_error('Some fields were missing or incorrect');
+    if (!get(formState).valid) {
       return;
     }
 
     onSubmit();
   };
 </script>
-  
-  <form onsubmit={submitHandler} novalidate id={id}>
-    {@render children?.()}
-  </form>
-  
-  <style></style>
-  
+
+<form onsubmit={submitHandler} novalidate id={id}>
+  {@render children?.()}
+</form>

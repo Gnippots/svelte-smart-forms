@@ -1,4 +1,4 @@
-import { type Snippet } from 'svelte';
+import type { Snippet } from 'svelte';
 import type { FormState } from './Interfaces';
 interface Props {
     label?: string;
@@ -8,7 +8,7 @@ interface Props {
     disabled?: boolean;
     formState: FormState;
     classes?: string;
-    onChange?: any;
+    onChange?: () => void;
     placeholder?: string;
     min?: number | null;
     max?: number | null;

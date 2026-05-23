@@ -14,5 +14,7 @@ import TextInput from './TextInput.svelte';
 import CashInput from './CashInput.svelte';
 import MonthInput from './MonthInput.svelte';
 import PercentageInput from './PercentageInput.svelte';
+import { createMoneyMask, createPercentageMask } from './masks';
+export type { MoneyMaskOptions, PercentageMaskOptions, TextInputMask } from './masks';
 import { createFormState } from './FormState';
-export { Form, AddressField, BaseInput, CheckBox, DatePicker, Dropdown, EmailInput, FieldErrors, NumberInput, PasswordInput, PhoneInput, TextArea, TextInput, CashInput, PercentageInput, MonthInput, createFormState, };
+export { Form, AddressField, BaseInput, CheckBox, DatePicker, Dropdown, EmailInput, FieldErrors, NumberInput, PasswordInput, PhoneInput, TextArea, TextInput, CashInput, PercentageInput, MonthInput, createMoneyMask, createPercentageMask, createFormState, };

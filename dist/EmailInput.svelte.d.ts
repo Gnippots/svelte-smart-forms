@@ -1,9 +1,10 @@
 import type { FormState } from './Interfaces';
-type $$ComponentProps = {
-    label: string;
-    value: string;
-    required: boolean;
-    name: string;
+import type { FullAutoFill } from 'svelte/elements';
+interface Props {
+    label?: string;
+    value?: string;
+    required?: boolean;
+    name?: string;
     disabled?: boolean;
     showValidation?: boolean;
     formState: FormState;
@@ -11,7 +12,8 @@ type $$ComponentProps = {
     onChange?: () => void;
     onKeyup?: () => void;
     placeholder?: string;
-};
-declare const EmailInput: import("svelte").Component<$$ComponentProps, {}, "value">;
+    autocomplete?: FullAutoFill;
+}
+declare const EmailInput: import("svelte").Component<Props, {}, "value">;
 type EmailInput = ReturnType<typeof EmailInput>;
 export default EmailInput;

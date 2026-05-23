@@ -9,8 +9,8 @@ interface Props {
     showValidation?: boolean;
     formState: FormState;
     classes?: string;
-    onChange?: any;
-    onKeyup?: any;
+    onChange?: () => void;
+    onKeyup?: () => void;
     placeholder?: string;
     autocomplete?: FullAutoFill;
 }
