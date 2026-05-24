@@ -11,6 +11,7 @@ import PasswordInput from './PasswordInput.svelte';
 import PhoneInput from './PhoneInput.svelte';
 import TextArea from './TextArea.svelte';
 import TextInput from './TextInput.svelte';
+import TimePicker from './TimePicker.svelte';
 import CashInput from './CashInput.svelte';
 import MonthInput from './MonthInput.svelte';
 import PercentageInput from './PercentageInput.svelte';
@@ -34,6 +35,7 @@ export {
     PhoneInput, 
     TextArea, 
     TextInput,
+    TimePicker,
     CashInput,
     PercentageInput,
     MonthInput,

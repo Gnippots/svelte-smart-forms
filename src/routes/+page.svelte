@@ -14,6 +14,7 @@
     PhoneInput,
     TextArea,
     TextInput,
+    TimePicker,
     createMoneyMask,
     createPercentageMask,
     createFormState
@@ -33,6 +34,7 @@
     checkbox: false,
     datepicker: '2026-04-08',
     monthText: '2026-04',
+    timepicker: '09:30',
     password: '',
     password2: '',
     textarea: '',
@@ -90,6 +92,7 @@
       checkbox: form.checkbox,
       datepicker: form.datepicker,
       monthText: form.monthText,
+      timepicker: form.timepicker,
       password: form.password,
       password2: form.password2,
       textarea: form.textarea,
@@ -214,6 +217,14 @@
         name="monthText"
         label="Month"
         bind:value={form.monthText}
+        {formState}
+      />
+
+      <TimePicker
+        name="timepicker"
+        label="Time picker"
+        bind:value={form.timepicker}
+        minutesStep={5}
         {formState}
       />
 
