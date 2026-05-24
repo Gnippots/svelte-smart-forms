@@ -13,6 +13,7 @@ const airDatepickerMock = vi.hoisted(() => {
           onlyTimepicker?: boolean;
           timeFormat?: string;
           minutesStep?: number;
+          autoClose?: boolean;
           onSelect?: (event: { date: Date; datepicker: { hide: () => void } }) => void;
         }
       | undefined
@@ -69,14 +70,18 @@ describe('third-party backed components', () => {
     expect(airDatepickerMock.latestOptions?.onlyTimepicker).toBe(true);
     expect(airDatepickerMock.latestOptions?.timeFormat).toBe('HH:mm');
     expect(airDatepickerMock.latestOptions?.minutesStep).toBe(5);
+    expect(airDatepickerMock.latestOptions?.autoClose).toBe(false);
+
+    const hide = vi.fn();
 
     airDatepickerMock.latestOptions?.onSelect?.({
       date: new Date(1970, 0, 1, 14, 45),
-      datepicker: { hide: vi.fn() }
+      datepicker: { hide }
     });
     await tick();
 
     expectField(formState, 'time', '14:45');
+    expect(hide).not.toHaveBeenCalled();
   });
 
   it('registers AddressField using the formatted address search text', async () => {

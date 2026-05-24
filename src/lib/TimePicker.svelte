@@ -26,6 +26,7 @@
     maxMinutes?: number;
     hoursStep?: number;
     minutesStep?: number;
+    autoClose?: boolean;
   }
 
   let {
@@ -46,12 +47,14 @@
     minMinutes = undefined,
     maxMinutes = undefined,
     hoursStep = undefined,
-    minutesStep = undefined
+    minutesStep = undefined,
+    autoClose = false
   }: Props = $props();
 
   let fieldState = $state<FieldState>(createFieldState());
   let datepicker: AirDatepicker | undefined = $state();
   let inputElement: HTMLInputElement | undefined = $state();
+  let lastSelectedFromPicker: string | null = null;
 
   function padTimePart(value: number) {
     return String(value).padStart(2, '0');
@@ -89,6 +92,16 @@
     return timeValue ? formatForStorage(timeValue) : '';
   }
 
+  function setOptionIfDefined(options: Record<string, unknown>, key: string, optionValue: number | undefined) {
+    if (optionValue !== undefined) {
+      options[key] = optionValue;
+    }
+  }
+
+  function hasSameTime(left: Date | undefined, right: Date) {
+    return left?.getHours() === right.getHours() && left.getMinutes() === right.getMinutes();
+  }
+
   const displayTime = $derived(formatForDisplay(value));
   const selectedTime = $derived(toTimeDate(value));
 
@@ -99,27 +112,31 @@
       return;
     }
 
-    datepicker = new AirDatepicker(inputElement, {
+    const pickerOptions: Record<string, unknown> = {
       timepicker: true,
       onlyTimepicker: true,
       timeFormat,
-      autoClose: true,
+      autoClose,
       locale: en,
       container,
-      minHours,
-      maxHours,
-      minMinutes,
-      maxMinutes,
-      hoursStep,
-      minutesStep,
-      onSelect({ date, datepicker: instance }) {
+      onSelect({ date }) {
         const selectedDate = Array.isArray(date) ? date[0] : date;
+        const nextValue = selectedDate ? formatForStorage(selectedDate) : null;
 
-        value = selectedDate ? formatForStorage(selectedDate) : null;
+        lastSelectedFromPicker = nextValue;
+        value = nextValue;
         onChange();
-        instance.hide();
       }
-    });
+    };
+
+    setOptionIfDefined(pickerOptions, 'minHours', minHours);
+    setOptionIfDefined(pickerOptions, 'maxHours', maxHours);
+    setOptionIfDefined(pickerOptions, 'minMinutes', minMinutes);
+    setOptionIfDefined(pickerOptions, 'maxMinutes', maxMinutes);
+    setOptionIfDefined(pickerOptions, 'hoursStep', hoursStep);
+    setOptionIfDefined(pickerOptions, 'minutesStep', minutesStep);
+
+    datepicker = new AirDatepicker(inputElement, pickerOptions);
   });
 
   $effect(() => {
@@ -136,7 +153,14 @@
       return;
     }
 
-    datepicker.selectDate(selectedTime, { silent: true, updateTime: true });
+    if (lastSelectedFromPicker === displayTime) {
+      return;
+    }
+
+    const currentPickerDate = datepicker.selectedDates[0];
+    if (!hasSameTime(currentPickerDate, selectedTime)) {
+      datepicker.selectDate(selectedTime, { silent: true, updateTime: true });
+    }
   });
 
   onDestroy(() => {
