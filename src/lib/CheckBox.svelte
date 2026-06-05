@@ -41,6 +41,7 @@
             id={name}
             {required}
             bind:checked={value}
+            onchange={() => onChange()}
             {disabled}
         />
     </div>

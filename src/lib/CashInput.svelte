@@ -99,6 +99,7 @@
       displayValue = '-';
       value = null;
       updateBoundsErrors(null);
+      onChange();
       return;
     }
 
@@ -107,12 +108,16 @@
     displayValue = formatNumber(numericValue);
     value = numericValue;
     updateBoundsErrors(numericValue);
+    onChange();
   };
 
   const handleBlur = () => {
     isTypingMinus = false;
     const clamped = clamp(value);
-    if (clamped !== value) value = clamped;
+    if (clamped !== value) {
+      value = clamped;
+      onChange();
+    }
     displayValue = formatNumber(value);
     fieldState.removeError('min');
     fieldState.removeError('max');
