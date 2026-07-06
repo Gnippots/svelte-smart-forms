@@ -39,6 +39,7 @@
     password2: '',
     textarea: '',
     phone: '',
+    phoneCountry: 'AU',
     amount: 1250,
     percent: 25,
     legacyCash: 750,
@@ -187,6 +188,7 @@
         name="phone"
         label="Phone"
         bind:value={form.phone}
+        bind:country={form.phoneCountry}
         required
         {formState}
       />
