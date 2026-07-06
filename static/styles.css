@@ -55,6 +55,49 @@
   line-height: 1.47;
 }
 
+.smart-form-input .smart-forms-text-input {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}
+
+.smart-form-input .smart-forms-text-input input {
+  flex: 1;
+  min-width: 0;
+}
+
+.smart-form-input .smart-forms-text-input input:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.smart-form-input .smart-forms-text-input input:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.smart-form-input .smart-forms-input-affix {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.75rem;
+  border: 1px solid #dcdcdc;
+  background: #f8f9fa;
+  color: #495057;
+  font-size: 13px;
+  line-height: 1.47;
+}
+
+.smart-form-input .smart-forms-input-affix:first-child {
+  border-right: 0;
+  border-radius: 2px 0 0 2px;
+}
+
+.smart-form-input .smart-forms-input-affix:last-child {
+  border-left: 0;
+  border-radius: 0 2px 2px 0;
+}
+
 .smart-form-input .error-message {
     color: red;
     font-size:10px;
@@ -153,8 +196,10 @@ li:last-child .suggestion-item-button {
 }
 
 
-/* Month picker stuff */
-.monthInput {
+/* Month/date picker stuff */
+.dateInput,
+.monthInput,
+.timeInput {
   width: 100%;
   background: transparent;
   border-radius: 2px;
@@ -166,7 +211,9 @@ li:last-child .suggestion-item-button {
   line-height: 1.47;
 }
 
-.monthInput:disabled {
+.dateInput:disabled,
+.monthInput:disabled,
+.timeInput:disabled {
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1));
   color: rgb(107 114 128 / var(--tw-text-opacity, 1));

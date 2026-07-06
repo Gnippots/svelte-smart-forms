@@ -1,9 +1,10 @@
 <script lang="ts">
-import type { FieldState, FormState } from './Interfaces';
-import BaseInput from '$lib/BaseInput.svelte';
-import { createFieldState } from './FieldState.svelte';
-import type { FullAutoFill } from 'svelte/elements';
-interface Props {
+  import type { FieldState, FormState } from './Interfaces';
+  import BaseInput from '$lib/BaseInput.svelte';
+  import { createFieldState } from './FieldState.svelte';
+  import type { FullAutoFill } from 'svelte/elements';
+
+  interface Props {
     label?: string;
     value?: string;
     required?: boolean;
@@ -12,13 +13,13 @@ interface Props {
     showValidation?: boolean;
     formState: FormState;
     classes?: string;
-    onChange?: any;
-    onKeyup?: any;
+    onChange?: () => void;
+    onKeyup?: () => void;
     placeholder?: string;
     autocomplete?: FullAutoFill;
-}
+  }
 
-let {
+  let {
     label = '',
     value = $bindable(''),
     required = false,
@@ -31,33 +32,36 @@ let {
     onKeyup = () => {},
     placeholder = '',
     autocomplete = 'tel',
-}: Props = $props();
-let fieldState = $state<FieldState>(createFieldState());
-                
+  }: Props = $props();
+
+  let fieldState = $state<FieldState>(createFieldState());
 </script>
 
 <BaseInput
-    label={label}
-    classes={classes}
-    required={required}
-    name={name}
-    bind:value={value}
-    bind:fieldState={fieldState}
-    formState={formState}
-    {showValidation}
-    onChange={onChange}
+  {label}
+  {classes}
+  {required}
+  {name}
+  bind:value
+  bind:fieldState
+  {formState}
+  {showValidation}
+  {onChange}
 >
-    {#snippet input()}
-        <input
-            onblur={() => {fieldState.blur()}}
-            required={required}
-            onkeyup={onKeyup}
-            disabled={disabled}
-            placeholder={placeholder}
-            type="text"
-            name={name}
-            bind:value="{value}"
-            autocomplete={autocomplete}
-        />
-    {/snippet}
+  {#snippet input()}
+    <input
+      oninput={onChange}
+      onblur={() => {
+        fieldState.blur();
+      }}
+      {required}
+      onkeyup={onKeyup}
+      {disabled}
+      {placeholder}
+      type="text"
+      {name}
+      bind:value
+      autocomplete={autocomplete}
+    />
+  {/snippet}
 </BaseInput>
