@@ -13,7 +13,8 @@
     classes = 'smart-form-input',
     name = 'null',
     showValidation = true,
-    placeholder
+    placeholder,
+    regionCodes = ['au', 'nz']
   }: {
     address?: any;
     label?: string;
@@ -25,6 +26,12 @@
     showValidation?: boolean;
     mailing?: boolean;
     placeholder?: string;
+    /**
+     * ISO 3166-1 alpha-2 codes the address autocomplete is restricted to, e.g.
+     * `['nz']` or `['AU']` (case-insensitive). Defaults to Australia + New
+     * Zealand. Pass an empty array to allow addresses worldwide.
+     */
+    regionCodes?: string[];
   } = $props();
 
   const empty_address: Address = {
@@ -141,12 +148,18 @@
       const { AutocompleteSessionToken, AutocompleteSuggestion } = await google.maps.importLibrary("places") as google.maps.PlacesLibrary;
       const token = new AutocompleteSessionToken();
 
+      // Google expects lowercase region codes; omit the restriction entirely
+      // when no countries are given so results aren't silently limited to none.
+      const normalizedRegionCodes = (regionCodes ?? [])
+        .map((code) => String(code).trim().toLowerCase())
+        .filter(Boolean);
+
       const gmapsRequest = {
         input: search,
         language: 'en-GB',
         sessionToken: token,
         includedPrimaryTypes: ['apartment_building', 'apartment_complex', 'condominium_complex', 'housing_complex', 'street_address'],
-        includedRegionCodes: ['au', 'nz']
+        ...(normalizedRegionCodes.length > 0 ? { includedRegionCodes: normalizedRegionCodes } : {})
       };
 
       const response = await AutocompleteSuggestion.fetchAutocompleteSuggestions(gmapsRequest);

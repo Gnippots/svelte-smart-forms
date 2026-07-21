@@ -242,8 +242,9 @@
 
       <AddressField
         name="address"
-        label="Address field"
+        label="Address field (NZ only)"
         bind:address={form.address}
+        regionCodes={['nz']}
         {formState}
       />
 
