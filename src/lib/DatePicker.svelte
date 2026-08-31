@@ -21,6 +21,7 @@
     container?: string;
     minDate?: Date;
     maxDate?: Date;
+    showClearButton?: boolean;
   }
 
   let {
@@ -36,7 +37,8 @@
     showValidation = true,
     container = '',
     minDate,
-    maxDate
+    maxDate,
+    showClearButton = false
   }: Props = $props();
 
   let fieldState = $state<FieldState>(createFieldState());
@@ -95,6 +97,7 @@
       container,
       minDate,
       maxDate,
+      buttons: showClearButton ? ['clear'] : [],
       onSelect({ date, datepicker: instance }) {
         const selectedDate = Array.isArray(date) ? date[0] : date;
 
@@ -103,6 +106,21 @@
         instance.hide();
       }
     });
+  });
+
+  // The picker is built once on mount, so a `showClearButton` that flips afterwards
+  // (e.g. a field that stops being required) has to be pushed into the live instance.
+  let appliedClearButton = showClearButton;
+
+  $effect(() => {
+    const wanted = showClearButton;
+
+    if (!datepicker || wanted === appliedClearButton) {
+      return;
+    }
+
+    appliedClearButton = wanted;
+    datepicker.update({ buttons: wanted ? ['clear'] : [] }, { silent: true });
   });
 
   $effect(() => {
