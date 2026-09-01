@@ -1,0 +1,8 @@
+import type { FormState } from './Interfaces';
+interface Props {
+    formState?: FormState | null;
+    field?: string | null;
+}
+declare const FieldErrors: import("svelte").Component<Props, {}, "">;
+type FieldErrors = ReturnType<typeof FieldErrors>;
+export default FieldErrors;

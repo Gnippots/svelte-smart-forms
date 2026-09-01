@@ -1,0 +1,25 @@
+import type { FormState } from './Interfaces';
+import 'air-datepicker/air-datepicker.css';
+declare const TimePicker: import("svelte").Component<{
+    label?: string;
+    value?: string | Date | null;
+    required?: boolean;
+    name?: string;
+    disabled?: boolean;
+    formState: FormState;
+    classes?: string;
+    onChange?: () => void;
+    placeholder?: string;
+    showValidation?: boolean;
+    container?: string;
+    timeFormat?: string;
+    minHours?: number;
+    maxHours?: number;
+    minMinutes?: number;
+    maxMinutes?: number;
+    hoursStep?: number;
+    minutesStep?: number;
+    autoClose?: boolean;
+}, {}, "value">;
+type TimePicker = ReturnType<typeof TimePicker>;
+export default TimePicker;
