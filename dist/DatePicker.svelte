@@ -1,5 +1,5 @@
 <script lang="ts">
-  import BaseInput from '$lib/BaseInput.svelte';
+  import BaseInput from './BaseInput.svelte';
   import { createFieldState } from './FieldState.svelte';
   import type { FieldState, FormState } from './Interfaces';
   import AirDatepicker from 'air-datepicker';
